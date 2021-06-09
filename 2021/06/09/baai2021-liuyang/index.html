@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AI," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文是参加BAAI2021上刘洋老师的报告时记录的，老师讲得非常棒，在b站上也有up主分享了录屏，感兴趣的同学可以看看传送门 **如何撰写高质量科技论文**    写论文的时候最重要的就是表达清晰阅读和写作是互逆的过程#摘要的写作技巧摘要起广告作用一般最后写#介绍的写作技巧这是逻辑性最强的地方，写出高度难度很大审稿人可能看了这部分就会决定接受或拒稿 写文章时不能想说什么说什么，不能有废话，要么是论">
+<meta property="og:type" content="article">
+<meta property="og:title" content="baai2021-liuyang">
+<meta property="og:url" content="http://example.com/2021/06/09/baai2021-liuyang/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="本文是参加BAAI2021上刘洋老师的报告时记录的，老师讲得非常棒，在b站上也有up主分享了录屏，感兴趣的同学可以看看传送门 **如何撰写高质量科技论文**    写论文的时候最重要的就是表达清晰阅读和写作是互逆的过程#摘要的写作技巧摘要起广告作用一般最后写#介绍的写作技巧这是逻辑性最强的地方，写出高度难度很大审稿人可能看了这部分就会决定接受或拒稿 写文章时不能想说什么说什么，不能有废话，要么是论">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/1.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/2.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/3.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/4.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/5.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/6.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/7.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/8.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/9.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/10.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/11.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/12.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/13.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/14.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/15.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/16.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/17.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/18.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/19.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/20.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/21.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/22.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/23.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/24.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/25.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/26.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/27.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/28.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/29.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/30.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/31.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/32.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/26.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/34.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/35.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/36.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/37.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/38.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/39.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/40.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/41.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/42.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/43.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/44.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/45.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/46.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/47.png">
+<meta property="og:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/41.png">
+<meta property="article:published_time" content="2021-06-09T13:29:44.000Z">
+<meta property="article:modified_time" content="2021-06-09T14:01:14.205Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/06/09/baai2021-liuyang/baai2021-liuyang/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/06/09/baai2021-liuyang/"/>
+
+
+
+
+
+  <title>baai2021-liuyang | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/09/baai2021-liuyang/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">baai2021-liuyang</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-06-09T21:29:44+08:00">
+                2021-06-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/conferences/" itemprop="url" rel="index">
+                    <span itemprop="name">conferences</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>本文是参加BAAI2021上刘洋老师的报告时记录的，老师讲得非常棒，在b站上也有up主分享了录屏，感兴趣的同学可以看看</strong><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1QK4y1g71C?t=2795">传送门</a></p>
+<center>**如何撰写高质量科技论文**</center>
+
+ 
+<p><img src="baai2021-liuyang/1.png"><br><img src="baai2021-liuyang/2.png"><br>写论文的时候最重要的就是表达清晰<br><img src="baai2021-liuyang/3.png"><br><img src="baai2021-liuyang/4.png"><br><img src="baai2021-liuyang/5.png"><br><img src="baai2021-liuyang/6.png"><br>阅读和写作是互逆的过程<br><img src="baai2021-liuyang/7.png"><br><img src="baai2021-liuyang/8.png"><br>#摘要的写作技巧<br><img src="baai2021-liuyang/9.png"><br>摘要起广告作用<br><img src="baai2021-liuyang/10.png"><br>一般最后写<br>#介绍的写作技巧<br>这是逻辑性最强的地方，写出高度难度很大<br>审稿人可能看了这部分就会决定接受或拒稿<br><img src="baai2021-liuyang/11.png"><br><img src="baai2021-liuyang/12.png"></p>
+<p><img src="baai2021-liuyang/13.png"><br>写文章时不能想说什么说什么，不能有废话，要么是论点要么是论据<br><img src="baai2021-liuyang/14.png"><br>下面是论据，上面是论点<br><img src="baai2021-liuyang/15.png"><br>蓝色用来衔接<br><img src="baai2021-liuyang/16.png"><br>1：这个问题很重要<br>2：有哪些方法<br>3：方法有哪些挑战<br>4：我们解决挑战<br>5：我们的贡献<br>然后拆分，找论据<br><img src="baai2021-liuyang/17.png"><br>每句话不落空，一看就是大佬文笔<br><img src="baai2021-liuyang/18.png"><br><img src="baai2021-liuyang/19.png"><br><img src="baai2021-liuyang/20.png"><br>读者会优先选择理解度高的元素<br><img src="baai2021-liuyang/21.png"><br><img src="baai2021-liuyang/22.png"><br><img src="baai2021-liuyang/23.png"><br>如果看图就看懂了，就可以加速审稿人、读者的理解<br>如果被审稿人看半小时都看不懂，人家都没耐心了<br>需要尽快让审稿人知道你做了什么<br><img src="baai2021-liuyang/24.png"><br><img src="baai2021-liuyang/25.png"><br><img src="baai2021-liuyang/26.png"><br>写论文一定要注意全局连贯性，不要落空，否则很容易被审稿人抓住尾巴<br>#方法的写作技巧<br><img src="baai2021-liuyang/27.png"><br><img src="baai2021-liuyang/28.png"><br>左边是第2页，右边是第3页，可直接对比<br><img src="baai2021-liuyang/29.png"><br><img src="baai2021-liuyang/30.png"><br><img src="baai2021-liuyang/31.png"><br>先讲直觉，方法，再形式化<br><img src="baai2021-liuyang/32.png"><br><img src="baai2021-liuyang/26.png"><br>左边是原稿，右边是修改后的（注意公式、符号等领域内是怎么用的）</p>
+<h1 id="实验的写作技巧"><a href="#实验的写作技巧" class="headerlink" title="实验的写作技巧"></a>实验的写作技巧</h1><p><img src="baai2021-liuyang/34.png"><br><img src="baai2021-liuyang/35.png"><br><img src="baai2021-liuyang/36.png"><br><img src="baai2021-liuyang/37.png"><br>还要注意好结果加粗表示<br><img src="baai2021-liuyang/38.png"><br><img src="baai2021-liuyang/39.png"></p>
+<h1 id="如何写相关工作"><a href="#如何写相关工作" class="headerlink" title="如何写相关工作"></a>如何写相关工作</h1><p><img src="baai2021-liuyang/40.png"><br><img src="baai2021-liuyang/41.png"><br>最后一定要讲difference<br><img src="baai2021-liuyang/42.png"><br><img src="baai2021-liuyang/43.png"></p>
+<h1 id="其他建议"><a href="#其他建议" class="headerlink" title="其他建议"></a>其他建议</h1><p><img src="baai2021-liuyang/44.png"><br><img src="baai2021-liuyang/45.png"><br><img src="baai2021-liuyang/46.png"><br><img src="baai2021-liuyang/47.png"><br>现在大部分都是在第二层次</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><img src="baai2021-liuyang/41.png"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AI/" rel="tag"># AI</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/08/infosec2021-01/" rel="next" title="infosec2021-01">
+                <i class="fa fa-chevron-left"></i> infosec2021-01
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%9A%84%E5%86%99%E4%BD%9C%E6%8A%80%E5%B7%A7"><span class="nav-number">1.</span> <span class="nav-text">实验的写作技巧</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%86%99%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">如何写相关工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%BB%BA%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">其他建议</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
