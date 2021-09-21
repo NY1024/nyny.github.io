@@ -262,6 +262,293 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/21/fooling-lime-and-shap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/09/21/fooling-lime-and-shap/" itemprop="url">fooling</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-09-21T17:08:36+08:00">
+                2021-09-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="摘要">摘要</h1>
+<p>依赖于输入扰动的事后解释技术(post hoc explanations)，如LIME和SHAP并不可靠</p>
+<p>我们提出了一种技术，允许攻击者能够制作一个任意希望的解释，有效地隐藏任意给定分类器的偏见。我们的方案可以用于构建任意有偏见的分类器，它对于输入数据分布的预测存在偏差，但是针对其构建的事后解释技术却无法发现分类器存在偏见。</p>
+<h1 id="引言">引言</h1>
+<p>由于机器学习模型的成功，人们开始将这些模型引入医疗保健、刑事司法等领域，在这些领域，模型是否可以被成功采用很大程度上取决于决策者是否能够很好理解和信任模型，只有决策者对模型行为有清楚的理解，他们才能诊断出这些模型中的错误和潜在偏差，并能够由此决定什么时候以及在多大程度上可以依赖这些模型。但是，机器学习摸的专有性质和不断增加的复杂性让专家们很难理解这些复杂的黑盒。为了帮助理解，研究人员突出了一些可解释性方法，比如LIME、SHAP,这类方法通过在数据中生成给定实例的扰动，并观察这些扰动对分类器的影响，来评估单个特征对特定预测的贡献。这种方法存在通用性，故常被用于解释许多分类器，比如复杂的集成模型、神经网络等。</p>
+<p>但是对这种可解释性技术的鲁棒性分析很少，我们的研究表明这类方法存在重大漏洞，可以被对手用来生成特定的分类器，该分类器上的事后解释由攻击者控制，从而可以掩盖攻分类器本身存在的歧视性偏见等性质。例如，通过我们的框架，可以生成具有高度歧视性的分类器(仅根据种族来判断是否可能犯罪),这些分类器由LIME等方法生成的解释是之看起来正常，有效隐藏了内部的歧视性偏见。</p>
+<p>我们制作了对种族严重歧视的分类器，对于任何测试实例，使用LIME、SHAP实现生成的关于分类器的解释从没有将种族标记为分类器重要的分类依据，从而证明我们制作的分类器成功欺骗了这些解释方法。</p>
+<h1 id="背景">背景</h1>
+<h2 id="lime-and-shap">LIME and SHAP</h2>
+<p>简单的模型如线性模型、决策树等容易被人类劣迹，但是复杂模型却并非如此。理解这类复杂模型的一类方法是构建更简单的可解释模型，用这些模型作为复杂模型的近似，其中LIME和SHAP是流行的两类技术，他们属于与模型无关的局部解释方法，可以解释任何给定的黑盒分类器，他们通过通过学习每个预测的局部可解释模型(如线性模型)，以一种可解释、可靠的方式解释任何分类器的单个预测，它们估计实例上的特征属性，确定每个特征对模型预测的贡献。</p>
+<p>设<span class="math inline">\(f\)</span>为为黑盒分类器，接收输入<span class="math inline">\(x_i\)</span>，输出预测类别，即<span class="math inline">\(f(x_i)\in C\)</span>,其中<span class="math inline">\(C\)</span>是所有类别的集合。设<span class="math inline">\(g\)</span>是选中的用于学习并解释<span class="math inline">\(f\)</span>的可解释模型，<span class="math inline">\(g\in G\)</span>，其中<span class="math inline">\(G\)</span>是线性模型的集合</p>
+<p>设<span class="math inline">\(g\)</span>的复杂度为<span class="math inline">\(\Omega(g)\)</span>（线性模型的复杂性可以由非零权重的数量衡量），将<span class="math inline">\(x\)</span>与<span class="math inline">\(x^,\)</span>的近似程度用<span class="math inline">\(\pi_x(x^,)\)</span>衡量</p>
+<p>SHAP和LIME的目标就是生成一种解释：1.在x附近来逼近黑盒行为；2.降低复杂度。</p>
+<p>此时的目标函数为</p>
+<p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/09/21/fooling/image-20210921160358055.png" /></p>
+<p>其中损失函数定义为</p>
+<p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/09/21/fooling/image-20210921160414729.png" /></p>
+<p>其中<span class="math inline">\(X^,\)</span>是在<span class="math inline">\(x\)</span>附近的输入的集合</p>
+<p><strong>LIME和SHAP的主要区别在于如何选择<span class="math inline">\(\Omega\)</span>和<span class="math inline">\(\pi_x\)</span></strong></p>
+<p>在LIME中，这些函数的定义是启发式的，<span class="math inline">\(\Omega(g)\)</span>是线性模型中的非零权重，<span class="math inline">\(\pi_x(x^,)\)</span>是使用余弦或者<span class="math inline">\(l_2\)</span>距离定义的。而在SHAP中，SHAP将这些函数的定义简历在博弈论原则的基础上，以保证解释满足某些期望的性质。</p>
+<h2 id="proposed-framework">Proposed Framework</h2>
+<p>攻击者的目的是欺骗解释性技术，并隐藏分类器的偏见</p>
+<p>将攻击者创建的分类器记做<span class="math inline">\(e\)</span>，它和<span class="math inline">\(f\)</span>在面对从真实数据分布中采样得到的样本时，做出的预测相近，但是当使用LIME,SHAP时不会揭示<span class="math inline">\(f\)</span>的潜在偏见</p>
+<h3 id="intuition">Intuition</h3>
+<p>LIME等技术通过构建局部可解释近似模型来解释给定黑盒模型的单个预测，每一个样本的局部近似都被设计用来捕获给定数据点附近的黑盒行为，这些邻域构成了由输入数据中单个实例的扰动特征生成的合成数据点。然而，使用这些扰动生成的实例可能是off-manifola或者out-of-distribution(OOD)的</p>
+<p>为了更好地理解由扰动生成的合成数据点的性质，我们进行了实验。</p>
+<p>我们使用LIME方法对输入实例进行扰动，然后对包含原始实例和扰动实例的组合数据集进行主成分分析PCA,将其降到2维</p>
+<p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/09/21/fooling/image-20210921161654496.png" /></p>
+<p>从图一中可以看到，合成的数据的分布与原始的实例的分布有很大的不同，这种现象是我们欺骗LIME的基础。</p>
+<p>攻击者可以在输入数据点上创建一个类似于原始分类器(可能具有很大的歧视性)的对抗性分类器，但是在扰动数据上的表现却与原始分类器不同，对抗性分类器表现地没有偏见并且是公平的，从而有效地欺骗LIME、SHAP。</p>
+<h3 id="building-adversarial-classifers">Building Adversarial Classifers</h3>
+<p>我们来看看攻击场景</p>
+<p>设<span class="math inline">\(f\)</span>是前面提到的有偏见的分类器，对手希望设计一个对抗性分类器，在用户生成这个黑盒的解释时，解释技术会被欺骗，认为这个模型是无害的。这个分类器接收的N个数据点组成的数据集<span class="math inline">\(X\)</span>来自于真实世界的分布<span class="math inline">\(X_{dist}\)</span>。为了欺骗解释性技术，攻击者设计的对抗分类器，在从<span class="math inline">\(X_{dist}\)</span>采样的数据点上显示有偏见的行为，而在不是来自<span class="math inline">\(X_{dist}\)</span>的数据点上保持没有偏见，由于LIME,SHAP输出的特征重要度严重依赖于扰动实例(通常是OOD样本)，因此得到的解释将使对抗分类器看起来无害。</p>
+<p>设<span class="math inline">\(\Psi\)</span>是一个没有偏见的分类器(基于与敏感属性不相干的无害特征进行预测),则对抗分类器<span class="math inline">\(e\)</span>的形式如下</p>
+<p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/09/21/fooling/image-20210921162944187.png" /></p>
+<p>创建这种分类器的难点就是我们需要判断给定的数据点是否来自<span class="math inline">\(X_{dist}\)</span></p>
+<h3 id="detecting-ood-samples">Detecting OOD Samples</h3>
+<p>为了创建分类器<span class="math inline">\(is\_OOD\)</span>,其用于判断数据点是否是out-of-distribution样本(<span class="math inline">\(is\_OOD(x)=True\)</span>)，我们需要构造新的数据集，我们扰动每个实例<span class="math inline">\(x\)</span>生成新的实例<span class="math inline">\(x_p\)</span>，设所有通过扰动得到的实例的集合为<span class="math inline">\(X_p\)</span>，然后将<span class="math inline">\(X\)</span>中所有实例的标签设置False，将<span class="math inline">\(X_p\)</span>中所有实例的标签设为True(在<span class="math inline">\(X\)</span>中的实例除外)，然后我们在联合数据集<span class="math inline">\(X_p\bigcup X\)</span>以及对应的标签上训练分类器即可。</p>
+<p>#Experimental results</p>
+<p>使用的数据集</p>
+<p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/09/21/fooling/image-20210921163724512.png" /></p>
+<h1 id="related-work">Related work</h1>
+<h2 id="perturbation-based-explanation-methods">Perturbation-based Explanation Methods</h2>
+<p>基于扰动的方法除了SHAP,LIME外，还有achor，它使用非线性规则来表达更灵活的局部解释，GAM将局部归因解释为联合加权排序，并使用k-medoids识别原型解释</p>
+<h2 id="criticism-of-post-hoc-explanations">Criticism of Post hoc Explanations</h2>
+<p>研究者认为事后解释是不可靠的，因为这些解释不一定忠实于基础模型，呈现的是相关性而不是原始计算的信息。此外，一些解释性技术对输入中的小扰动高度敏感，但是分类器的预测却保持不变。</p>
+<h2 id="adversarial-explanations">Adversarial Explanations</h2>
+<p>在图像分类领域，有一些关于操纵解释的研究，可以用人类无法察觉的方式，任意修改显著图(saliency map)</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/21/myblog/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/09/21/myblog/" itemprop="url">myblog</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-09-21T17:07:18+08:00">
+                2021-09-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="test">test</h1>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/09/baai2021-liuyang/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -355,14 +642,24 @@
       
         
           
-            <p><strong>本文是参加BAAI2021上刘洋老师的报告时记录的，老师讲得非常棒，在b站上也有up主分享了录屏，感兴趣的同学可以看看</strong><br><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1QK4y1g71C?t=2795">传送门</a></p>
-<center>**如何撰写高质量科技论文**</center>
-
-<p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/1.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/2.png"><br>写论文的时候最重要的就是表达清晰<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/3.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/4.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/5.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/6.png"><br>阅读和写作是互逆的过程<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/7.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/8.png"><br>#摘要的写作技巧<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/9.png"><br>摘要起广告作用<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/10.png"><br>一般最后写<br>#介绍的写作技巧<br>这是逻辑性最强的地方，写出高度难度很大<br>审稿人可能看了这部分就会决定接受或拒稿<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/11.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/12.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/13.png"><br>写文章时不能想说什么说什么，不能有废话，要么是论点要么是论据<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/14.png"><br>下面是论据，上面是论点<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/15.png"><br>蓝色用来衔接<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/16.png"><br>1：这个问题很重要<br>2：有哪些方法<br>3：方法有哪些挑战<br>4：我们解决挑战<br>5：我们的贡献<br>然后拆分，找论据<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/17.png"><br>每句话不落空，一看就是大佬文笔<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/18.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/19.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/20.png"><br>读者会优先选择理解度高的元素<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/21.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/22.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/23.png"><br>如果看图就看懂了，就可以加速审稿人、读者的理解<br>如果被审稿人看半小时都看不懂，人家都没耐心了<br>需要尽快让审稿人知道你做了什么<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/24.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/25.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/26.png"><br>写论文一定要注意全局连贯性，不要落空，否则很容易被审稿人抓住尾巴<br>#方法的写作技巧<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/27.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/28.png"><br>左边是第2页，右边是第3页，可直接对比<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/29.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/30.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/31.png"><br>先讲直觉，方法，再形式化<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/32.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/33.png"><br>左边是原稿，右边是修改后的（注意公式、符号等领域内是怎么用的）</p>
-<h1 id="实验的写作技巧"><a href="#实验的写作技巧" class="headerlink" title="实验的写作技巧"></a>实验的写作技巧</h1><p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/34.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/35.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/36.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/37.png"><br>还要注意好结果加粗表示<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/38.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/39.png"> </p>
-<h1 id="如何写相关工作"><a href="#如何写相关工作" class="headerlink" title="如何写相关工作"></a>如何写相关工作</h1><p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/40.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/41.png"><br>最后一定要讲difference<br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/42.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/43.png"> </p>
-<h1 id="其他建议"><a href="#其他建议" class="headerlink" title="其他建议"></a>其他建议</h1><p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/44.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/45.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/46.png"><br><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/47.png"><br>现在大部分都是在第二层次</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/48.png"> </p>
+            <p><strong>本文是参加BAAI2021上刘洋老师的报告时记录的，老师讲得非常棒，在b站上也有up主分享了录屏，感兴趣的同学可以看看</strong><br />
+<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1QK4y1g71C?t=2795">传送门</a></p>
+<center>
+<strong>如何撰写高质量科技论文</strong>
+</center>
+<p><img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/1.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/2.png" /> 写论文的时候最重要的就是表达清晰 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/3.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/4.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/5.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/6.png" /> 阅读和写作是互逆的过程<br />
+<img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/7.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/8.png" /> #摘要的写作技巧 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/9.png" /> 摘要起广告作用 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/10.png" /> 一般最后写<br />
+#介绍的写作技巧<br />
+这是逻辑性最强的地方，写出高度难度很大<br />
+审稿人可能看了这部分就会决定接受或拒稿 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/11.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/12.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/13.png" /> 写文章时不能想说什么说什么，不能有废话，要么是论点要么是论据 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/14.png" /> 下面是论据，上面是论点 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/15.png" /> 蓝色用来衔接 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/16.png" /> 1：这个问题很重要<br />
+2：有哪些方法<br />
+3：方法有哪些挑战<br />
+4：我们解决挑战<br />
+5：我们的贡献<br />
+然后拆分，找论据<br />
+<img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/17.png" /> 每句话不落空，一看就是大佬文笔<br />
+<img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/18.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/19.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/20.png" /> 读者会优先选择理解度高的元素 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/21.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/22.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/23.png" /> 如果看图就看懂了，就可以加速审稿人、读者的理解<br />
+如果被审稿人看半小时都看不懂，人家都没耐心了 需要尽快让审稿人知道你做了什么 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/24.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/25.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/26.png" /> 写论文一定要注意全局连贯性，不要落空，否则很容易被审稿人抓住尾巴 #方法的写作技巧 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/27.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/28.png" /> 左边是第2页，右边是第3页，可直接对比 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/29.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/30.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/31.png" /> 先讲直觉，方法，再形式化 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/32.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/33.png" /> 左边是原稿，右边是修改后的（注意公式、符号等领域内是怎么用的） # 实验的写作技巧 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/34.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/35.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/36.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/37.png" /> 还要注意好结果加粗表示 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/38.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/39.png" /> # 如何写相关工作 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/40.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/41.png" /> 最后一定要讲difference <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/42.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/43.png" /> # 其他建议 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/44.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/45.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/46.png" /> <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/47.png" /> 现在大部分都是在第二层次 # 总结 <img src="https://raw.githubusercontent.com/NY1024/ny1024.github.io/master/2021/06/09/baai2021-liuyang/48.png" /></p>
 
           
         
@@ -483,34 +780,45 @@
         
           
             <p>2021年网络空间安全国际学术研究交流会（上）参会小计</p>
-<p><strong>2020年9月研究生入学以来，由于疫情等因素的影响，这是我第一次参加线下学术界的会议，首先非常感谢段老师以及组委会老师的组织，能够邀请到大牛们以及做出顶级成果的博士、博后们来分享他们在20，21年被big4接收的工作。</strong><br><strong>这两天会议日程排的很满，报告嘉宾们都非常不容易，对于我们参会者来说，真的是学到了很多。</strong><br><strong>首先可能是因为这次请到的很多都是作为一作的博士、博后，他们对自己的工作都很熟悉，所以介绍起来游刃有余，包括UCR的屈宇博士、明尼苏达的吴秋实博士、复旦的张晓寒博后、清华的甘水滔博后等；其次请到的教授、研究员们都还是奋战在科研第一线的，讲起来滔滔不绝，如数家珍，这或许就是学术的魅力Orz，包括南科大的张殷乾老师、华科的袁斌老师等</strong><br><strong>另，由于可能涉及版权问题，参会拍的照片就不放上来了，有心的同学的话完全可以试试直接邮箱联系对应的老师交流</strong></p>
-<h2 id="大概分享一下这次会议给我印象比较深的点"><a href="#大概分享一下这次会议给我印象比较深的点" class="headerlink" title="大概分享一下这次会议给我印象比较深的点"></a>大概分享一下这次会议给我印象比较深的点</h2><h3 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h3><p>张玉清老师分享的big4的数据分析结论，从团队来看，UC系统甩开美国其他高校一条街，除去UC系统，中国的top5和美国的top5不相上下，国内近年big4发的最多的高校是清华、中科院、浙大；从团队来看，是复旦杨珉教授的团队，之后是清华段海新、国重陈恺老师；从趋势上看，做安全计算、区块链安全、机器学习安全、fuzzing的工作依次递减（fuzzing远低于前三者；这个安全计算不清楚张老师是怎么算的，可能是因为云计算、联邦学习等系统里都会涉及安全多方计算、差分隐私等技术，所以统计出来比较多）  </p>
-<h3 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h3><p>南洋理工大学的刘扬老师介绍的多年来做fuzzing的历程，听段海新老师介绍，刘老师在fuzzing的地位就是鼻祖级的。刘老师他们一直都是围绕自动机展开，把target转成自动机然后进一步fuzzing，自动机能这么玩，我之前是不知道的，加上没有做过学术界的fuzzing，这个报告算是长见识了<br>其实刘老师还介绍了很多其他的工作，都做的非常好，我居然是第一次听说刘老师，真是孤陋寡闻了。在报告的最后刘老师给出了一些经验，包括：</p>
+<p><strong>2020年9月研究生入学以来，由于疫情等因素的影响，这是我第一次参加线下学术界的会议，首先非常感谢段老师以及组委会老师的组织，能够邀请到大牛们以及做出顶级成果的博士、博后们来分享他们在20，21年被big4接收的工作。</strong><br />
+<strong>这两天会议日程排的很满，报告嘉宾们都非常不容易，对于我们参会者来说，真的是学到了很多。</strong><br />
+<strong>首先可能是因为这次请到的很多都是作为一作的博士、博后，他们对自己的工作都很熟悉，所以介绍起来游刃有余，包括UCR的屈宇博士、明尼苏达的吴秋实博士、复旦的张晓寒博后、清华的甘水滔博后等；其次请到的教授、研究员们都还是奋战在科研第一线的，讲起来滔滔不绝，如数家珍，这或许就是学术的魅力Orz，包括南科大的张殷乾老师、华科的袁斌老师等</strong> <strong>另，由于可能涉及版权问题，参会拍的照片就不放上来了，有心的同学的话完全可以试试直接邮箱联系对应的老师交流</strong></p>
+<h2 id="大概分享一下这次会议给我印象比较深的点">大概分享一下这次会议给我印象比较深的点</h2>
+<h3 id="section">1.</h3>
+<p>张玉清老师分享的big4的数据分析结论，从团队来看，UC系统甩开美国其他高校一条街，除去UC系统，中国的top5和美国的top5不相上下，国内近年big4发的最多的高校是清华、中科院、浙大；从团队来看，是复旦杨珉教授的团队，之后是清华段海新、国重陈恺老师；从趋势上看，做安全计算、区块链安全、机器学习安全、fuzzing的工作依次递减（fuzzing远低于前三者；这个安全计算不清楚张老师是怎么算的，可能是因为云计算、联邦学习等系统里都会涉及安全多方计算、差分隐私等技术，所以统计出来比较多）<br />
+### 2. 南洋理工大学的刘扬老师介绍的多年来做fuzzing的历程，听段海新老师介绍，刘老师在fuzzing的地位就是鼻祖级的。刘老师他们一直都是围绕自动机展开，把target转成自动机然后进一步fuzzing，自动机能这么玩，我之前是不知道的，加上没有做过学术界的fuzzing，这个报告算是长见识了<br />
+其实刘老师还介绍了很多其他的工作，都做的非常好，我居然是第一次听说刘老师，真是孤陋寡闻了。在报告的最后刘老师给出了一些经验，包括：</p>
 <ul>
-<li>每种方法都可以被enhanced<ul>
+<li>每种方法都可以被enhanced
+<ul>
 <li>Symbolic Execution(whitebox)</li>
 <li>Good Test Cases(Blackbox)</li>
 <li>Feedback based Testing(Greybox)</li>
-</ul>
-</li>
+</ul></li>
 <li>AFL的每个module都可以被enhanced</li>
 <li>很多其他的技术都可以被用来辅助增强AFL</li>
 <li>AFL作为一个动态分析工具可以被应用到很多其他领域，换句话说，你可以fuzz一切可以运行起来的东西</li>
-<li>AI和Fuzzing可以互相促进<h3 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h3>GRAYONE的作者、清华的博后甘水滔老师，介绍GRAYONE，之前是听张超老师介绍过，这次是第一次听一作讲这个工作，了解得更清楚了，可惜我已经对fuzzing没兴趣了Orz（后面苏璞睿老师和甘老师也有聊到，GRAYONE拆开的四个部分每一部分都是非常好也非常大的工作，其实都可以单独拿出来发），但是我刚进课题组的时候是有想过做fuzzing的，也看过一些paper，所以知道GRAYONE的价值有多大<h3 id="4"><a href="#4" class="headerlink" title="4."></a>4.</h3>UCR的屈宇博士报告ccs2021的工作PalmTree，是做了一个embedding，对于用DL做代码安全的同学可能有参考价值，这也是之前我导师希望我做的方向之一，我们课题组也有师兄、同届的在做，我也不是很有兴趣~我是five  <h3 id="5"><a href="#5" class="headerlink" title="5."></a>5.</h3>做安全协议自动化的，一个是北邮的研三的同学（听段海新老师介绍，这可能是这次在infose上做报告的最年轻的人了，这位同学自己说从16年就开始专门研究ProVerief了，21年才有成果）基于该工具对FIDO UAF做分析，发在了NDSS2021;另一外是中科大的熊焰教授，提出了一个可以全自动做安全协议分析的框架（最关键的是引入了DQN，深度强化学习的经典框架之一，刘扬老师他们的很多工作也引入了DQL），非常厉害，对tls1.3还有区块链等都做出大量的成果，熊老师的报告特别有意思，还介绍了和big4中的三个会议的审稿人们argue的故事，长见识了<br>其实我在学校也有修安全协议的课，但是这次听的两个相关的报告才知道安全协议这么厉害，果然纸上得来终觉浅；另一方面，我在上安全协议的时候，课程涉及的密码学的东西太多了，也没有好好上，我自己也要吸取教训。如果是研究生还在选坑的同学，建议可以考虑下安全协议  <h3 id="6"><a href="#6" class="headerlink" title="6"></a>6</h3></li>
+<li>AI和Fuzzing可以互相促进 ### 3. GRAYONE的作者、清华的博后甘水滔老师，介绍GRAYONE，之前是听张超老师介绍过，这次是第一次听一作讲这个工作，了解得更清楚了，可惜我已经对fuzzing没兴趣了Orz（后面苏璞睿老师和甘老师也有聊到，GRAYONE拆开的四个部分每一部分都是非常好也非常大的工作，其实都可以单独拿出来发），但是我刚进课题组的时候是有想过做fuzzing的，也看过一些paper，所以知道GRAYONE的价值有多大 ### 4. UCR的屈宇博士报告ccs2021的工作PalmTree，是做了一个embedding，对于用DL做代码安全的同学可能有参考价值，这也是之前我导师希望我做的方向之一，我们课题组也有师兄、同届的在做，我也不是很有兴趣~我是five<br />
+### 5. 做安全协议自动化的，一个是北邮的研三的同学（听段海新老师介绍，这可能是这次在infose上做报告的最年轻的人了，这位同学自己说从16年就开始专门研究ProVerief了，21年才有成果）基于该工具对FIDO UAF做分析，发在了NDSS2021;另一外是中科大的熊焰教授，提出了一个可以全自动做安全协议分析的框架（最关键的是引入了DQN，深度强化学习的经典框架之一，刘扬老师他们的很多工作也引入了DQL），非常厉害，对tls1.3还有区块链等都做出大量的成果，熊老师的报告特别有意思，还介绍了和big4中的三个会议的审稿人们argue的故事，长见识了<br />
+其实我在学校也有修安全协议的课，但是这次听的两个相关的报告才知道安全协议这么厉害，果然纸上得来终觉浅；另一方面，我在上安全协议的时候，课程涉及的密码学的东西太多了，也没有好好上，我自己也要吸取教训。如果是研究生还在选坑的同学，建议可以考虑下安全协议<br />
+### 6 6.今天上午是请了UCR的钱志云教授、NUS的梁振凯教授、最近因为比较有争议的明尼苏达大学的卢康杰教授分享做科研的经验教训；上午最后一个环节是panel，讨论了一些研究中的ethic的问题<br />
+大家都在提IRB（Instituitional Review Board）伦理审查委员会，国外高校、科研机构基本都有，但是国内还没有，段海新老师的一个博士也现身说法，介绍了由于对这方面的了解不够造成的不必要的麻烦。</li>
 </ul>
-<p>6.今天上午是请了UCR的钱志云教授、NUS的梁振凯教授、最近因为比较有争议的明尼苏达大学的卢康杰教授分享做科研的经验教训；上午最后一个环节是panel，讨论了一些研究中的ethic的问题<br>大家都在提IRB（Instituitional Review Board）伦理审查委员会，国外高校、科研机构基本都有，但是国内还没有，段海新老师的一个博士也现身说法，介绍了由于对这方面的了解不够造成的不必要的麻烦。  </p>
-<p>钱志云教授的topic是“how to look for ideas in computer science research”，更详细的版本有兴趣的同学可以去知乎看看，钱老师也发出来了。<br><a href="https://zhuanlan.zhihu.com/p/341685279" target="_blank">链接在这</a><br>这里分享下这次钱老师分享的版本：</p>
+<p>钱志云教授的topic是“how to look for ideas in computer science research”，更详细的版本有兴趣的同学可以去知乎看看，钱老师也发出来了。<br />
+<a href="https://zhuanlan.zhihu.com/p/341685279" target="_blank">链接在这</a><br />
+这里分享下这次钱老师分享的版本：</p>
 <ul>
 <li>起步的时候要培养研究的taste</li>
 <li>首先是多读论文，一周起码3，4篇，尽可能参加talks/reading group，讨论班这种形式</li>
 <li>对论文的idea要上心，考虑这几个问题：1.你对那种类型的paper感兴趣，2.是什么让你欣赏一篇paper的工作，3.作者是怎么想到这个idea的</li>
-<li>然后在对研究领域足够熟悉之后，要开始分解（breaking down）你的领域，可以从不同的方向去拆。以安全领域为例，可以这么拆：<ul>
+<li>然后在对研究领域足够熟悉之后，要开始分解（breaking down）你的领域，可以从不同的方向去拆。以安全领域为例，可以这么拆：
+<ul>
 <li>根据domain来拆，可以分成system,network,hardware,social等</li>
 <li>根据style来拆，可以分成attack,defense,analysis,system building等</li>
 <li>根据technique来拆，可以分成manual analysis,program analysis,formal methods,design,data-driven approach(ai/ml)等</li>
-</ul>
-</li>
-<li>然后就是要考虑怎么找idea了，这次钱老师分享了6种pattern<ul>
+</ul></li>
+<li>然后就是要考虑怎么找idea了，这次钱老师分享了6种pattern
+<ul>
 <li>1.filling the blank,意思大概是说以dimension为列，technique为行，做个矩阵，然后填空，看看还有哪里是没有被研究过的，常见的dimension包括Assumption,domains,guarantee/property,methodology/techniques,datasets等；比如说在AI领域出现对图像的对抗样本攻击，那么可以考虑换个对象，把图像换成malware、NIDS等等来做；这里的关键是要将demension map out出来</li>
 <li>2.expansion.很多小的dimension只有当我们深入到某个领域后才能发现。比如钱老师自己的工作，Oakland 2012的tcp侧信道的研究，ccs2020上的dns cache poisoning attack等</li>
 <li>3.build a hammer and find nails。可以是任何有用的技能、技术、系统、甚至是数据集，只要这是你独有的，或者是你相比于其他人最擅长的。比如你对虚拟机特别熟悉，或者深入掌握了GAN，对抗样本等AI领域的技术，如果是系统安全如果你对Angr非常了解，或者你有别人没有的数据集如CAIDA等。有了这些当你的锤子，你再去找钉子，这时候做出的工作可能就要比别人要独特、要好</li>
@@ -518,427 +826,57 @@
 <li>5.reproduction of prior work。复现前人的工作。在此期间，需要关注你做的结果和原作者的差异；当该方法应用到不同问题上时的局限性以及其他的发现</li>
 <li>6.external sources:from industry,news feed,etc。找工业届的痛点，工业届可以堆人力、大力出奇迹、能work就行，而学术界可以找到痛点去深入研究</li>
 <li>7.Others。其他的pattern，比如说人家做了attack，你就做defense，反之亦然；或者做些自动化的工作,比如逆向工程、漏洞发现、漏洞利用、补丁分析等领域已经很多人开始用这种pattern在做了</li>
-</ul>
-</li>
-<li>此外，钱老师提到研究生需要注意idea formulation和idea execution上的差异，不仅要会动手，还要会动脑，不要一直依靠导师给idea，要花时间自己去找idea，途径包括:<ul>
+</ul></li>
+<li>此外，钱老师提到研究生需要注意idea formulation和idea execution上的差异，不仅要会动手，还要会动脑，不要一直依靠导师给idea，要花时间自己去找idea，途径包括:
+<ul>
 <li>保持好奇、勤于提问</li>
 <li>最好准备好问题去参加meeting,talk</li>
 <li>讨论班的论文阅读</li>
 <li>paper review，要学会从好的文章学习，也要学会从被拒稿的文章汲取经验</li>
 <li>常和你的实验室小伙伴交流</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<p>梁振凯教授也分享了一些做研究的方法论，但是我听起来感觉比较玄学，没整明白，这里就不写了  </p>
-<p>另外还分享了他三年前收的一个博士的工作，曾毅博士研究的方向和梁老师不同，但是梁老师也感兴趣，所以也支持曾博士做这个研究。我感兴趣的是曾博士的现身说法，他提到，如果组内没有相关积累的话，首先需要和导师协商好，至少要保证和导师的兴趣的余弦是非负的，换句话说有正相关的感觉，说人话就是最起码导师不反对，否则就很难办了；然后需要自己阅读近10到20年的全部高引用、或者你觉得有用的该主题下的论文，当然具体的年限取决于你的方向，比如你如果做对抗样本，你也就从14年开始看了。paper一定要多读！！！不管是钱老师还是梁老师，或者你导师，我相信都是这么说的；要把一条线的发展全部厘清，才能看到其中的semantic gap或者说research problem，这恰好是我们工作的motivation，这也是我们的insight，就可以据此开展工作了；还分享的一个经验就是，在找解决方法的时候，可以多读cross domain的paper，就是去别的领域找方法、思路，把他们的数学模型拉出来，可能会发现两个领域本质的方案是类似的，只不过具体场景不同而已；最好把自己的工作做成一个tool，或者system，这样在做下一篇文章的时候速度就比较快。<br>我现在在组里也是类似的状态，组里的积累不在AI安全这一块，而我对这一块比较感兴趣，所以听到梁老师的报告就比较上心Orz。当然，我导师是支持我做这个的，不过单打独斗的话，北邮那位同学花了5年时间发big4，NUS这位花了3年，我要到什么时候哈哈哈哈哈，现在研一快结束了，只有两年了，要加把劲了。</p>
-<h3 id="7"><a href="#7" class="headerlink" title="7."></a>7.</h3><p>其实这是我目前在做的方向，但是这两位老师做的和我做的还是不太一样，所以没什么太大的启发<br>AI安全的：分别是国重的侯锐老师做的报告，从体系结构安全出发做的；另一个是国重的孟国柱老师的报告，介绍的他的博士何英哲的3篇文章（英文版综述发在了TSE 2020，2021发了一篇Usenix Security,提出在做黑盒攻击时的数据约减技术，还有篇在arxiv上是做验证数据删除的）<br>对我比较有价值的一张slides是划分了AI中可以做的方向，这里简单写一下，和我前期自行总结的也差不多： </p>
+<p>梁振凯教授也分享了一些做研究的方法论，但是我听起来感觉比较玄学，没整明白，这里就不写了</p>
+<p>另外还分享了他三年前收的一个博士的工作，曾毅博士研究的方向和梁老师不同，但是梁老师也感兴趣，所以也支持曾博士做这个研究。我感兴趣的是曾博士的现身说法，他提到，如果组内没有相关积累的话，首先需要和导师协商好，至少要保证和导师的兴趣的余弦是非负的，换句话说有正相关的感觉，说人话就是最起码导师不反对，否则就很难办了；然后需要自己阅读近10到20年的全部高引用、或者你觉得有用的该主题下的论文，当然具体的年限取决于你的方向，比如你如果做对抗样本，你也就从14年开始看了。paper一定要多读！！！不管是钱老师还是梁老师，或者你导师，我相信都是这么说的；要把一条线的发展全部厘清，才能看到其中的semantic gap或者说research problem，这恰好是我们工作的motivation，这也是我们的insight，就可以据此开展工作了；还分享的一个经验就是，在找解决方法的时候，可以多读cross domain的paper，就是去别的领域找方法、思路，把他们的数学模型拉出来，可能会发现两个领域本质的方案是类似的，只不过具体场景不同而已；最好把自己的工作做成一个tool，或者system，这样在做下一篇文章的时候速度就比较快。<br />
+我现在在组里也是类似的状态，组里的积累不在AI安全这一块，而我对这一块比较感兴趣，所以听到梁老师的报告就比较上心Orz。当然，我导师是支持我做这个的，不过单打独斗的话，北邮那位同学花了5年时间发big4，NUS这位花了3年，我要到什么时候哈哈哈哈哈，现在研一快结束了，只有两年了，要加把劲了。 ### 7. 其实这是我目前在做的方向，但是这两位老师做的和我做的还是不太一样，所以没什么太大的启发 AI安全的：分别是国重的侯锐老师做的报告，从体系结构安全出发做的；另一个是国重的孟国柱老师的报告，介绍的他的博士何英哲的3篇文章（英文版综述发在了TSE 2020，2021发了一篇Usenix Security,提出在做黑盒攻击时的数据约减技术，还有篇在arxiv上是做验证数据删除的） 对我比较有价值的一张slides是划分了AI中可以做的方向，这里简单写一下，和我前期自行总结的也差不多：</p>
 <ul>
-<li>黑盒攻击<ul>
+<li>黑盒攻击
+<ul>
 <li>不是完全黑盒</li>
 <li>交互限制</li>
-<li>防御措施 </li>
-</ul>
-</li>
-<li>隐私保护<ul>
+<li>防御措施</li>
+</ul></li>
+<li>隐私保护
+<ul>
 <li>用户隐私保护（GDPR）</li>
 <li>联邦学习安全</li>
 <li>数据、模型水印</li>
-</ul>
-</li>
-<li>系统的安全实现<ul>
+</ul></li>
+<li>系统的安全实现
+<ul>
 <li>系统漏洞（溢出等）</li>
 <li>部署（Quantization）</li>
-</ul>
-</li>
-<li>模型可解释性<ul>
+</ul></li>
+<li>模型可解释性
+<ul>
 <li>可推理</li>
 <li>可追溯</li>
 <li>可解释</li>
-</ul>
-</li>
-<li>安全防护<ul>
+</ul></li>
+<li>安全防护
+<ul>
 <li>差分隐私、安全多方计算</li>
 <li>后门模式检测</li>
 <li>模型加固</li>
-</ul>
-</li>
-<li>人工智能伦理问题<ul>
+</ul></li>
+<li>人工智能伦理问题
+<ul>
 <li>性别、人种歧视</li>
 <li>安全事故追责</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h3 id="8"><a href="#8" class="headerlink" title="8."></a>8.</h3><p>涨知识系列：武大傅建明老师的安卓应用层虚拟化恶意代码分析；南科大张殷乾老师报告的AMD SEV安全、国重雷灵光老师报告的在TEE下的cache中间人攻击、阿里的蒸米报告的mac上的漏洞（完全听不懂），etc.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/08/second/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yale's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/08/second/" itemprop="url">second</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-06-08T14:32:35+08:00">
-                2021-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="fr"><a href="#fr" class="headerlink" title="fr"></a>fr</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/08/demo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yale's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/08/demo/" itemprop="url">demo</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-06-08T13:58:30+08:00">
-                2021-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="just-for-fun"><a href="#just-for-fun" class="headerlink" title="just for fun"></a>just for fun</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/08/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yale's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/06/08/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-06-08T13:30:17+08:00">
-                2021-06-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<h3 id="section-1">8.</h3>
+<p>涨知识系列：武大傅建明老师的安卓应用层虚拟化恶意代码分析；南科大张殷乾老师报告的AMD SEV安全、国重雷灵光老师报告的在TEE下的cache中间人攻击、阿里的蒸米报告的mac上的漏洞（完全听不懂），etc.</p>
 
           
         
@@ -1020,7 +958,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1262,6 +1200,28 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
 
   
 
