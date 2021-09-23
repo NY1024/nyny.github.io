@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Abstract DNN容易受到对抗攻击，也容易受到厚么攻击，这两类攻击之间的相互作用还没有被仔细研究。 本文通过实验研究对抗攻击对抗性和后门攻击鲁棒性之间是否会相互影响，并且证明，当网络对对抗攻击更具鲁棒性时，会更容易受到后门攻击，并分析了原因，介绍如何利用这种trade-off。 该研究表明未来的防御研究应该在设计算法或者鲁棒性时需要同时考虑对抗攻击、后门攻击，以避免虚假的安全感。 Intro">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Yale&#39;s blog">
+<meta property="og:url" content="http://example.com/2021/09/23/1OnTheTradeOff-NeurIPS2020/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="Abstract DNN容易受到对抗攻击，也容易受到厚么攻击，这两类攻击之间的相互作用还没有被仔细研究。 本文通过实验研究对抗攻击对抗性和后门攻击鲁棒性之间是否会相互影响，并且证明，当网络对对抗攻击更具鲁棒性时，会更容易受到后门攻击，并分析了原因，介绍如何利用这种trade-off。 该研究表明未来的防御研究应该在设计算法或者鲁棒性时需要同时考虑对抗攻击、后门攻击，以避免虚假的安全感。 Intro">
+<meta property="og:locale">
+<meta property="og:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923152143824.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923153432302.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923153637046.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923154722102.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923154835468.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923161555316.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923160240720.png">
+<meta property="article:published_time" content="2021-09-23T06:51:05.216Z">
+<meta property="article:modified_time" content="2021-09-23T13:34:36.187Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923152143824.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/09/23/1OnTheTradeOff-NeurIPS2020/"/>
+
+
+
+
+
+  <title> | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/23/1OnTheTradeOff-NeurIPS2020/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-09-23T14:51:05+08:00">
+                2021-09-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="abstract">Abstract</h1>
+<p>DNN容易受到对抗攻击，也容易受到厚么攻击，这两类攻击之间的相互作用还没有被仔细研究。</p>
+<p>本文通过实验研究对抗攻击对抗性和后门攻击鲁棒性之间是否会相互影响，并且证明，当网络对对抗攻击更具鲁棒性时，会更容易受到后门攻击，并分析了原因，介绍如何利用这种trade-off。</p>
+<p>该研究表明未来的防御研究应该在设计算法或者鲁棒性时需要同时考虑对抗攻击、后门攻击，以避免虚假的安全感。</p>
+<h1 id="introduction">Introduction</h1>
+<p>应对对抗攻击的方案可以分为两类：基于经验的和基于实证的，对应着理论上的certified robustness,adversarial training</p>
+<p>分别有：</p>
+<p>[2,3,8,10–13,15,21,28,35,40–43]</p>
+<p>[14,17,19,20,24,26,29,32,44]</p>
+<p>应对后门攻击的方案可以作者没有归类，因为写本文的时候应在18，19年，但是后门攻击刚起来，对应的防御方案不多，作者举例子包括在训练前检测和删除毒化数据[6,36]，或者在训练后对模型进行微调以消除后门[30,39] 当时这些防御方案都是只针对一种类型的攻击设计的，对抗攻击和后门攻击之间的相互作用还没有被研究过。</p>
+<p>对于攻击者可以同时操纵训练数据、测试数据的情况，了解两者之间的相互作用是至关重要的。</p>
+<p>本文通过实验研究对抗鲁棒性和后门鲁棒性之间的相互影响</p>
+<h1 id="related-works">Related works</h1>
+<p>这里分别对对抗攻击和后门攻击做了简介。</p>
+<p>作者这里提到的后门攻击是指通过数据投毒实现的后门攻击。这类后门攻击攻击有两种类型：dirty-label,clean-label，攻击者更喜欢后者，因为后者的标签是正确的，因此毒化数据更难被检测，但是clean-label攻击中的触发器在测试阶段要被添加到测试样本上，所以当前该类攻击都假设模型是由攻击者训练出来的，或者有个辅助模型，能够指出模型将会学习哪些特征并使用这些特征去增强触发器。</p>
+<p>后门攻击的防御可以分为训练前防御和训练后防御，在训练后防御中，对已经植入后门的模型的潜在的触发器进行逆向工程，然后使用新创建的数据集对模型进行微调，在微调过程中，模型会发现触发器对做出正确预测毫无用户，于是就“忘记”了后门。</p>
+<p>同时考虑两类攻击的工作还有【27】，【33】，前者指出数据投毒也可以用于降低模型的对抗鲁棒性，后者使用后门技术搭建蜜罐用于检测对抗攻击。</p>
+<h1 id="the-trade-off-and-its-cause">The trade off and its cause</h1>
+<p>对抗鲁棒性和后门鲁棒性不能同时轻易实现，因为存在trade-off</p>
+<h2 id="experiments">Experiments</h2>
+<p>分别在MNIST,CIFAR10，ImageNet上实验。</p>
+<p>首先使用常规训练和对抗训练对相同架构进行实验，并比较其鲁棒性</p>
+<p>为了评估模型的后门鲁棒性，作者设计了一种新的clean-label attack.（感觉就是普通的数据投毒攻击，根本不算clean-label）</p>
+<p>评估指标：良性测试集上的准确性、对抗鲁棒性（PGD生成的对抗样本数据集上的准确性）、后门攻击的成功率(全部毒化测试样本中被模型分类到目标类的比率)</p>
+<p>结果如下</p>
+<figure>
+<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923152143824.png" alt="image-20210923152143824" /><figcaption aria-hidden="true">image-20210923152143824</figcaption>
+</figure>
+<p>对比标准训练和对抗训练所在的行，可以看到提高对抗鲁棒性的同时降低了后门鲁棒性</p>
+<p>除了对抗训练之外，还测试了另外两种对抗防御措施，即Lipschitz正则化[17]和特征去噪层[44]</p>
+<p>从上图中可以看到，单独应用时无效，和对抗训练配合时才有效</p>
+<p>另外对certified robustness defense做了实验，由于其不能扩展到非常深的网络和大型数据集，所以没有ImagetNet的</p>
+<figure>
+<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923153432302.png" alt="image-20210923153432302" /><figcaption aria-hidden="true">image-20210923153432302</figcaption>
+</figure>
+<p><strong>the cause</strong></p>
+<p>为了理解为什么对抗鲁棒模型更容易受到后门攻击，作者使用了可视化技术研究模型学到了什么</p>
+<figure>
+<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923153637046.png" alt="image-20210923153637046" /><figcaption aria-hidden="true">image-20210923153637046</figcaption>
+</figure>
+<p>从salience map（模型预测相对于输入的梯度）可以看到：</p>
+<p>根据b,c的左图，对抗训练的网络更依赖于与人类感知一致的高级特征进行预测(这和已有的工作[18,37]一致，即对抗样本之所以会被误分类是因为他们存在非鲁棒特征（即具有高度预测性，但是难以理解的特征）)，由于对抗训练得到的网络更依赖鲁棒的、高层次的特征进行预测，所以它也倾向于从后门触发器的特征进行学习，因为触发器提供了鲁棒特征，这些特征本身就是被制作为与目标类别强相关的</p>
+<h1 id="exploting-the-trade-off">Exploting the trade-off</h1>
+<p>作者研究了触发器的其他变量，包括trigger type,trigger size,poisoned data rate,trigger position</p>
+<p>trigger type的话除了上一节直接叠加的，这里作者叫做sticker（一些文献也叫做patch），还引入了两种：watermark和channel，前者就是水印，后者则是将特定区域的像素的的蓝色channel置零</p>
+<p>对应的毒化样本如下</p>
+<figure>
+<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923154722102.png" alt="image-20210923154722102" /><figcaption aria-hidden="true">image-20210923154722102</figcaption>
+</figure>
+<p>结果如下</p>
+<figure>
+<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923154835468.png" alt="image-20210923154835468" /><figcaption aria-hidden="true">image-20210923154835468</figcaption>
+</figure>
+<p>由于对抗鲁棒性变化不大，表中就没列出来，从表中可知</p>
+<p>即使将trigger size变小，后门攻击成功率依旧超过0.5，其他结论也都显而易见</p>
+<p>接下来检测后门攻击的防御方案[6,36,39]是否可以检测作者的方案，不过[6,36]在对抗训练得到的网络中无法防御后门攻击，这不意味着防御方案被绕过了，而是因为它们不适用于对抗鲁棒模型，整体的测试结果如下,其中a,b，c顺序对应接下来介绍的三类防御方案</p>
+<figure>
+<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923161555316.png" alt="image-20210923161555316" /><figcaption aria-hidden="true">image-20210923161555316</figcaption>
+</figure>
+<p>根据模型在预测毒化测试样本和良性测试样本时的不同行为，我们可以猜测，可能神经网络中一些神经元被触发器特征激活，一些神经元被正常特征激活，因此，两类样本的神经元激活分布可能是不同的，所以可以通过检查激活来检测毒化测试样本</p>
+<p><strong>Spectral signature</strong></p>
+<p>该方案使用所有的样本训练一个辅助网络，假设目标类别已知，防御方案：1.为每个目标类别的样本计算辅助网络中的隐层上的神经元的激活向量；2.通过独立成分分析Independent component analysis(ICA)从每个激活向量中提取spectral signature；3.将sepctral siganature最远离“center（所有spectral signature的平均）”的样本识别为毒化样本.然后最终的模型使用移除毒化样本后的数据集进行训练</p>
+<p><strong>Activation clustering</strong></p>
+<p>根据激活空间中的相似性度量将样本分为两组，然后删除被人类或算法认为可以的组，接着删除在ground truth中有更多毒化样本的group实现防御。面对clean-label时，由于此时的毒化样本和良性样本非常相似，可以轻而易举逃避检测，此外存在许多误报，减少了目标类中良性样本的数量，造成数据不平衡。</p>
+<p>我们发现这种trade-off增强了neural cleanse的防御效果</p>
+<p>该方案是从毒化模型中逆向得到触发器，并将触发器加到各类样本上，对模型进行微调，从而让模型认为触发器特征是没用的。该方案对于正常训练的模型是无效的，因为不能通过逆向工程得到复杂的触发器，但是该方案对于对抗模型效果更佳，示意如下</p>
+<figure>
+<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923160240720.png" alt="image-20210923160240720" /><figcaption aria-hidden="true">image-20210923160240720</figcaption>
+</figure>
+<p>这似乎表明，对抗训练+neural cleanse可以同时提高对抗鲁棒性和后门鲁棒性</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/09/21/fooling-lime-and-shap/" rel="next" title="Fooling-Lime-and-Shap:Arxiv阅读笔记">
+                <i class="fa fa-chevron-left"></i> Fooling-Lime-and-Shap:Arxiv阅读笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/09/23/1Privacy-Risks-of-Securing-Machine-Learning-Models-against-Adversarial-Examples-CCS2019/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">2.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#related-works"><span class="nav-number">3.</span> <span class="nav-text">Related works</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#the-trade-off-and-its-cause"><span class="nav-number">4.</span> <span class="nav-text">The trade off and its cause</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments"><span class="nav-number">4.1.</span> <span class="nav-text">Experiments</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#exploting-the-trade-off"><span class="nav-number">5.</span> <span class="nav-text">Exploting the trade-off</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
