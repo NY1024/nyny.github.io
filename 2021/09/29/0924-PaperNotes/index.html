@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="What Doesn’t Kill You Makes You Robust(er)- Adversarial Training against Poisons and Backdoors-Arxiv2021 目前对数据投毒的防御容易被各种自适应攻击adaptive attack绕过，这些防御方案要么会降低测试性能，要么无法推广到各种数据投毒威胁模型。对抗训练及其变体，目前被认为是对抗攻击经验防御">
+<meta property="og:type" content="article">
+<meta property="og:title" content="0924_PaperNotes">
+<meta property="og:url" content="http://example.com/2021/09/29/0924-PaperNotes/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="What Doesn’t Kill You Makes You Robust(er)- Adversarial Training against Poisons and Backdoors-Arxiv2021 目前对数据投毒的防御容易被各种自适应攻击adaptive attack绕过，这些防御方案要么会降低测试性能，要么无法推广到各种数据投毒威胁模型。对抗训练及其变体，目前被认为是对抗攻击经验防御">
+<meta property="og:locale">
+<meta property="og:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/29/0924-PaperNotes/image-20210924110914693.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/29/0924-PaperNotes/image-20210924134126238.png">
+<meta property="article:published_time" content="2021-09-29T12:49:34.000Z">
+<meta property="article:modified_time" content="2021-09-29T12:58:31.690Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/NY1024/images/master/2021/09/29/0924-PaperNotes/image-20210924110914693.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/09/29/0924-PaperNotes/"/>
+
+
+
+
+
+  <title>0924_PaperNotes | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/29/0924-PaperNotes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">0924_PaperNotes</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-09-29T20:49:34+08:00">
+                2021-09-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/AI/" itemprop="url" rel="index">
+                    <span itemprop="name">AI</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="what-doesnt-kill-you-makes-you-robuster--adversarial-training-against-poisons-and-backdoors-arxiv2021">What Doesn’t Kill You Makes You Robust(er)- Adversarial Training against Poisons and Backdoors-Arxiv2021</h1>
+<p>目前对数据投毒的防御容易被各种自适应攻击adaptive attack绕过，这些防御方案要么会降低测试性能，要么无法推广到各种数据投毒威胁模型。对抗训练及其变体，目前被认为是对抗攻击经验防御中最有效的防御方案。本文用对抗训练来防御数据投毒和后门攻击。在训练期间生成毒化样本，使网络对毒化样本不再敏感，并将其注入training batch中。成功防御了feature collisons,gradient matching,backdoor triggers和hidden trigger backdoors。</p>
+<p>现有的防御方案有三个主要缺点：</p>
+<p>1.为了获得鲁棒性，在test accuracy上做了权衡，这对于现实世界中的用户是难以接受的</p>
+<p>2.只对特定攻击方案有效，对于专门设计规避该方案的adaptive attack无效</p>
+<p>3.没有一个普遍适用的框架</p>
+<p>作者提出了训练对抗的变种，使用对抗性毒化数据来代替对抗样本。该方案不仅提高了鲁棒性和准确率，同时可以防御各类投毒攻击和后门攻击。</p>
+<p>对抗训练使用实时制作的对抗样本来增强训练数据，使神经网络对测试阶段输入的对抗扰动脱敏，类似地，作者修改训练数据，使神经网络对毒化数据引起的扰动不敏感。但是该方案有其他需要考虑的地方，比如为了模拟定向数据投毒，我们必须决定在训练期间如何选择target。</p>
+<p>数据投毒影响可用性，后门攻击影响完整性。</p>
+<p>本文关注完整性的攻击。</p>
+<p>可用性攻击，在部署阶段就能会检测，而完整性攻击则在模型中植入不容易被检测到的后门，在被部署后被攻击。</p>
+<p>完整性攻击可以根据触发机制的性质trigger mechanism进一步分类：</p>
+<p>1.backdoor trigger attacks：攻击由特定的触发器pattern或patch触发，只要将其在测试阶段添加到测试样本即可</p>
+<p>2.targeted data poisoning:攻击由预定先的trageted image触发。</p>
+<p>相比而言，前者可以应用于大量的target images,但是需要在推理期间对测试样本进行修改，而后者只能被特定的、但是不需修改的target激活</p>
+<p>攻击也可以根据它们预期受害者使用的精确的training setup来分类，一些攻击假设受害者只会在毒化数据上fine-tune它们的模型，或者会在预训练的feature extractor上训练一个线性分类器。还有些攻击假设受害者在毒化数据上从头开始训练模型。一般而言，受害者的训练流程越简单，攻击者的工作就越容易。</p>
+<p>数据毒化攻击的防御方案可以大体上分为：</p>
+<p>Filter defense:试图检测、删除或者净化恶意的训练数据</p>
+<p>robust training:使用一个训练过程，即使在毒化数据上也能训练出鲁棒模型</p>
+<p>model repair:在毒化数据上训练模型，并在训练完成后修复模型</p>
+<p>第一种容易部署因为只需要简单加一个预处理步骤，但是需要大量的超参数调优，并且依赖于假设“只有一小部分数据集被污染”，此外该方案也可以被adaptive attack绕过；此外在移除恶意数据后只能在少量数据上进行训练，所以降低模型的性能</p>
+<p>......</p>
+<h1 id="a-synergetic-attack-against-neural-network-classifiers-combining-backdoor-and-adversarial-examplesarxiv">A Synergetic Attack against Neural Network Classifiers combining Backdoor and Adversarial Examples（Arxiv）</h1>
+<p>是<strong>TROJANS AND ADVERSARIAL EXAMPLES: A LETHAL COMBINATION</strong>修改后的版本</p>
+<p>同时结合对抗攻击和后门攻击，实现所谓的AdvTrojan，其具有较好的隐蔽性，因为只有满足以下情况才能被激活：1.在推理阶段，在输入样本中注入特定的对抗性扰动(对抗扰动+后门触发器)；2.在训练阶段，植入后门。</p>
+<p>如果在推理阶段，只有单独的对抗扰动或者单独的触发器时是不会导致误分类的。相当于，触发器将样本推到输入空间中靠近模型决策边界的任意位置，然后加上对抗扰动，将样本推到决策边界另一边，实现攻击。</p>
+<h1 id="advdoor-adversarial-backdoor-attack-of-deep-learning-systemissta2021">AdvDoor: Adversarial Backdoor Attack of Deep Learning System（ISSTA2021)</h1>
+<p>现有的后门攻击使用patch来毒化数据，容易被检测，本文利用定向通用对抗扰动(targeted universial adversarial perturbation)作为触发器，该方法可以利用<strong>训练数据的分布降低异常</strong>（如下图所示）并混淆现有的检测方法。改进现有的对抗攻击方法生成TUAP，并通过数据投毒构建毒化模型</p>
+<figure>
+<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/29/0924-PaperNotes/image-20210924110914693.png" alt="image-20210924110914693" /><figcaption aria-hidden="true">image-20210924110914693</figcaption>
+</figure>
+<p>现有的攻击使用patch trigger,但是它们与数据或者attack class无关，添加这种触发器可能会导致数据分布异常，如上图b。patch trigger 不会影响source class的样本的关键特征，因此DNN在识别source class时仍保持高置信度，在DNN看来，此时的毒化数据仍然是远离target class的分类区域的，所以需要改变决策边界来拟合，这就会导致DNN的决策边界与之前的边界显著不同，而作者设计的触发器，可以缩短毒化数据与target class区域间的距离，减少数据集分布的异常，而对抗攻击可以将样本从原始分类区域移动到目标分类区域，扰动较小，所以可以用对抗攻击技术实现该目标。使用对抗攻击生成的TUAP作为触发器，此时的毒化数据可以接近或者跨越source class和target class之间的决策边界，如图a中的红点所示，当在这些数据集上进行训练时，决策边界需要调整的幅度更少，由此降低了异常。与patch trigger相比，TUAP是利用数据集的信息生成的，可以将有毒数据伪装成正常数据，现有的后门攻击防御方案很难检测。</p>
+<p>那么现在还有个问题，现有的对抗攻击技术生成的扰动是特定于输入的，而后门攻击需要有一个固定的触发器，或者说一个固定的扰动。<strong>对现有的方法改进后就可以生成通用扰动</strong>。DNN倾向于学习一个class的通用特征，而通用扰动攻击这些特征，从而可以在大多数使用同样的一个扰动就实现误分类。</p>
+<h1 id="adversarial-examples-are-useful-tooarriv2020">Adversarial examples are useful too!(Arriv2020)</h1>
+<p>使用对抗样本检测后门攻击</p>
+<p>使用FGSM等方案生成对抗样本，输入份额利器，通过计算不同类别图像的统计数据，将结果与参考模型reference model进行比较，就可能在视觉上定位受到扰动的区域并检测到攻击。</p>
+<p>面临的问题是给定一个模型，怎么判断该模型是否有后门，作者的想法是：为毒化模型和原模型生成的对抗样本是不同的，利用这种差异就可以检测。</p>
+<p>作者向模型输入空白图像、白噪声等图像，然后使用FGSM生对抗样本，然后计算被分类为某一类的对抗样本的平均值，进行比较，即使在MNIST上，对average adversarial images(bias maps）进行视觉检查也足以发现攻击了。</p>
+<figure>
+<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/29/0924-PaperNotes/image-20210924134126238.png" alt="image-20210924134126238" /><figcaption aria-hidden="true">image-20210924134126238</figcaption>
+</figure>
+<p>个人感觉不太靠谱，作者也没有给出理论解释。</p>
+<h1 id="rab-provable-robustness-against-backdoor-attacksarxiv-2021">RAB: Provable Robustness Against Backdoor Attacks(arxiv 2021)</h1>
+<p>在对抗攻击的防御方面，无论是empirical 还是provable robustness都有很多人研究，但是在后门攻击领域，还没有研究provable robustness的，本文首次提出统一框架进行鲁棒性验证，并且为后门攻击提出了严格的鲁棒性条件。并提出了第一个鲁棒训练过程，以平滑训练后的模型，并验证了其在面临后门攻击时的鲁棒性</p>
+<p>这里需要搞清楚两点：</p>
+<p>1.随机平滑是怎么提升模型鲁棒性的；</p>
+<p>2.后门攻击的鲁棒性如何定义</p>
+<p>对于第1点：</p>
+<p>Cohen等人提出以高斯噪声平滑在<span class="math inline">\(l_2\)</span>范数下的强鲁棒性保证。在高层次上，随机平滑策略提供了一种方式验证一个平滑的分类器在测试阶段面对对抗样本的鲁棒性。首先给定一个平滑处理过的分类器（通过在每个测试样本周围添加高斯噪声；2.然后就可以得到top-1类pa的置信下界，和top-2类pb的置信上界之间的分类差距。对于每个测试样本，平滑后的分类器可以保证在扰动半径内提供一致的预测。</p>
+<p>不过该方案没有关注后门攻击的鲁棒性，本文的目标是提供一个函数平滑框架来证明对抗攻击和后门攻击的鲁棒性，目前的方案是在测试样本层面增加噪声推导平滑，而作者提出的框架推广到分类器层面的平滑</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/09/23/OnTheTradeOff-NeurIPS2020/" rel="next" title="OnTheTradeOff-NeurIPS2020">
+                <i class="fa fa-chevron-left"></i> OnTheTradeOff-NeurIPS2020
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#what-doesnt-kill-you-makes-you-robuster--adversarial-training-against-poisons-and-backdoors-arxiv2021"><span class="nav-number">1.</span> <span class="nav-text">What Doesn’t Kill You Makes You Robust(er)- Adversarial Training against Poisons and Backdoors-Arxiv2021</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#a-synergetic-attack-against-neural-network-classifiers-combining-backdoor-and-adversarial-examplesarxiv"><span class="nav-number">2.</span> <span class="nav-text">A Synergetic Attack against Neural Network Classifiers combining Backdoor and Adversarial Examples（Arxiv）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#advdoor-adversarial-backdoor-attack-of-deep-learning-systemissta2021"><span class="nav-number">3.</span> <span class="nav-text">AdvDoor: Adversarial Backdoor Attack of Deep Learning System（ISSTA2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#adversarial-examples-are-useful-tooarriv2020"><span class="nav-number">4.</span> <span class="nav-text">Adversarial examples are useful too!(Arriv2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rab-provable-robustness-against-backdoor-attacksarxiv-2021"><span class="nav-number">5.</span> <span class="nav-text">RAB: Provable Robustness Against Backdoor Attacks(arxiv 2021)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
