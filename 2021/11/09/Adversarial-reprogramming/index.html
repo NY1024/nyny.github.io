@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言 我们知道深度学习模型容易受到对抗样本攻击，比如在计算机视觉领域，对图像精心设计的扰动可能会导致模型出错。虽然现在对抗样本的研究非常火，但是模型面临的攻击不止有对抗样本攻击。 Goodfellow团队又设计了一种新的攻击范式，叫做adversarial reprogramming，中文可以叫做对抗重编程。这种攻击范式的目标是对目标模型重新编程，以执行攻击者选定的任务，这种攻击的危害的潜在后果包">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Adversarial reprogramming of neural networks(arxiv 2018)">
+<meta property="og:url" content="http://example.com/2021/11/09/Adversarial-reprogramming/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="前言 我们知道深度学习模型容易受到对抗样本攻击，比如在计算机视觉领域，对图像精心设计的扰动可能会导致模型出错。虽然现在对抗样本的研究非常火，但是模型面临的攻击不止有对抗样本攻击。 Goodfellow团队又设计了一种新的攻击范式，叫做adversarial reprogramming，中文可以叫做对抗重编程。这种攻击范式的目标是对目标模型重新编程，以执行攻击者选定的任务，这种攻击的危害的潜在后果包">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109140519009.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109135829200.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109141108913.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109141125492.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109141407277.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109141441549.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109141546084.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109142814714.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109143418685.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109143452744-6439693-6439694.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109143513635.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109144657972.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109144851744.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109144955583.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109145255844.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109161728523.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109155600758.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109155640451.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109154926786.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109161154718.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109155014882.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109155448822.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109155820003.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109155853065.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109160946865.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109161023215.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/2021-11-09_11-12.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/2021-11-09_11-11_2.png">
+<meta property="og:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/2021-11-09_11-11_1.png">
+<meta property="article:published_time" content="2021-11-09T08:06:50.000Z">
+<meta property="article:modified_time" content="2022-03-25T08:15:30.023Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/11/09/Adversarial-reprogramming/image-20211109140519009.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/11/09/Adversarial-reprogramming/"/>
+
+
+
+
+
+  <title>Adversarial reprogramming of neural networks(arxiv 2018) | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/09/Adversarial-reprogramming/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Adversarial reprogramming of neural networks(arxiv 2018)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-11-09T16:06:50+08:00">
+                2021-11-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言">前言</h1>
+<p>我们知道深度学习模型容易受到对抗样本攻击，比如在计算机视觉领域，对图像精心设计的扰动可能会导致模型出错。虽然现在对抗样本的研究非常火，但是模型面临的攻击不止有对抗样本攻击。</p>
+<p>Goodfellow团队又设计了一种新的攻击范式，叫做adversarial reprogramming，中文可以叫做对抗重编程。这种攻击范式的目标是对目标模型重新编程，以执行攻击者选定的任务，这种攻击的危害的潜在后果包括窃取MLaaS的计算资源、将人工智能驱动的智能助手当做间谍或垃圾邮件机器人等等，可以重用预训练好的模型来实现攻击者的对抗任务，既然在原理上已经说明这是可行的，那么之后会发展出什么攻击场景、危害行为都是有可能的。</p>
+<span id="more"></span>
+<h1 id="对抗重编程">对抗重编程</h1>
+<p>先来看看整个对抗重编程的流程</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109140519009.png" class="">
+<p>在a中，我们将imagenet任务的输出标签映射到对抗任务的标签，这里我们给定的对抗任务是计算小图像中的格子数量，所以对抗任务的标签为1~10；在b中，将对抗任务的小图像嵌入到对抗程序的中间，从而得到对抗图像。在c中，当把对抗图像输入分类器时，分类器此时会输出标签tiger shark,ostrich等，不过由于有hf函数的存在，他们会被映射到对应的4,10等。经过这一套流程，我们对一个在imagenet上训练的分类模型进行了对抗重编程攻击，使它的任务变为数格子。</p>
+<h1 id="原理">原理</h1>
+<p>我们设一个经过训练的模型，其原本的任务是，给定输入x，会得到输出f(x)</p>
+<p>现在有一个攻击者，其对抗任务是对于给定的输入x<sub>，会得到输出g(x</sub>),这里x~和x不一定需要是同域的。</p>
+<p>这看起来是不可行的，但是攻击者通过学习对抗重编程函数hf(.;θ)和hg(.;θ)来实现这两个任务之间的映射。</p>
+<p>hf(.;θ)用于将输入从x<sub>所在的域转换到x所在的域，也就是说，经过hf的处理后得到的hf(x</sub>;θ)对于f而言是有效的输入；而hg则将f的输出f(h(x<sub>;θ))映射会g(x</sub>)的输出。这里对抗程序的参数θ会被调整以满足:</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109135829200.png" class="">
+<p>这里为了简单起见，我们将x~定义为小图像，g为处理小图像的函数，x为大图像，f为处理大图像的函数。hf函数的作用则是在大图像的中心进行修改，hg则是在输出标签之间一个简单的硬编码的映射函数。事实上，hf (hg)可以是任何一致的转换，在两个任务的输入(输出)格式之间转换，并让模型执行对抗任务。</p>
+<p>在整个攻击中，我们将对抗程序定义为:</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109141108913.png" class="">
+<p>其中</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109141125492.png" class="">
+<p>是需要学习的对抗程序参数，n是imagenet图像的宽，M是掩码矩阵，对于对抗任务对应的对抗数据的图像位置的值为0，否则为1</p>
+<p>上面的式子中我们用了tanh，这是为了将对抗扰动限定在(-1,1)范围内，这与目标模型训练分类的重缩放后的ImageNet图像相同</p>
+<p>设</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109141407277.png" class="">
+<p>是我们执行对抗任务所用的样本，其中k&lt;n</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109141441549.png" class="">
+<p>则是和Imagenet图像同样大小的图像，x~被放置在了通过M定义的合适的区域。</p>
+<p>所以对应的对抗图像为：</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109141546084.png" class="">
+<p>设P (y|X)为目标模型给定输入图像X，ImageNet图像的标签y∈{1，…， 1000}。我们定义一个硬编码的映射函数hg (yadv)，它将一个标签从一个对抗任务yadv映射到一组ImageNet标签。例如，如果一个对抗任务有10个不同的类(yadv∈{1，…10},hg(·)可以定义为将ImageNet的前10个类、任何其他10个类或多个ImageNet类映射给对抗标签。</p>
+<p>因此，我们的对抗目标是使P (hg (yadv)|Xadv)的概率最大化。我们把最优化问题设为</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109142814714.png" class="">
+<p>其中λ是权重范数惩罚项的系数，以减少过拟合。用Adam优化器优化损失。</p>
+<p>注意，优化之后，对抗程序对于攻击者而言有最小的对抗损失，因为它只需要计算Xadv，并将得到的ImageNet标签映射到正确的类标签。换句话说，在推理过程中，攻击者只需要存储程序并将其添加到数据中，从而将大部分计算留给目标模型。</p>
+<p>这里还有一种需要注意的是，这种攻击方式必须要利用目标模型的非线性行为，这和传统的对抗样本的攻击不同，它们是基于对模型的线性逼近，从而造成高的错误率。假设存在一个线性模型，它接收输入x~以及连接到单个向量x的θ ：</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109143418685.png" class="">
+<p>假设线性模型的权重分为两部分，即：</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109143452744-6439693-6439694.png" class="">
+<p>则模型的输出为：</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109143513635.png" class="">
+<p>从上式可以看到，对抗程序θ对偏置起作用，但是却没用应用于x~的权重。</p>
+<p>因此，对抗程序θ可以使模型始终输出一类或另一类，但不能改变输入x的处理方式。为了实现对抗性重编程，模型必须存在x̃和θ之间的非线性相互作用。而非线性的深度学习模型恰好满足这一点。</p>
+<h1 id="实验分析">实验分析</h1>
+<p>这里为了验证对抗重编程是可行的，设计了三种对抗任务，分别是数格子、MNIST分类和CIFAR10分类</p>
+<p>数格子：</p>
+<p>正如在对抗重编程的流程图中看到的一样，生成了尺寸为36 × 36 × 3的图像(x̃)，其中包括9 × 9个带有黑色框架的白色方块。每个正方形可以出现在图像中的16个不同的位置，正方形的数量从1到10。这些方块被随机放置在网格点上。我们将这些图像嵌入到一个对抗程序，得到的图像(Xadv)大小为299 × 299 × 3，中间的方格为36 × 36 × 3。我们为每个ImageNet模型训练一个对抗程序，使前10个ImageNet标签代表每幅图像中的正方形数量。注意，在ImageNet中使用的标签与新的对抗性任务的标签没有关系。例如，“White shark”与图像中的3个方块数无关，而“Ostrich”与10个方块一点也不相似。</p>
+<p>MNIST分类：</p>
+<p>与数格子任务类似，将大小为28 × 28 × 3的MNIST数字嵌入到对抗程序中，我们将前10个ImageNet标签分配给MNIST数字，并为每个ImageNet模型训练一个对抗程序。下图是应用于每个网络的对抗程序的示例。</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109144657972.png" class="">
+<p>CIFAR-10分类：</p>
+<p>CIFAR10的处理也与MNIST类似，一些对抗图像的实例如下</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109144851744.png" class="">
+<p>我们也可以很直观地看到三个任务对于每个模型训练后生成的对抗程序</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109144955583.png" class="">
+<p>实验结果总结在表格里了：</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109145255844.png" class="">
+<p>表中第二类是数格子、第三列是MNIST分类，第四列是CIFAR10分类，可以看出对抗重编程的攻击效果还是非常好的。</p>
+<h1 id="实验复现">实验复现</h1>
+<p>为了直观的理解，会在解释代码的同时打印出对应的变量</p>
+<p>相关配置文件</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109161728523.png" class="">
+<p>这里的h1,w1是大图像，即imagenet图像的尺寸，h2,w2是对抗任务所用的小图像的尺寸。</p>
+<p>初始化掩码，即前面提到的M</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109155600758.png" class="">
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109155640451.png" class="">
+<p>使用imagenet标签的前10个作为对抗任务的标签</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109154926786.png" class="">
+<p>最关键的是compute_loss函数以及forward函数</p>
+<p>compute_loss函数如下</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109161154718.png" class="">
+<p>正如前面提到的，这里的损失由两项组成，第一项是正常训练损失，第二项是权重惩罚项，这里用的是l2范数，lmd是系数，已经在配置文件中定义了</p>
+<p>forward函数如下</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109155014882.png" class="">
+<p>为了方便理解，我们一步步打印出看看</p>
+<p>首先是image，也是论文中提到的x~</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109155448822.png" class="">
+<p>论文中的X通过代码实现的：</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109155820003.png" class="">
+<p>在目标模型上生成的对抗程序，即P</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109155853065.png" class="">
+<p>X+P得到对抗图像</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109160946865.png" class="">
+<p>训练函数</p>
+<img src="/2021/11/09/Adversarial-reprogramming/image-20211109161023215.png" class="">
+<p>可以看到self.out是由self.forward返回的，这里就是训练部分。</p>
+<p>训练过程运行如图</p>
+<img src="/2021/11/09/Adversarial-reprogramming/2021-11-09_11-12.png" class="">
+<p>我们先来看看在原模型上进行测试时的效果</p>
+<img src="/2021/11/09/Adversarial-reprogramming/2021-11-09_11-11_2.png" class="">
+<p>然后是在训练后的模型上测试的效果</p>
+<img src="/2021/11/09/Adversarial-reprogramming/2021-11-09_11-11_1.png" class="">
+<p>可以看到确实成功率提高了不少。</p>
+<p>这里的对抗重编程攻击针对的还只是计算机视觉的分类任务，在其他领域的也有研究人员进行了分析，包括参考文献中的2.3对自然语言处理中的应用进行了研究。此外还有研究人员详细分析了对抗重编程可以成功进行攻击的条件以及背后的原因，详见参考文献4.</p>
+<h1 id="参考">参考</h1>
+<p>1.Elsayed G F, Goodfellow I, Sohl-Dickstein J. Adversarial reprogramming of neural networks[J]. arXiv preprint arXiv:1806.11146, 2018.</p>
+<p>2.Neekhara P, Hussain S, Dubnov S, et al. Adversarial reprogramming of text classification neural networks[J]. arXiv preprint arXiv:1809.01829, 2018.</p>
+<p>3.Hambardzumyan K, Khachatrian H, May J. Warp: Word-level adversarial reprogramming[J]. arXiv preprint arXiv:2101.00121, 2021.</p>
+<p>4.Zheng Y, Feng X, Xia Z, et al. Why Adversarial Reprogramming Works, When It Fails, and How to Tell the Difference[J]. arXiv preprint arXiv:2108.11673, 2021.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/10/13/NeuralCleanse/" rel="next" title="Neural_Cleanse_S&P2019">
+                <i class="fa fa-chevron-left"></i> Neural_Cleanse_S&P2019
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/03/25/Expert/" rel="prev" title="Think Like an Amateur, Do As an Expert">
+                Think Like an Amateur, Do As an Expert <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E6%8A%97%E9%87%8D%E7%BC%96%E7%A8%8B"><span class="nav-number">2.</span> <span class="nav-text">对抗重编程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">实验分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%A4%8D%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">实验复现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
