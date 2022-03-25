@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Interpretability-Guided Defense against Backdoor Attacks to Deep Neural Networks（IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 2021） 这篇文章是检测样本是否为毒化样本的 作者使用控制门策略来获得神经网络的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="211010_PaperNotes">
+<meta property="og:url" content="http://example.com/2021/10/10/1010-PaperNotes/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="Interpretability-Guided Defense against Backdoor Attacks to Deep Neural Networks（IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 2021） 这篇文章是检测样本是否为毒化样本的 作者使用控制门策略来获得神经网络的">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012131705347.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012132933071.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012134439632.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012135351581.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012141459942.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012144205525.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012144939337.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012145613223.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012154201489.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012160210689.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012161238572.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012161642305.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012162327678.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012162811788.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012164618957.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012165539644.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012183523064.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012184813177.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211013083632218.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211013090607698.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211014133821954.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211014132434048.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211014133608424.png">
+<meta property="og:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211014140943544.png">
+<meta property="article:published_time" content="2021-10-10T02:49:58.000Z">
+<meta property="article:modified_time" content="2022-03-25T02:59:23.716Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/10/10/1010-PaperNotes/image-20211012131705347.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/10/10/1010-PaperNotes/"/>
+
+
+
+
+
+  <title>211010_PaperNotes | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/10/1010-PaperNotes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">211010_PaperNotes</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-10-10T10:49:58+08:00">
+                2021-10-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="interpretability-guided-defense-against-backdoor-attacks-to-deep-neural-networksieee-transactions-on-computer-aided-design-of-integrated-circuits-and-systems-2021">Interpretability-Guided Defense against Backdoor Attacks to Deep Neural Networks（IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 2021）</h1>
+<p>这篇文章是检测样本是否为毒化样本的</p>
+<p>作者使用控制门策略来获得神经网络的关键激活分布，利用目标类与正常类的关键激活分布差异：目标类的关键激活神经元比正常类在低激活和高激活频率的多，利用这一特性，作者开发了异常指数来识别是否被后门攻击，具体是计算在关键神经元在低激活分布上的相关性差异。其次是在高激活频率的神经元上计算离散度，来识别异常神经元，并运用剪枝策略，修剪高激活频率的异常神经元，来达到阻断后门传播的目的。</p>
+<p>当给定一组样本后，计算关键神经元上的激活频率分布，并通过检测异常神经元来识别后门攻击，之后通过神经元剪枝实现模型的修复</p>
+<span id="more"></span>
+<h1 id="demon-in-the-variant-statistical-analysis-of-dnns-for-robust-backdoor-contamination-detectionusenix-securtiy-2021">Demon in the Variant: Statistical Analysis of DNNs for Robust Backdoor Contamination Detection（USENIX Securtiy 2021)</h1>
+<p>对全局信息进行统计分析以实现防御：利用EM算法将图像分解为主体部分(如人物)和变化部分(如姿势)，然后基于所有类的全局信息，这些变量的分布被用于似然比测试，以分析每个类别的表示，确定更有可能是毒化样本的特征。总的来说，就是利用全局信息检测毒化样本引入的每一类的表示的不一致性</p>
+<p>目标是从模型对实例的分类结果中判断模型是否被后门感染，如果是，找出哪些类被感染；此外还可以在MLaaS中检测出毒化样本</p>
+<p>防御者能力：可以访问数据和目标模型，以及输入x的表征R(x),</p>
+<p>防御者知识：防御者有模型提供者交付的少量干净的数据集和，用于测试模型的性能</p>
+<p>通过传统的数据污染方法创建的后门是不分source的，其特点是攻击图像的独特表示，这主要是由触发器决定的，与其他图像内容无关，并与正常图像的表示有明显区别，受感染的模型将目标层分配给携带触发器的图像，不管它们来自哪个类别。</p>
+<p>这里可见作者是特地区分了两种类型的后门攻击，一种后门攻击是不论源类是什么，只要有触发器，就能将分类到目标类别；另一种是只有特定的源类图像+触发器，才会被误分类到目标类。作者指出对于前者而言，已有的攻击是有效的，而后者的话是无效的。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012131705347.png" class="" title="左图是前者生成的，右图是后者生成的">
+<p>文中对Neural Cleanse、STRIP、SentiNet、Activation Clustering等方案的不足进行了分析（这些防御方案都在检测source-specific的后门攻击存在不足）</p>
+<p>应对这种攻击，一个关键的观察是，在后门污染攻击中，对手试图通过 "合并 "两组图像到目标标签的类别中来欺骗一个模型：那些直接属于该标签的图像和那些具有触发器但最初来自另一个标签的图像。在以下假设下，这种努力会导致原本属于目标类的图像和其他类的图像在表征分布方面的根本差异。</p>
+<p>下图显示了一个例子，感染类样本的表征（右）可以被看作是两组的混合物，即攻击样本和正常样本，每组都被分解为一个不同的身份分量和一个共同的变化分量；相比之下，如果没有双分量的分解，感染类和正常类样本的表征是无法区分的。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012132933071.png" class="">
+<p>这四种现有的检测技术依赖于这些特性，并且都不能提高对注入源特定后门（如TaCT）的黑盒攻击的标准。基于通过双成分模型来利用样本表征的分布，我们设计了一种统计方法SCAn，将每个类别的表征解开，形成一个混合模型，并利用似然比测试来检测受感染的类别</p>
+<h1 id="detecting-ai-trojans-using-meta-neural-analysissp-2021">Detecting AI Trojans Using Meta Neural Analysis（S&amp;P 2021)</h1>
+<p>对模型有黑盒访问权限就可以检测毒化模型，其策略是训练一个元分类器，预测一个给定的目标模型是否被木马攻击。为了在不了解攻击策略的情况下训练元分类器，我们引入了一种叫做Jumbo学习的技术，按照一般的分布对一组毒化模型进行采样。然后，我们将查询集与元分类器一起动态优化，以区分毒化模型和良性模型。</p>
+<p>作者这时的定位不是模型所有者，而是模型的使用者，想知道使用的模型是否有后门。</p>
+<p>在本文中，我们提出了元神经木马检测（MNTD），这是一种检测木马神经网络模型的新方法。特别是，我们将训练一个元分类器，它本身就是一个机器学习模型。元分类器将一个NN（即目标模型）作为输入，并进行二元分类，以判断其是木马病毒还是良性病毒。元分类器是使用影子模型训练的，影子模型是在与目标模型相同的任务上训练的良性或特洛伊NN。影子模型的性能可能比目标模型差很多，因为它只需要一个较小的干净数据集（即没有木马触发器）。由于元分类器对攻击策略不做任何假设，并使用机器学习来识别木马，我们的方法是通用的，适用于各种攻击方法和应用领域。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012134439632.png" class="">
+<p>注意，一般我们是在数据样本上进行训练，而元神经分析(meta neural analysis)是神经网络作为训练，用于预测目标神经网络模型的某些属性，这项技术作者是从AI模型的隐私攻击领域借鉴过来的，曾经被用于成员推理攻击、模型窃取攻击等。</p>
+<p>在后门防御领域，要做检测有三个层面可以做：在模型层次，检测模型是否为毒化模型；在输入层次，检测输入是否为毒化样本；在数据集层面，检测训练数据集是否被毒化。本文关注的模型层次。因为他们认为模型级检测是最普遍适用的方法。原因是，数据集级检测只能检测到对数据集进行中毒攻击的木马。它们不能对付直接修改模型参数的攻击。输入级检测要求防御者在每次输入到模型时都要进行检测。这将降低部署模型时的效率。作为比较，用户只需要执行一次模型级木马检测。只要在模型中没有检测到木马，用户就可以在未来不费吹灰之力地部署它。</p>
+<p>另外从防御的角度看，有两种做法，一种是检测，一种是缓解，对木马攻击的防御/缓解和检测是两个非常相关但正交的方向。现有的防御或缓解方法是基于给定模型已经被木马攻击的假设进行木马清除。然而，这在实践中是有问题的，因为在大多数情况下，模型生产者提供的DNN模型是良性的。对良性模型进行木马清除是不合理的，这需要大量的计算和时间开销。此外，如[53]所示，盲目地执行缓解操作会导致模型对良性输入的预测精度大幅下降。因此，在进行木马缓解之前，应将木马检测作为一个前提条件。一旦一个模型被确定为木马模型，就可以更有把握地执行缓解操作，以避免浪费计算和时间。简单来说，可以做缓解，但是检测是前提。</p>
+<p>作者提出的方案包括三个步骤</p>
+<p>1）生成阴影模型。在这一步中，我们生成一组良性和木马的影子模型。我们使用相同的清洁数据集，通过不同的模型初始化来训练良性模型。对于木马模型，我们提出了一个通用的木马分布，从中抽出各种木马设置，并应用中毒攻击来生成不同的木马模型。 2）元训练。在这一步中，我们将设计特征提取函数来获得影子模型的表示向量，并训练元分类器来使用表示向量检测木马。我们建议选择一组查询来从影子模型中提取重要的表征，并将得到的向量作为元分类器的输入。我们在多次迭代中共同优化元分类器和查询集，有效地提高了训练后的元分类器的性能。 3）目标模型检测。给定一个目标模型，我们将首先利用优化的查询集来提取模型的代表。然后，我们将该表示法反馈给元分类器，以确定目标模型是否被木马攻击。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012135351581.png" class="">
+<h1 id="black-box-detection-of-backdoor-attacks-with-limited-information-and-dataiccv2021">Black-box Detection of Backdoor Attacks with Limited Information and Data（ICCV2021)</h1>
+<p>在黑盒环境下检测模型是否有后门。通过将后门检测表述为一个优化问题，仅通过模型查询来解决这个问题。我们引入了一种无梯度优化算法，以反向设计每一类的潜在触发器，这有助于揭示后门攻击的存在。除了后门检测，我们还提出了一个简单的策略，利用已识别的后门模型进行可靠的预判断</p>
+<p>也是黑盒场景，但是和上一篇的设置不太一样。</p>
+<p>如果一个模型需要比其他未受感染的模型小得多的修改来导致对目标类的误报，那么这个模型就被认为是后门的。原因是，对手通常希望使后门的触发不明显。因此，防御者可以通过判断是否有任何类需要明显较小的修改来进行错误分类来检测一个后门的模型。</p>
+<p>作者在解决优化问题如下时做了创新</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012141459942.png" class="">
+<p>可以在没有梯度的情况下，在黑盒环境中实现，详见论文</p>
+<h1 id="baseline-pruning-based-approach-to-trojan-detection-in-neural-networksiclr2021-workshop">BASELINE PRUNING-BASED APPROACH TO TROJAN DETECTION IN NEURAL NETWORKS（ICLR2021 workshop）</h1>
+<p>没什么新鲜的东西，就是剪枝</p>
+<h1 id="neural-trojansarxiv-2017">Neural Trojans（Arxiv 2017)</h1>
+<p>提出三种缓解技术：输入异常检测、重新训练和输入预处理</p>
+<p>1.用异常检测方法，包括支持向量机和决策树。训练SVM的目的是找到每两个不同类别数据之间的分离超平面，而训练DT是为了捕捉每类数据所代表的规则。这里的挑战是，防御者不知道非法数据的分布，因此他/她不能训练SVM/DT来直接将数据分类为合法或非法的。为了克服这个问题，我们使用了以下技术：防御者训练的分类器（即SVMs或DTs）的数量与合法数据的类别数量相同。例如，MNIST数据集有10个类：从'0'到'9'。因此，我们训练10个分类器。在第1个分类器的训练过程中，我们把标签为'i - 1'的数据作为正数，其他的作为负数。这里的逻辑是，如果一个输入样本是合法的，它一定属于10个类别中的一个，因此应该有一个分类器将这个输入归类为正。因此，在测试过程中，如果输入样本被任何分类器标记为阳性，它就被确定为合法。如果没有一个分类器将其标记为阳性，则输入被确定为异常（即非法）。通过这种方式，我们规避了我们不知道非法数据的分布的问题</p>
+<p>2.使用良性数据重训练</p>
+<p>3.在输入样本和神经网络之间插入一个输入预处理器，输入预处理的目的是在不影响合法数据的分类精度的情况下，防止非法输入触发木马程序。作者使用自动编码器作为输入预处理器。训练自动编码器的目的是使训练集的图像和重新构建的图像之间的均方误差最小。这里的机制是，在反向传播过程中，训练数据的特征被自动提取并压缩到自动编码器的隐藏层中。只有合法的数据被用来训练自动编码器。因此，在测试阶段，应该可以预期，如果输入来自合法分布，自动编码器的输出应该与输入接近，因此神经IP应该能够对重建的图像进行正确分类，就像原始输入一样；如果输入不是来自非法分布，重建的图像应该与原始输入有很大偏差，因此不应该能够触发木马病毒。</p>
+<p>这些方法都很老了</p>
+<h1 id="fine-pruning-defending-against-backdooring-attacks-on-deep-neural-networksarxiv-2018">Fine-Pruning: Defending Against Backdooring Attacks on Deep Neural Networks（Arxiv 2018)</h1>
+<p>就是fine-tuning+pruning，分别使用两者本身都不足以抵御复杂的攻击者。然后，我们组合修剪和微调，并表明它成功地削弱甚至消除了后门。</p>
+<h1 id="spectral-signatures-in-backdoor-attacksneurips2018">Spectral Signatures in Backdoor Attacks（NeurIPS2018)</h1>
+<p>被植入后门的模型，其学到的特征表示的协方差频谱中有可检测的痕迹，我们称这种 "痕迹 "为Spectral Signatures，使用这种Spectral Signatures可以检测毒化样本</p>
+<p>我们首先在数据上训练一个神经网络。然后，对于每个类别，我们为该类别的每个输入提取一个学习到的表示。接下来，我们对这些表征的协方差矩阵进行奇异值分解，并用它来计算每个例子的离群分数。最后，我们删除分数最高的输入并重新进行训练。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012144205525.png" class="">
+<p>该方法依赖于这样一个理念：为分类器学习的表征会放大对分类至关重要的信号。由于这些攻击所安装的后门会改变一个例子的标签，因此这些表征将包含后门的强烈信号。基于这一假设，我们将稳健统计学中的工具应用到表征中，以检测和删除中毒数据</p>
+<h1 id="detecting-backdoor-attacks-on-deep-neural-networks-by-activation-clusteringarxiv-2018">Detecting Backdoor Attacks on Deep Neural Networks by Activation Clustering(arxiv 2018)</h1>
+<p>不需要可靠的数据集就可以检测毒化训练集并修复模型。该方案分析训练数据的神经网络激活，以确定它是否已经被毒害，如果是，哪些数据点是有毒的。</p>
+<p>我们的方法背后的直觉是，虽然后门和目标样本通过中毒网络获得相同的分类，但它们获得这种分类的原因是不同的。在来自目标类的标准样本的情况下，网络在输入中识别它已经学会的与目标类相关的特征。在后门样本的情况下，它识别与源类和后门触发器相关的特征，这导致它将输入分类为目标类。这种机制上的差异在网络激活中应该是显而易见的，它代表了网络是如何做出其 "决定 "的。 这一直觉在图2中得到了验证，该图显示了最后一个隐藏神经网络层对干净和合法数据投射到其前三个原则分量的激活。图2a显示了中毒的MNIST数据集中第6类的激活情况，2b显示了LISA数据集中中毒的限速类的激活情况，2c显示了中毒的烂番茄电影评论的负面类的激活情况。在每一个数据中，很容易看到中毒和合法数据的激活分成了两个不同的群组。相比之下，图2d显示的是正面类的激活情况，它并不是毒药的目标。在这里，我们看到，激活没有分成两个可区分的集群。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012144939337.png" class="">
+<h1 id="sentinet-detecting-localized-universal-attacks-against-deep-learning-systemssp-workshop2020">SentiNet: Detecting Localized Universal Attacks Against Deep Learning Systems（S&amp;P workshop2020)</h1>
+<p>我们从这样的观察出发：本地化的通用攻击被设计成对各种伪装的稳健性，同时又能泛化到大量的输入分布（例如，[5]的对抗性补丁被设计成在应用于任何输入图像时都能发挥作用）。我们的第一个见解是，局部通用攻击的成功依赖于对 "突出 "特征的使用，这些特征对模型在许多不同输入上的分类有很大影响。因此，我们考虑从模型的可解释性和物体检测中发现输入图像中高度突出的连续区域的技术。正如我们所展示的，这些技术发现了对抗性的图像区域，以及对分类有强烈影响的良性区域。在第二步中，我们利用恶意区域的强大鲁棒性和泛化特性，将它们与具有高显著性的良性区域区分开。具体来说，我们将提取的区域叠加在大量的干净图像上，并测试这导致错误分类的频率。恶意区域比良性区域更有可能产生错误分类，从而被SentiNet检测到.</p>
+<p>SentiNet使用一种新颖的方法，利用为模型可视化和物体检测开发的技术检测潜在的攻击区域，并将部署在多个测试图像上的攻击反馈给网络，以进行攻击分类。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012145613223.png" class="">
+<p>SentiNet的结构如上图所示。首先，SentiNet使用模型可解释性和物体检测的技术，从输入场景x中提取那些对模型预测y影响最大的区域（第III-A节）。这些区域可能包含恶意物体（如果存在）以及良性的突出区域。然后，SentiNet将这些提取的区域应用于一组良性的测试输入，并观察模型的行为。最后，SentiNet将合成行为与模型在良性输入上的已知行为进行比较，以检测预测劫持行为（第三部分B）。</p>
+<h1 id="universal-litmus-patterns-revealing-backdoor-attacks-in-cnnsarxiv2020">Universal Litmus Patterns: Revealing Backdoor Attacks in CNNs（Arxiv2020)</h1>
+<p>我们介绍了通用石蕊模式（ULP）的概念，该概念通过将这些通用模式馈送到网络并分析输出（即，将网络分类为“干净”或“损坏”）来揭示后门攻击。 这种检测速度很快，因为它仅需要通过CNN进行几次前向传递。 我们证明了ULP可以检测具有数千种不同架构的网络上的后门攻击的有效性</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012154201489.png" class="">
+<p>检测模型</p>
+<p>我们提出了一种检测CNN后门攻击的方法，无需：1）访问训练数据或2）在干净数据上运行测试。相反，我们使用一小部分通用测试模式来探索后门的模型。</p>
+<p>受普遍对抗性干扰[21]的启发，我们引入了普遍石蕊模式（ULP），它是优化的输入图像，网络的输出可以很好地指示网络是否干净或包含后门攻击</p>
+<p>我们的目标主要是在有监督的二元分类设置中检测受感染的模型，在该设置中，我们有一组有后门攻击和没有后门攻击的模型训练集。然后，任务是学习分类器φ：F→ {0，1}，以区分模型并显示此类分类器的可推广性。</p>
+<p>也没看懂，但是和今年那篇四大的方案有共同之处</p>
+<h1 id="simple-attack-agnostic-defense-against-targeted-training-set-attacks-using-cosine-similarityicml-2021">Simple, Attack-Agnostic Defense Against Targeted Training Set Attacks Using Cosine Similarity(ICML 2021)</h1>
+<p>我们提出了一个余弦相似性影响评估器，COSIN，它通过关注梯度方向而不是幅度来改进TracIn，检测毒化样本</p>
+<p>没看懂要做什么。。。</p>
+<h1 id="neural-attention-distillation-erasing-back--door-triggers-from-deep-neural-networksiclr2021">NEURAL ATTENTION DISTILLATION: ERASING BACK- DOOR TRIGGERS FROM DEEP NEURAL NETWORKS（ICLR2021)</h1>
+<p>虽然开源了，但是关键的蒸馏的代码没有放出来</p>
+<p>这是用于修复模型的</p>
+<p>在本文中，我们提出了一种新的防御框架神经注意蒸馏（NAD）来消除后门DNN的后门。NAD利用教师网络在一小部分干净的数据上指导后门学生网络的微调，以使学生网络的中间层与教师网络的中间层保持一致。教师网络可以通过在同一干净子集上的独立微调过程获得</p>
+<p>标准的微调或神经修剪方法相比，这种注意提取步骤在消除网络对触发模式的注意方面要有效得多</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012160210689.png" class="">
+<p>后门擦除技术的流水线。（a） 标准微调过程，（b）我们提出的NAD方法，以及（c）我们使用ResNet（He et al.，2016）作为示例的NAD框架。NAD通过两步程序消除后门触发：1）通过使用干净的训练数据子集微调后门网络来获得教师网络，然后2）通过神经注意蒸馏过程将教师和学生结合起来。注意表征在每个剩余组后计算，NAD蒸馏损失根据教师和学生网络的注意表征来定义。</p>
+<p>我们没有直接使用微调网络作为最终模型，而是将其用作教师网络，并通过注意力提炼过程将其与原始后门网络（即学生网络）结合使用。NAD的工作是将对触发模式更敏感的神经元与只负责有意义表征的良性神经元对齐</p>
+<p>这个思想在19年四大的latent backdoor那边见过</p>
+<h1 id="towards-inspecting-and-eliminating-trojan-backdoors-in-deep-neural-networksicdm2020">Towards Inspecting and Eliminating Trojan Backdoors in Deep Neural Networks（ICDM2020)</h1>
+<p>这篇工作经常被引用，即TABOR</p>
+<p>在这项工作中，我们提出了TABOR，一种新的特洛伊木马检测技术。从概念上讲，它将特洛伊木马后门检测形式化为求解优化目标函数。与将木马检测建模为优化问题的现有技术不同，TABOR首先设计了一个新的目标函数来指导优化，以更准确地识别木马后门。其次，TABOR借用了可解释人工智能的思想来进一步删减恢复的触发器。最后，TABOR设计了一种新的异常检测方法，该方法不仅有助于识别有意注入的触发器，而且还可以过滤错误警报（即从未受感染的模型中检测到的触发器）</p>
+<p>检测模型、样本</p>
+<p>首先，它通过遵循根据我们的观察建立的一些启发式方法，为目标函数设计新的正则化项。通过这种新的设计，我们缩小了TABOR搜索触发附加图像的对抗性样本子空间的大小，使得搜索过程遇到的无关对抗性样本更少。其次，TABOR利用可解释人工智能的思想进一步删减不相关的敌对样本，从而最大限度地减少不正确的特洛伊木马检测。最后但并非最不重要的一点是，TABOR发明了一种新的异常检测方法，该方法可以更好地区分受感染模型中故意注入的触发器和敌对触发器，并消除干净模型中错误定位为恶意触发器（即假警报）的敌对样本。</p>
+<h1 id="gangsweep-sweep-out-neural-backdoors-by-ganmm2020">GangSweep: Sweep out Neural Backdoors by GAN（MM2020)</h1>
+<p>检测模型</p>
+<p>它利用生成性对抗网络（GAN）的超级重建能力来检测和“扫除”神经后门</p>
+<p>首先，我们建议使用生成网络通过有效地重建目标类周围的流形来挖掘神经后门的基本弱点，并暴露攻击者为成功攻击所植入的所有工件。这些见解是通过一系列实证实验得出的。其次，我们发现目标标签的触发器在特征空间中表现出一些有趣的统计特性，具有低移位方差和大移位距离。我们开发了一种有效的离群点检测机制，可以明确区分触发和普通对抗性扰动</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012161238572.png" class="">
+<p>GangSweep首先通过生成器了解潜在触发器的分布，然后使用异常检测来检测后门模型，并对其进行修补以在不影响其性能的情况下重新移动后门。</p>
+<h1 id="one-pixel-signature-characterizing-cnn-models-for-backdoor-detectioneccv2020">One-Pixel Signature: Characterizing CNN Models for Backdoor Detection（ECCV2020)</h1>
+<p>检测模型</p>
+<p>我们设计了一个像素的签名表示，以揭示干净和后门CNN模型的特征。在这里，每个CNN模型都与一个签名相关联，该签名是通过逐像素生成一个对抗性值创建的，该值是类别预测最大变化的结果。单像素签名与CNN架构的设计选择以及它们的训练方式无关。对于黑箱CNN模型，无需访问网络参数即可有效地计算出该参数。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012161642305.png" class="">
+<p>关键思想是描述CNN神经元对网络输入的局部依赖性，以检测不稳定的特洛伊木马插入，由于其与原始分布不兼容，因此可以对其进行区分</p>
+<h1 id="februus-input-purification-defense-against-trojan-attacks-on-deep-neural-networkacsac2020">Februus: Input Purification Defense Against Trojan Attacks on Deep Neural Network（ACSAC2020)</h1>
+<p>Februus通过手术移除潜在的触发器工件并恢复分类任务的输入来清理传入输入</p>
+<p>检测并重构输入</p>
+<p>Februus是第一个在运行时运行的后门防御方法，能够清除特洛伊木马输入，而无需异常检测方法、模型重新培训或昂贵的标记数据。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012162327678.png" class="">
+<p>洛伊木马输入通过特洛伊木马删除模块进行处理，该模块检查并通过手术删除触发器。随后，图像恢复模块处理受损输入以恢复受损区域。还原的映像将馈送到安装了特洛伊木马的DNN中。</p>
+<h1 id="disabling-backdoor-and-identifying-poison-data-by-using-knowledge-distillation-in-backdoor-attacks-on-deep-neuralaisec-2020">Disabling Backdoor and Identifying Poison Data by using Knowledge Distillation in Backdoor Attacks on Deep Neural（AISec 2020)</h1>
+<p>在我们的防御场景中，一个典型的假设是防御者可以收集没有标签的干净图像。防御者通过知识提取将干净的知识从后门模型（教师模型）提取到提取模型（学生模型）。随后，防御者通过比较后门和蒸馏模型的预测，从毒药训练数据集中删除毒药数据候选。defender使用解毒训练数据集对蒸馏模型进行微调，以提高分类精度。</p>
+<p>检测模型、数据集</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012162811788.png" class="">
+<p>(1)防御者使用从不可信的数据注释公司接收的有毒训练数据集训练后门模型。防御者不知道该模型是否有后门。(2)防御者准备没有标签的干净图像，并用这些图像和后门模型的预测创建一个蒸馏数据集。干净的图像意味着保证图像不会被对手篡改。如果可以保证图像没有被篡改，那么干净的图像就不必是与训练数据集不同的图像。注意，干净的图像必须与训练数据集具有相同的分布，以实现高分类精度。(3)防卫者用蒸馏数据集训练蒸馏模型。蒸馏模型不受有毒图像的影响，但与基线模型相比，精确度可能会下降。(4)防御者通过以下方法对中毒数据集进行解毒，以增加训练数据集的数量。防御者将毒药训练数据集的所有图像输入后门和蒸馏模型。当输入图像是一幅干净的图像时，后门模型由于其隐蔽性而预测出正确的类别，蒸馏模型也能预测出正确的类别。当输入图像是有毒图像时，后门模型预测出由于后门而产生的敌对目标类，而蒸馏模型预测出正确的类。也就是说，后门模型和蒸馏模型对有毒图像进行了不同的分类预测。在后门模型和蒸馏模型之间预测不同类别的图像是有毒数据候选者。(5)防御者用解毒数据集对蒸馏模型进行微调。微调模型恢复了精馏模型的精度。(6)防御者使用自己的干净验证数据集验证蒸馏模型。(7)对手用有毒图像攻击ML系统，但蒸馏模型可以将图像分类到正确的标签中。</p>
+<h1 id="sanitais-unsupervised-data-augmentation-to-sanitize-trojaned-neural-networksarxiv-2021">SanitAIs: Unsupervised Data Augmentation to Sanitize Trojaned Neural Networks（Arxiv 2021)</h1>
+<p>通过数据增强对模型重训练</p>
+<p>修复模型</p>
+<h1 id="trojan-signatures-in-dnn-weightsarxiv-2021">Trojan Signatures in DNN Weights（Arxiv 2021)</h1>
+<p>我们的方法着重于分析网络的最后一层的权值。我们用经验证明了这些权值的几个特征，这些特征在木马网络中经常出现，而在良性网络中却没有。特别地，我们证明了与木马目标类相关联的权值分布与与其他类相关联的权值分布是明显不同的。</p>
+<p>检测模型</p>
+<h1 id="detect-and-remove-watermark-in-deep-neural-networks-via-generative-adversarial-networksarxiv-2021">Detect and remove watermark in deep neural networks via generative adversarial networks（Arxiv 2021)</h1>
+<p>我们证明了基于后门的DNN水印很容易受到基于GAN的水印去除攻击。提出的攻击方法包括两个阶段。在第一阶段，我们使用GAN和少量干净图像检测和通过DNN模型逆向水印。在第二阶段，我们基于反向后门图像对水印DNN进行微调。</p>
+<p>这篇工作和NeuralCleanse很像</p>
+<h1 id="topological-detection-of-trojaned-neural-networksarxiv-2021">Topological Detection of Trojaned Neural Networks(Arxiv 2021)</h1>
+<p>检测模型</p>
+<p>在我们的分析中，我们使用拓扑工具。它们允许我们在网络中建模高阶依赖关系，稳健地比较不同的网络，并定位结构异常。一个有趣的发现是，木马模型开发了从输入到输出层的捷径</p>
+<p>我们的方法使用拓扑数据分析工具，特别是持久同源[21,6]。有了原则性的代数-拓扑基础[46]，这些工具非常适合为高阶结构信息建模。我们用它们来捕捉突出的拓扑结构——特别是在上述神经元连接图中出现的连接组件和孔。</p>
+<p>借助拓扑工具，我们比较了干净的和特洛伊的神经网络。我们观察到它们的拓扑之间的显著差异，并通过比较称为持久性图的拓扑描述符来量化这种差异。我们可以更进一步，因为工具允许我们对拓扑畸变进行局部化，揭示出跨越特洛伊模型的高度显著环的存在，而这在干净的模型中是没有的</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012164618957.png" class="">
+<h1 id="detecting-backdoor-in-deep-neural-networks-via-intentional-adversarial-perturbationsarxiv2021">Detecting Backdoor in Deep Neural Networks via Intentional Adversarial Perturbations（Arxiv2021)</h1>
+<p>检测样本</p>
+<p>该方法利用有意的对抗性扰动来检测图像是否包含触发器，可用于训练阶段和推理阶段(在训练阶段清洗训练集，在推理阶段检测后门实例)。具体来说，给定一个不可信的图像，对抗性扰动被有意地添加到图像中。如果模型对扰动图像的预测与对未扰动图像的预测一致，则将输入图像视为后门实例</p>
+<p>这其实和STRIP有点像</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012165539644.png" class="">
+<p>如图1所示，本文提出的防御方法包括两个步骤。第一步是用一小组干净的图像从后门模型生成通用对抗性扰动[13]。</p>
+<p>第二步是后门检测，总结如下。如图1所示，给定一个不可信的图像，将上一步产生的普遍扰动添加到该图像中。然后，将受摄图像和相应的未受摄图像都输入到不可信模型中。如果不受信任的模型被后门，没有扰动的后门实例将被误分类为目标标签。当加入通用对抗性扰动[13]时，携带触发器的后门实例仍将被归类为目标标签。然而，给定一个干净的图像，在添加扰动后，它的预测标签将改变为另一个标签。因此，如果后门模型总是预测图像为相同的标签，无论是否普遍扰动，该图像被认为是一个后门实例。同时，将预测的标签视为目标标签。</p>
+<h1 id="provable-guarantees-against-data-poisoning-using-self-expansion-and-compatibilityarxiv2021">Provable Guarantees against Data Poisoning Using Self-Expansion and Compatibility（Arxiv2021)</h1>
+<p>修复训练集</p>
+<p>我们提出了一个迭代训练程序，以消除有毒数据的训练集。我们的方法包括两个步骤。我们首先训练一个弱学习者集合，以自动发现训练集中不同的亚种群。然后我们利用一个促进框架来恢复干净的数据</p>
+<h1 id="spectre-defending-against-backdoor-attacks-using-robust-statisticsicml-2020">SPECTRE: Defending Against Backdoor Attacks Using Robust Statistics（ICML 2020）</h1>
+<p>我们引入了一种新的防御算法，我们称之为SPECTRE，它结合了稳健协方差估计和量子熵离群点检测的思想。具有稳健协方差的白化放大了有毒样本的光谱特征。量子熵评分可以稳健地检测该特征，适应有毒样本的光谱轮廓</p>
+<p>检测训练集</p>
+<h1 id="misa-online-defense-of-trojaned-models-using-misattributionsarxiv-2021">MISA: Online Defense of Trojaned Models using Misattributions（Arxiv 2021)</h1>
+<p>检测样本</p>
+<p>我们的方法是基于一个叫做错误归因的新概念，它捕获了木马激活在特征空间中的异常表现。给定输入图像和对应的输出预测，算法首先计算模型对不同特征的归因(attribution)。然后统计分析这些归因(attribution)，以确定是否存在木马触发器</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012183523064.png" class="">
+<p>MISA概述-基于错误归因的在线木马检测。示例输入是一个带有白色方形特洛伊触发器的“禁止进入”标志的图像。支持向量机的输出值为-1，表示输入图像的归因图出现异常，神经网络进行了相应的预测。Stage 3中-1的输出表示MISA对输入为木马图像的最终决定。</p>
+<h1 id="top-backdoor-detection-in-neural-networks-via-transferability-of-perturbationarxiv-2021">TOP: Backdoor Detection in Neural Networks via Transferability of Perturbation(Arxiv 2021)</h1>
+<p>检测模型</p>
+<p>在本文中，我们发现了经过训练的深度神经网络模型的一个有趣的性质——在有毒的模型中，对抗扰动在图像之间的转移比在干净的模型中更容易。我们证明了这种可转移性属性用于各种模型和触发器类型，包括不能与干净数据线性分离的触发器</p>
+<p>它只需要预先训练的模型和一小组代表领域的良性输入</p>
+<p>在广泛的攻击类别中，中毒模型的FR和FC往往比干净模型的FR和FC更大</p>
+<p>注意：这里的迁移性是对抗扰动在图像之间的迁移性，而我们平常所说的对抗样本的迁移性指的是图像在模型之间的迁移性</p>
+<h1 id="strip-a-defence-against-trojan-attacks-on-deep-neural-networksacsac-2020">STRIP: A Defence Against Trojan Attacks on Deep Neural Networks(ACSAC 2020)</h1>
+<img src="/2021/10/10/1010-PaperNotes/image-20211012184813177.png" class="">
+<p>检测样本</p>
+<p>在测试样本上叠加其他类别的图像，查看叠加处理后的图像被分类结果的多样性，多样性差的则是毒化样本</p>
+<h1 id="ex-ray-distinguishing-injected-backdoor-from-natural-features-in-neural-networks-by-examining-differential-feature-symmetryarxiv2021">EX-RAY: Distinguishing Injected Backdoor from Natural Features in Neural Networks by Examining Differential Feature Symmetry（Arxiv2021)</h1>
+<p>我们开发了一种新的对称特征差分方法来识别分离两个类的最小特征集。如果对应的触发器由不同于区分受害者和目标类的特征集的特征组成，则认为后门被注入。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211013083632218.png" class="">
+<h1 id="dp-instahide-provably-defusing-poisoning-and-backdoor-attacks-with-differentially-private-data-augmentationsarxiv-2021">DP-InstaHide: Provably Defusing Poisoning and Backdoor Attacks with Differentially Private Data Augmentations（Arxiv 2021)</h1>
+<p>修复训练集</p>
+<p>在这项工作中，我们证明了强数据增强，如混合和随机加性噪声，可以抵消有毒攻击，而只承受很小的精度权衡。为了解释这些发现，我们提出了一种训练方法，DP-InstaHide，它结合了混合正则化器和加性噪声。对DP- instahide的严格分析表明，mixup确实具有隐私优势，使用k-way mixup的训练可证明产生的DP保证至少比单纯的DP机制强k倍。因为混合(相对于噪声)有利于模型性能，DP- instahide提供了一种机制，比其他已知的DP方法实现更强的中毒攻击经验性能。</p>
+<h1 id="what-doesnt-kill-you-makes-you-robuster-adversarial-training-against-poisons-and-backdoorsarxiv-2021">What Doesn’t Kill You Makes You Robust(er): Adversarial Training against Poisons and Backdoors（arxiv 2021)</h1>
+<p>防御模型</p>
+<p>在这项工作中，我们扩展了对抗性训练框架，以防御(训练时间)中毒和后门攻击。我们的方法使网络对中毒的影响脱敏，通过在训练期间制造毒药，并将它们注入训练批次。</p>
+<h1 id="backdoor-scanning-for-deep-neural-networks-through-k-arm-optimizationarxiv-2021">Backdoor Scanning for Deep Neural Networks through K-Arm Optimization(arxiv 2021)</h1>
+<p>检测模型</p>
+<p>许多现有的防御技术使用优化来生成最小的输入模式，迫使模型将一组注入模式的良性输入错误分类为目标标签。然而，它的复杂性是类标签数量的二次方，因此很难处理包含许多类的模型。受强化学习中的多臂强盗的启发，我们提出了一种用于后门检测的K-Arm优化方法。在目标函数的指导下，通过迭代和随机选择最有希望的标签进行优化，我们大大降低了复杂性，允许使用多个类来处理模型。此外，通过迭代优化标签的选择，大大降低了选择正确标签的不确定性，提高了检测精度。</p>
+<p>我们提出了一种新的后门扫描方法，该方法可以处理多类模型，比现有的方法有更好的有效性和效率。</p>
+<h1 id="tad-trigger-approximation-based-black-box-trojan-detection-for-aiarxiv-2021">TAD: Trigger Approximation based Black-box Trojan Detection for AI（Arxiv 2021)</h1>
+<p>检测模型</p>
+<p>在本文中，我们的目标是设计一种健壮的木马检测方案，检测预先训练的人工智能模型在部署前是否被木马感染。先前的工作忽略了触发器分布的内在特性，并尝试使用简单的启发式来重建触发器模式，即刺激给定的模型到错误的输出。因此，它们的检测时间和有效性是有限的。我们利用像素触发典型的空间依赖性的观察，提出了TAD，第一个基于触发器近似的木马检测框架，可以在输入空间快速和可扩展的搜索触发器。此外，TAD还可以检测嵌入在特征空间中的木马，在特征空间中使用特定的过滤器转换来激活木马。</p>
+<h1 id="has-nets-a-heal-and-select-mechanism-to-defend-dnns-against-backdoor-attacks-for-data-collection-scenariosarxiv-2020">HaS-Nets: A Heal and Select Mechanism to Defend DNNs Against Backdoor Attacks for Data Collection Scenarios（arxiv 2020)</h1>
+<p>修复训练集</p>
+<p>我们引入了一种新的防御策略，称为HaS-Nets，它基于信任指数和疗愈集的概念，对DNN进行迭代修复，并为后续迭代选择训练样本。我们提出了一种方法来估计每个训练样本的“信任指数”。</p>
+<h1 id="deepsweep-an-evaluation-framework-for-mitigating-dnn-backdoor-attacks-using-data-augmentationasiaccs-2021">DeepSweep: An Evaluation Framework for Mitigating DNN Backdoor Attacks using Data Augmentation（AsiaCCS 2021)</h1>
+<p>我们考虑了统一的防御方案，即(1)采用数据增强策略对感染模型进行微调，消除嵌入式后门的影响;(2)使用另一种增强策略对输入样本进行预处理，并在推理过程中使触发器失效</p>
+<p>修复模型和测试样本</p>
+<h1 id="detecting-trojaned-dnns-using-counterfactual-attributionsarxiv-2020">Detecting Trojaned DNNs Using Counterfactual Attributions（arxiv 2020)</h1>
+<p>检测模型</p>
+<p>我们的方法是基于一个新的观察结果，即触发行为依赖于少数鬼神经元，这些神经元根据触发模式激活，并在激活时表现出异常高的错误决策的相对归因。此外，这些触发神经元也在目标类的正常输入上活跃。因此，我们使用反事实归因来定位这些来自清洁输入的鬼神经元，然后递增地激发它们来观察模型准确性的变化。</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211013090607698.png" class="">
+<p>第一步通过对每个可能的目标类别进行反事实归因，确定负责木马行为的幽灵神经元。然后，它逐渐刺激这些鬼神经元，并监测模型的准确性。最后使用深度时间集编码器输入类别性能变化，并检测木马dnn。</p>
+<h1 id="strong-data-augmentation-sanitizes-poisoning-and-backdoor-attacks-without-an-accuracy-tradeoffarxiv-2020">STRONG DATA AUGMENTATION SANITIZES POISONING AND BACKDOOR ATTACKS WITHOUT AN ACCURACY TRADEOFF（arxiv 2020)</h1>
+<p>以前许多针对中毒的防御要么在面对日益强大的攻击时失败，要么显著降低性能。然而，我们发现强大的数据增强，如mixup和CutMix，可以显著降低中毒和后门攻击的威胁，而不牺牲性能。</p>
+<p>修复训练集</p>
+<h1 id="cleann-accelerated-trojan-shield-for-embedded-neural-networksarxiv-2020">CLEANN: Accelerated Trojan Shield for Embedded Neural Networks（Arxiv 2020)</h1>
+<p>识别并修复毒化样本</p>
+<p>CLEANN与之前的工作的不同之处是它的轻量级方法，无需标记数据、模型再训练或对触发或攻击的预先假设，即可恢复真实的特洛伊样本。我们利用字典学习和稀疏逼近来描述良性数据的统计行为和识别木马触发器</p>
+<h1 id="removing-backdoor-based-watermarks-in-neural-networks-with-limited-dataarxiv-2020">Removing Backdoor-Based Watermarks in Neural Networks with Limited Data（Arxiv 2020)</h1>
+<p>修复模型</p>
+<p>在本文中，我们对水印的鲁棒性进行了测试，并提出了一种新的基于后门的基于有限数据的水印去除框架，称为WILD。提出的WILD仅使用一小部分训练数据就可以去除深度模型的水印，输出模型可以执行与从头训练模型相同的操作，而不需要注入水印。</p>
+<h1 id="noise-response-analysis-of-deep-neural-networks-quantifies-robustness-and-fingerprints-structural-malwaresdm-2021">Noise-Response Analysis of Deep Neural Networks Quantifies Robustness and Fingerprints Structural Malware（SDM 2021)</h1>
+<p>在这里，我们提出一种快速特征生成技术，量化DNN的稳健性，“指纹”其非线性，并允许我们检测后门(如果存在)。我们的方法是研究DNN如何响应不同噪声强度的噪声灌注图像，我们总结了滴定曲线。我们发现带后门的dnn对输入噪声更敏感，并以一种特有的方式作出反应，揭示后门及其指向(它的“目标”)</p>
+<p>检测模型</p>
+<h1 id="practical-detection-of-trojan-neural-networks-data-limited-and-data-free-caseseccv2020">Practical Detection of Trojan Neural Networks: Data-Limited and Data-Free Cases（ECCV2020)</h1>
+<p>检测模型</p>
+<p>可以在不访问任何数据样本的情况下检测木马网络。我们证明，这样的一个TND可以通过利用隐藏神经元的内部反应来构建，即使在随机噪声输入时，这些神经元也会表现出特洛伊行为</p>
+<h2 id="基于少量数据的方法">基于少量数据的方法</h2>
+<p>非定向的通用扰动</p>
+<p>这背后的基本原理是，由于特洛伊捷径的存在，当对特洛伊目标类的图像进行扰乱时，每个图像和通用扰动将保持很强的相似性。</p>
+<p>可以从下图直观看出来</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211014133821954.png" class="">
+<p>只有第一列具有强烈的相似性</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211014132434048.png" class="">
+<p>得到的通过扰动可以改变Dk-的预测(1)，但是不能改变Dk的预测(2)</p>
+<p>所以由于后门的存在，会让不属于k类的图像被扰动后会被分类到k类(1),而属于k类的图像被扰动后依旧是k类</p>
+<p>定向的特定扰动</p>
+<p>将不属于类k的图像定向攻击到类k</p>
+<p>如果k是后门攻击的目标标签，我们猜想扰动Dk-的图像以致于其能被分类到类k，这会产生会上式类似的后门捷径</p>
+<img src="/2021/10/10/1010-PaperNotes/image-20211014133608424.png" class="">
+<h2 id="无需数据的方法">无需数据的方法</h2>
+<img src="/2021/10/10/1010-PaperNotes/image-20211014140943544.png" class="">
+<h1 id="cassandra-detecting-trojaned-networks-from-adversarial-perturbationsarxiv-2021">Cassandra: Detecting Trojaned Networks from Adversarial Perturbations（Arxiv 2021)</h1>
+<p>我们的方法以从网络梯度学到的对抗扰动的形式捕获神经网络的指纹。在网络中插入后门会改变网络的决策边界，这些决策边界被有效地编码在对抗性扰动中。我们从网络的全局扰动(L∞和L2有界)和扰动内的高能局部区域训练一个双流网络用于木马检测。前者对网络的决策边界进行编码，后者对未知的触发器形状进行编码。我们还提出了一种异常检测方法来识别木马网络中的目标类</p>
+<h1 id="odyssey-creation-analysis-and-detection-of-trojan-modelsarxiv-2020">Odyssey: Creation, Analysis and Detection of Trojan Models（arxiv 2020)</h1>
+<p>我们提出了一个检测器来确定DNN模型是否为木马。对于给定的模型，我们的木马检测器试图通过考虑每扰动的排列来估计主导扰动方向。这些扰动将一小组从验证集中提取的干净样本发送到分类器最具代表性的线性决策边界。对其余验证样本沿该(主导)方向进行小幅度的扰动，会导致特洛伊模型比干净模型的误分类率更高。因此，通过设置干扰验证样本的误分类率阈值，我们可以很容易地区分干净模型和特洛伊模型</p>
+<p>它提了一个基准数据集，包括3000多个良性模型和后门模型</p>
+<p>检测模型</p>
+<h1 id="confoc-content-focus-protection-against-trojan-attacks-on-neural-networksarxiv-2020">ConFoc: Content-Focus Protection Against Trojan Attacks on Neural Networks（Arxiv 2020)</h1>
+<p>在这项工作中，我们分析了dnn在训练时学习到的特征的组成。我们确定它们，包括与插入触发器相关的那些，包含内容(语义信息)和样式(纹理信息)，它们在测试时被dnn作为一个整体识别。在此基础上，我们提出了一种新的特洛伊木马攻击防御技术，在该技术中，dnn忽略输入的类型，只关注其内容，以减轻分类过程中触发器的影响</p>
+<p>这种将样本分成两类特征的思想在之前一篇工作中也看到过</p>
+<p>谈不上修复模型，就是改变模型的关注点，有对模型进行训练</p>
+<h1 id="a-unified-framework-for-analyzing-and-detecting-malicious-examples-of-dnn-modelsarxiv-2020">A Unified Framework for Analyzing and Detecting Malicious Examples of DNN Models（Arxiv 2020)</h1>
+<p>在本文中，我们提出了一个统一的框架，以检测马里的例子和保护推理结果的深度学习模型。这个框架是基于我们的观察，即对抗性例子和后门例子在推理过程中都有异常，与良性样本有高度的区别。因此，我们对现有的四种检测后门的对抗防御方法进行了重新设计和修改。广泛的评估表明，这些方法提供可靠的保护对后门攻击，与检测对抗的例子更高的准确性。这些解还揭示了对抗性样本、后门样本和正态样本在模型灵敏度、激活空间和特征空间上的关系。这可以增强我们对这两种攻击的内在特征以及防御机会的理解</p>
+<h1 id="scalable-backdoor-detection-in-neural-networksarxiv-2020">Scalable Backdoor Detection in Neural Networks（Arxiv 2020)</h1>
+<p>检测模型</p>
+<p>我们提出了一种新的基于触发逆向工程的方法，其计算复杂度不随标签的数量而变化，并且基于一种可解释的、跨不同网络和补丁类型的通用度量。</p>
+<h1 id="adversarial-examples-are-useful-tooarxiv-2020">Adversarial examples are useful too!（arxiv 2020)</h1>
+<p>提出了一种新的方法来判断一个模型是否受到了后门攻击。其思想是使用FGSM等传统攻击生成对抗性的例子，有目标的或无目标的，然后将它们反馈给分类器。通过计算不同类别图像的统计数据(这里只是指地图)，并将它们与参考模型的统计数据进行比较，就有可能在视觉上定位受干扰的区域并揭示攻击。</p>
+<h1 id="bridging-mode-connectivity-in-loss-landscapes-and-adversarial-robustnessiclr2020">BRIDGING MODE CONNECTIVITY IN LOSS LANDSCAPES AND ADVERSARIAL ROBUSTNESS(ICLR2020)</h1>
+<p>修复模型</p>
+<p>我们的实验涵盖了适用于不同网络架构和数据集的各种类型的对抗性攻击。当网络模型被后门攻击或错误注入攻击篡改时，我们的结果表明，使用有限数量的真实数据学习的路径连接可以有效地减轻对抗影响，同时保持原始数据的准确性。因此，模式连接为用户提供了修复后门或错误注入模型的能力。我们还使用模式连通性来研究针对规避攻击的常规和稳健模型的损失景观。</p>
+<h1 id="neural-network-laundering-removing-black-box-backdoor-watermarks-from-deep-neural-networksarxiv-2020"><strong>Neural Network Laundering: Removing Black-Box Backdoor Watermarks from Deep Neural Networks</strong>（Arxiv 2020)</h1>
+<p>在这项工作中，我们提出了一种神经网络“洗黑箱”算法从神经网络去除黑箱后门水印，即使对手没有事先知道水印的结构。</p>
+<p>修复模型</p>
+<h1 id="rab-provable-robustness-against-backdoor-attacksarxiv-2021">RAB: Provable Robustness Against Backdoor Attacks(Arxiv 2021)</h1>
+<p>本文中，我们关注于对后门攻击的鲁棒性验证。为此，我们首先提供了一个统一的健壮性认证框架，并证明了它对后门攻击具有严格的健壮性条件。然后，我们提出了第一个鲁棒训练过程RAB，以平滑训练模型，并证明其对后门攻击的鲁棒性。</p>
+<h1 id="aegis-exposing-backdoors-in-robust-machine-learning-modelsarxiv2021">AEGIS: Exposing Backdoors in Robust Machine Learning Models(Arxiv2021)</h1>
+<p>在本文中，我们证明了对抗性鲁棒模型容易受到后门攻击。随后，我们观察到后门反映在这些模型的特征表示中。然后，通过一种称为AEGIS的检测技术，利用这种观察来检测后门感染的模型。AEGIS利用特征聚类有效检测后门感染的鲁棒深度神经网络(DNNs)。</p>
+<p>检测模型</p>
+<h1 id="defending-against-backdoor-attack-on-deep-neural-networksarxiv-2021">Defending against Backdoor Attack on Deep Neural Networks（Arxiv 2021）</h1>
+<p>通过Gard-CAM的镜头，仔细研究了真实后门攻击和合成后门攻击对vanilla和后门dnn的内部响应的影响。此外，我们还发现，与l1和l2范数相比，后门攻击在激活图的l∞范数方面诱导了神经元激活的显著偏差。受我们研究结果的激励，我们提出了基于l∞的神经元修剪，以去除后门DNN中的后门</p>
+<p>没什么创新点</p>
+<h1 id="on-certifying-robustness-against-backdoor-attacks-via-randomized-smoothingcvpr-2020">On Certifying Robustness against Backdoor Attacks via Randomized Smoothing(CVPR 2020)</h1>
+<p>我们采取了第一步认证的防御后门攻击。具体地说，在这项工作中，我们研究了使用一种最近被称为随机平滑的技术来证明ro- buster对后门攻击的可行性和有效性。随机平滑最初是为了证明对抗例子的鲁棒性而发展起来的。我们推广了随机平滑的方法来防范后门攻击。我们的结果表明，使用随机平滑来验证对后门攻击的鲁棒性是理论上可行的</p>
+<h1 id="on-the-effectiveness-of-mitigating-data-poisoning-attacks-with-gradient-shapingarxiv-2020">On the Effectiveness of Mitigating Data Poisoning Attacks with Gradient Shaping（arxiv 2020)</h1>
+<p>我们关注所有攻击之间的一个共同元素:它们修改计算出的梯度以训练模型。我们确定了两个主要的伪影梯度计算存在中毒:(1)他们的l2规范有显著高于那些干净的梯度，(2)他们的方向不同于干净的梯度。在此基础上，我们提出了通用中毒防御的前提条件:它必须限定梯度大小和使方向差异最小。我们称之为梯度成形。</p>
+<p>检测训练样本</p>
+<h1 id="nnoculation-broad-spectrum-and-targeted-treatment-of-backdoored-dnnsarxiv-2020">NNoculation: Broad Spectrum and Targeted Treatment of Backdoored DNNs（arxiv 2020)</h1>
+<p>在部署前阶段，NNoculation对网络进行再培训，使用“广谱”随机扰动，从一个干净的验证集中提取输入，以部分减少后门的不利影响。在部署后阶段，NNoculation通过记录原始和部署前修补过的网络之间的分歧来检测和隔离后门测试输入。然后对CycleGAN进行培训，以学习清洁验证输入和隔离输入之间的转换</p>
+<p>检测、修复模型</p>
+<h1 id="certified-robustness-to-label-flipping-attacks-via-randomized-smoothingicml2020">Certified Robustness to Label-Flipping Attacks via Randomized Smoothing（ICML2020)</h1>
+<p>在这项工作中，我们提出了对任意函数的随机平滑的统一观点，并且我们利用这个新特性提出了一种新的策略来构建点向的、对一般数据中毒具有可靠的鲁棒性的分类器。</p>
+<p>做理论的，不喜欢这种工作</p>
+<h1 id="deep-probabilistic-models-to-detect-data-poisoning-attacksarxiv-2019">Deep Probabilistic Models to Detect Data Poisoning Attacks（Arxiv 2019)</h1>
+<p>检测测试样本</p>
+<p>我们提出了两种检测有毒样品的方法，通过量化与训练模型相关的不确定性估计。在第一种方法中，我们用从干净的保留数据集学习到的参数概率分布对各个层(深层特征)的输出进行建模。在推断时，计算这些分布的深层特征的可能性，以得出不确定性估计。在第二种方法中，我们使用经过平均场变分推断训练的贝叶斯深度神经网络来估计与预测相关的模型不确定性。这些方法的不确定度估计被用来区分干净的和有毒的样品。</p>
+<h1 id="poison-as-a-cure-detecting-neutralizing-variable-sized-backdoor-attacks-in-deep-neural-networksarxiv2019">Poison as a Cure: Detecting &amp; Neutralizing Variable-Sized Backdoor Attacks in Deep Neural Networks（Arxiv2019)</h1>
+<p>它由几个部分组成:一是提取后门有毒信号，检测有毒目标和基类，并从干净的样本中过滤出有保证的有毒样本。我们的辩护的最后一部分包括在一个用提取的有毒信号增强的数据集上对中毒模型进行再训练，并对中毒样品进行校正重新标记以消除后门。</p>
+<p>检测样本</p>
+<h1 id="neuroninspect-detecting-backdoors-in-neural-networks-via-output-explanationsarxiv-2019">NeuronInspect: Detecting Backdoors in Neural Networks via Output Explanations(arxiv 2019)</h1>
+<p>在本文中，我们提出了NeuronInspect框架，通过输出解释技术检测深层神经网络中的木马后门。NeuronIn- spect首先通过生成输出层的解释热图来识别后门攻击目标的存在。我们观察到，从清洁和后门模型生成的热图有不同的特征。因此，我们从被攻击的模型中提取出度量解释贡献的特征，即:稀疏、平滑和持久。我们结合这些特征，利用离群点检测来计算出离群点，即攻击目标的集合。</p>
+<p>检测样本</p>
+<h1 id="robust-anomaly-detection-and-backdoor-attack-detection-via-differential-privacyarxiv-2019">ROBUST ANOMALY DETECTION AND BACKDOOR ATTACK DETECTION VIA DIFFERENTIAL PRIVACY（Arxiv 2019)</h1>
+<p>检测训练样本</p>
+<p>在本文中，我们证明了应用差分隐私可以提高离群检测和新奇检测的效用，并扩展了后门攻击中中毒样本的检测。</p>
+<h1 id="defending-neural-backdoors-via-generative-distribution-modelingneurips-2019">Defending Neural Backdoors via Generative Distribution Modeling（NeurIPS 2019)</h1>
+<p>我们提出了用于高维无采样生成模型的最大熵阶梯近似器(MESA)，并利用它来恢复触发器分布。我们还开发了一种防御技术，从后门模型中移除触发器。</p>
+<p>检测模型</p>
+<h1 id="detection-of-backdoors-in-trained-classifiers-without-access-to-the-training-setarxiv-2020">Detection of Backdoors in Trained Classifiers Without Access to the Training Set(arxiv 2020)</h1>
+<p>我们的AD方法包括学习(通过适当的代价函数最小化)最小尺寸/范数扰动(假设后门)，对于所有(s, t)对，需要诱导分类器将(大多数)样本从类s误分类到类t。我们的假设是，非攻击对需要较大的扰动，而攻击对(s∗，t∗)需要较小的扰动。这在实验中得到了令人信服的证实。</p>
+<p>检测模型</p>
+<h1 id="model-agnostic-defence-against-backdoor-attacks-in-machine-learningarxiv-2019">Model Agnostic Defence against Backdoor Attacks in Machine Learning（Arxiv 2019)</h1>
+<p>对于给定的图像分类模型，我们的方法分析它接收的输入，并确定模型是否被后门。除了这个功能，我们还通过确定有毒图像的正确预测来减轻这些攻击。NEO一个吸引人的特性是，它可以第一次分离并重建后门触发器。NEO也是第一种防御方法，据我们所知，它完全是一个黑匣子。NEO本质上包括两个步骤，检测后门激活触发器和一旦检测到它的存在，随后阻止触发器。我们的算法的目标是在接收到作为输入的后门图像的第一个实例上检测后门，从而尽快防御潜在的后门攻击。</p>
+<p>检测模型</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/09/29/how-to-attack-dl-system-backdoor-attack/" rel="next" title="how_to_attack_dl_system_backdoor_attack">
+                <i class="fa fa-chevron-left"></i> how_to_attack_dl_system_backdoor_attack
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/03/25/Expert/" rel="prev" title="Think Like an Amateur, Do As an Expert">
+                Think Like an Amateur, Do As an Expert <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#interpretability-guided-defense-against-backdoor-attacks-to-deep-neural-networksieee-transactions-on-computer-aided-design-of-integrated-circuits-and-systems-2021"><span class="nav-number">1.</span> <span class="nav-text">Interpretability-Guided Defense against Backdoor Attacks to Deep Neural Networks（IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems 2021）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#demon-in-the-variant-statistical-analysis-of-dnns-for-robust-backdoor-contamination-detectionusenix-securtiy-2021"><span class="nav-number">2.</span> <span class="nav-text">Demon in the Variant: Statistical Analysis of DNNs for Robust Backdoor Contamination Detection（USENIX Securtiy 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#detecting-ai-trojans-using-meta-neural-analysissp-2021"><span class="nav-number">3.</span> <span class="nav-text">Detecting AI Trojans Using Meta Neural Analysis（S&amp;P 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#black-box-detection-of-backdoor-attacks-with-limited-information-and-dataiccv2021"><span class="nav-number">4.</span> <span class="nav-text">Black-box Detection of Backdoor Attacks with Limited Information and Data（ICCV2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#baseline-pruning-based-approach-to-trojan-detection-in-neural-networksiclr2021-workshop"><span class="nav-number">5.</span> <span class="nav-text">BASELINE PRUNING-BASED APPROACH TO TROJAN DETECTION IN NEURAL NETWORKS（ICLR2021 workshop）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#neural-trojansarxiv-2017"><span class="nav-number">6.</span> <span class="nav-text">Neural Trojans（Arxiv 2017)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fine-pruning-defending-against-backdooring-attacks-on-deep-neural-networksarxiv-2018"><span class="nav-number">7.</span> <span class="nav-text">Fine-Pruning: Defending Against Backdooring Attacks on Deep Neural Networks（Arxiv 2018)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#spectral-signatures-in-backdoor-attacksneurips2018"><span class="nav-number">8.</span> <span class="nav-text">Spectral Signatures in Backdoor Attacks（NeurIPS2018)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#detecting-backdoor-attacks-on-deep-neural-networks-by-activation-clusteringarxiv-2018"><span class="nav-number">9.</span> <span class="nav-text">Detecting Backdoor Attacks on Deep Neural Networks by Activation Clustering(arxiv 2018)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sentinet-detecting-localized-universal-attacks-against-deep-learning-systemssp-workshop2020"><span class="nav-number">10.</span> <span class="nav-text">SentiNet: Detecting Localized Universal Attacks Against Deep Learning Systems（S&amp;P workshop2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#universal-litmus-patterns-revealing-backdoor-attacks-in-cnnsarxiv2020"><span class="nav-number">11.</span> <span class="nav-text">Universal Litmus Patterns: Revealing Backdoor Attacks in CNNs（Arxiv2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#simple-attack-agnostic-defense-against-targeted-training-set-attacks-using-cosine-similarityicml-2021"><span class="nav-number">12.</span> <span class="nav-text">Simple, Attack-Agnostic Defense Against Targeted Training Set Attacks Using Cosine Similarity(ICML 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#neural-attention-distillation-erasing-back--door-triggers-from-deep-neural-networksiclr2021"><span class="nav-number">13.</span> <span class="nav-text">NEURAL ATTENTION DISTILLATION: ERASING BACK- DOOR TRIGGERS FROM DEEP NEURAL NETWORKS（ICLR2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#towards-inspecting-and-eliminating-trojan-backdoors-in-deep-neural-networksicdm2020"><span class="nav-number">14.</span> <span class="nav-text">Towards Inspecting and Eliminating Trojan Backdoors in Deep Neural Networks（ICDM2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gangsweep-sweep-out-neural-backdoors-by-ganmm2020"><span class="nav-number">15.</span> <span class="nav-text">GangSweep: Sweep out Neural Backdoors by GAN（MM2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#one-pixel-signature-characterizing-cnn-models-for-backdoor-detectioneccv2020"><span class="nav-number">16.</span> <span class="nav-text">One-Pixel Signature: Characterizing CNN Models for Backdoor Detection（ECCV2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#februus-input-purification-defense-against-trojan-attacks-on-deep-neural-networkacsac2020"><span class="nav-number">17.</span> <span class="nav-text">Februus: Input Purification Defense Against Trojan Attacks on Deep Neural Network（ACSAC2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#disabling-backdoor-and-identifying-poison-data-by-using-knowledge-distillation-in-backdoor-attacks-on-deep-neuralaisec-2020"><span class="nav-number">18.</span> <span class="nav-text">Disabling Backdoor and Identifying Poison Data by using Knowledge Distillation in Backdoor Attacks on Deep Neural（AISec 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sanitais-unsupervised-data-augmentation-to-sanitize-trojaned-neural-networksarxiv-2021"><span class="nav-number">19.</span> <span class="nav-text">SanitAIs: Unsupervised Data Augmentation to Sanitize Trojaned Neural Networks（Arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#trojan-signatures-in-dnn-weightsarxiv-2021"><span class="nav-number">20.</span> <span class="nav-text">Trojan Signatures in DNN Weights（Arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#detect-and-remove-watermark-in-deep-neural-networks-via-generative-adversarial-networksarxiv-2021"><span class="nav-number">21.</span> <span class="nav-text">Detect and remove watermark in deep neural networks via generative adversarial networks（Arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#topological-detection-of-trojaned-neural-networksarxiv-2021"><span class="nav-number">22.</span> <span class="nav-text">Topological Detection of Trojaned Neural Networks(Arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#detecting-backdoor-in-deep-neural-networks-via-intentional-adversarial-perturbationsarxiv2021"><span class="nav-number">23.</span> <span class="nav-text">Detecting Backdoor in Deep Neural Networks via Intentional Adversarial Perturbations（Arxiv2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#provable-guarantees-against-data-poisoning-using-self-expansion-and-compatibilityarxiv2021"><span class="nav-number">24.</span> <span class="nav-text">Provable Guarantees against Data Poisoning Using Self-Expansion and Compatibility（Arxiv2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#spectre-defending-against-backdoor-attacks-using-robust-statisticsicml-2020"><span class="nav-number">25.</span> <span class="nav-text">SPECTRE: Defending Against Backdoor Attacks Using Robust Statistics（ICML 2020）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#misa-online-defense-of-trojaned-models-using-misattributionsarxiv-2021"><span class="nav-number">26.</span> <span class="nav-text">MISA: Online Defense of Trojaned Models using Misattributions（Arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#top-backdoor-detection-in-neural-networks-via-transferability-of-perturbationarxiv-2021"><span class="nav-number">27.</span> <span class="nav-text">TOP: Backdoor Detection in Neural Networks via Transferability of Perturbation(Arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#strip-a-defence-against-trojan-attacks-on-deep-neural-networksacsac-2020"><span class="nav-number">28.</span> <span class="nav-text">STRIP: A Defence Against Trojan Attacks on Deep Neural Networks(ACSAC 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ex-ray-distinguishing-injected-backdoor-from-natural-features-in-neural-networks-by-examining-differential-feature-symmetryarxiv2021"><span class="nav-number">29.</span> <span class="nav-text">EX-RAY: Distinguishing Injected Backdoor from Natural Features in Neural Networks by Examining Differential Feature Symmetry（Arxiv2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dp-instahide-provably-defusing-poisoning-and-backdoor-attacks-with-differentially-private-data-augmentationsarxiv-2021"><span class="nav-number">30.</span> <span class="nav-text">DP-InstaHide: Provably Defusing Poisoning and Backdoor Attacks with Differentially Private Data Augmentations（Arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#what-doesnt-kill-you-makes-you-robuster-adversarial-training-against-poisons-and-backdoorsarxiv-2021"><span class="nav-number">31.</span> <span class="nav-text">What Doesn’t Kill You Makes You Robust(er): Adversarial Training against Poisons and Backdoors（arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#backdoor-scanning-for-deep-neural-networks-through-k-arm-optimizationarxiv-2021"><span class="nav-number">32.</span> <span class="nav-text">Backdoor Scanning for Deep Neural Networks through K-Arm Optimization(arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tad-trigger-approximation-based-black-box-trojan-detection-for-aiarxiv-2021"><span class="nav-number">33.</span> <span class="nav-text">TAD: Trigger Approximation based Black-box Trojan Detection for AI（Arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#has-nets-a-heal-and-select-mechanism-to-defend-dnns-against-backdoor-attacks-for-data-collection-scenariosarxiv-2020"><span class="nav-number">34.</span> <span class="nav-text">HaS-Nets: A Heal and Select Mechanism to Defend DNNs Against Backdoor Attacks for Data Collection Scenarios（arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#deepsweep-an-evaluation-framework-for-mitigating-dnn-backdoor-attacks-using-data-augmentationasiaccs-2021"><span class="nav-number">35.</span> <span class="nav-text">DeepSweep: An Evaluation Framework for Mitigating DNN Backdoor Attacks using Data Augmentation（AsiaCCS 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#detecting-trojaned-dnns-using-counterfactual-attributionsarxiv-2020"><span class="nav-number">36.</span> <span class="nav-text">Detecting Trojaned DNNs Using Counterfactual Attributions（arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#strong-data-augmentation-sanitizes-poisoning-and-backdoor-attacks-without-an-accuracy-tradeoffarxiv-2020"><span class="nav-number">37.</span> <span class="nav-text">STRONG DATA AUGMENTATION SANITIZES POISONING AND BACKDOOR ATTACKS WITHOUT AN ACCURACY TRADEOFF（arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cleann-accelerated-trojan-shield-for-embedded-neural-networksarxiv-2020"><span class="nav-number">38.</span> <span class="nav-text">CLEANN: Accelerated Trojan Shield for Embedded Neural Networks（Arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#removing-backdoor-based-watermarks-in-neural-networks-with-limited-dataarxiv-2020"><span class="nav-number">39.</span> <span class="nav-text">Removing Backdoor-Based Watermarks in Neural Networks with Limited Data（Arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#noise-response-analysis-of-deep-neural-networks-quantifies-robustness-and-fingerprints-structural-malwaresdm-2021"><span class="nav-number">40.</span> <span class="nav-text">Noise-Response Analysis of Deep Neural Networks Quantifies Robustness and Fingerprints Structural Malware（SDM 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#practical-detection-of-trojan-neural-networks-data-limited-and-data-free-caseseccv2020"><span class="nav-number">41.</span> <span class="nav-text">Practical Detection of Trojan Neural Networks: Data-Limited and Data-Free Cases（ECCV2020)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%B0%91%E9%87%8F%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">41.1.</span> <span class="nav-text">基于少量数据的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E9%9C%80%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">41.2.</span> <span class="nav-text">无需数据的方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cassandra-detecting-trojaned-networks-from-adversarial-perturbationsarxiv-2021"><span class="nav-number">42.</span> <span class="nav-text">Cassandra: Detecting Trojaned Networks from Adversarial Perturbations（Arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#odyssey-creation-analysis-and-detection-of-trojan-modelsarxiv-2020"><span class="nav-number">43.</span> <span class="nav-text">Odyssey: Creation, Analysis and Detection of Trojan Models（arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#confoc-content-focus-protection-against-trojan-attacks-on-neural-networksarxiv-2020"><span class="nav-number">44.</span> <span class="nav-text">ConFoc: Content-Focus Protection Against Trojan Attacks on Neural Networks（Arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#a-unified-framework-for-analyzing-and-detecting-malicious-examples-of-dnn-modelsarxiv-2020"><span class="nav-number">45.</span> <span class="nav-text">A Unified Framework for Analyzing and Detecting Malicious Examples of DNN Models（Arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#scalable-backdoor-detection-in-neural-networksarxiv-2020"><span class="nav-number">46.</span> <span class="nav-text">Scalable Backdoor Detection in Neural Networks（Arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#adversarial-examples-are-useful-tooarxiv-2020"><span class="nav-number">47.</span> <span class="nav-text">Adversarial examples are useful too!（arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bridging-mode-connectivity-in-loss-landscapes-and-adversarial-robustnessiclr2020"><span class="nav-number">48.</span> <span class="nav-text">BRIDGING MODE CONNECTIVITY IN LOSS LANDSCAPES AND ADVERSARIAL ROBUSTNESS(ICLR2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#neural-network-laundering-removing-black-box-backdoor-watermarks-from-deep-neural-networksarxiv-2020"><span class="nav-number">49.</span> <span class="nav-text">Neural Network Laundering: Removing Black-Box Backdoor Watermarks from Deep Neural Networks（Arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rab-provable-robustness-against-backdoor-attacksarxiv-2021"><span class="nav-number">50.</span> <span class="nav-text">RAB: Provable Robustness Against Backdoor Attacks(Arxiv 2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#aegis-exposing-backdoors-in-robust-machine-learning-modelsarxiv2021"><span class="nav-number">51.</span> <span class="nav-text">AEGIS: Exposing Backdoors in Robust Machine Learning Models(Arxiv2021)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#defending-against-backdoor-attack-on-deep-neural-networksarxiv-2021"><span class="nav-number">52.</span> <span class="nav-text">Defending against Backdoor Attack on Deep Neural Networks（Arxiv 2021）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#on-certifying-robustness-against-backdoor-attacks-via-randomized-smoothingcvpr-2020"><span class="nav-number">53.</span> <span class="nav-text">On Certifying Robustness against Backdoor Attacks via Randomized Smoothing(CVPR 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#on-the-effectiveness-of-mitigating-data-poisoning-attacks-with-gradient-shapingarxiv-2020"><span class="nav-number">54.</span> <span class="nav-text">On the Effectiveness of Mitigating Data Poisoning Attacks with Gradient Shaping（arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#nnoculation-broad-spectrum-and-targeted-treatment-of-backdoored-dnnsarxiv-2020"><span class="nav-number">55.</span> <span class="nav-text">NNoculation: Broad Spectrum and Targeted Treatment of Backdoored DNNs（arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#certified-robustness-to-label-flipping-attacks-via-randomized-smoothingicml2020"><span class="nav-number">56.</span> <span class="nav-text">Certified Robustness to Label-Flipping Attacks via Randomized Smoothing（ICML2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#deep-probabilistic-models-to-detect-data-poisoning-attacksarxiv-2019"><span class="nav-number">57.</span> <span class="nav-text">Deep Probabilistic Models to Detect Data Poisoning Attacks（Arxiv 2019)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#poison-as-a-cure-detecting-neutralizing-variable-sized-backdoor-attacks-in-deep-neural-networksarxiv2019"><span class="nav-number">58.</span> <span class="nav-text">Poison as a Cure: Detecting &amp; Neutralizing Variable-Sized Backdoor Attacks in Deep Neural Networks（Arxiv2019)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#neuroninspect-detecting-backdoors-in-neural-networks-via-output-explanationsarxiv-2019"><span class="nav-number">59.</span> <span class="nav-text">NeuronInspect: Detecting Backdoors in Neural Networks via Output Explanations(arxiv 2019)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#robust-anomaly-detection-and-backdoor-attack-detection-via-differential-privacyarxiv-2019"><span class="nav-number">60.</span> <span class="nav-text">ROBUST ANOMALY DETECTION AND BACKDOOR ATTACK DETECTION VIA DIFFERENTIAL PRIVACY（Arxiv 2019)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#defending-neural-backdoors-via-generative-distribution-modelingneurips-2019"><span class="nav-number">61.</span> <span class="nav-text">Defending Neural Backdoors via Generative Distribution Modeling（NeurIPS 2019)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#detection-of-backdoors-in-trained-classifiers-without-access-to-the-training-setarxiv-2020"><span class="nav-number">62.</span> <span class="nav-text">Detection of Backdoors in Trained Classifiers Without Access to the Training Set(arxiv 2020)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#model-agnostic-defence-against-backdoor-attacks-in-machine-learningarxiv-2019"><span class="nav-number">63.</span> <span class="nav-text">Model Agnostic Defence against Backdoor Attacks in Machine Learning（Arxiv 2019)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
