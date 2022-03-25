@@ -1718,410 +1718,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/23/1Privacy-Risks-of-Securing-Machine-Learning-Models-against-Adversarial-Examples-CCS2019/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yale's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/09/23/1Privacy-Risks-of-Securing-Machine-Learning-Models-against-Adversarial-Examples-CCS2019/" itemprop="url">Untitled</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-09-23T16:17:50+08:00">
-                2021-09-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="abstract">Abstract</h1>
-<p>在之前的研究中，安全和隐私是被分开考虑的，一个领域的防御方法是否会对另一个领域产生的意想不到的影响尚不清楚。</p>
-<p>作者结合了这两个领域，衡量了成员推理攻击对六种最先进的防御方法的成功程度，这些防御方法是用于提升模型鲁棒性的，而成员推理攻击可以判断一个单独的数据记录是否在模型训练集中，这种攻击的准确率反映了训练算法对训练集个体成员的信息泄露风险。针对对抗样本的防御方法实际上影响了模型的决策边界，对于每个输入样本周围的一小块区域，模型的预测保持不变，然而这是在训练数据上优化得到的，因此，训练集中的个体数据记录对防御方法得到的鲁棒模型有显著影响，这使得模型更容易受到推理攻击。</p>
-<p>为了进行成员推理攻击，作者使用了现在的推理方法（利用模型的预测），还提出了两种新的推理方法（利用鲁棒模型在对抗样本上的结构性质）。实验表明，对抗防御方法会增加模型被成员推理攻击的风险，风险提升了4.5倍。</p>
-<h1 id="introduction">Introduction</h1>
-<p>对于AI来说，</p>
-<p>在<strong>安全</strong>领域，攻击者的目标是让模型误分类，攻击方法可以分为两类：对抗攻击和投毒攻击(其实说后门攻击更恰当)</p>
-<p>在<strong>隐私</strong>领域，攻击者的目标是获取关于模型训练数据或目标模型的隐私信息，</p>
-<p>针对数据隐私攻击方法包括：成员推理攻击(37,47,64)，属性推理攻击[12],隐蔽信道模型训练攻击[52]</p>
-<p>针对模型隐私攻击方法包括：模型窃取攻击[58],超参数窃取攻击[60]</p>
-<p>成员推理攻击的目的是推断一个数据点是否属于目标模型的训练集，反映了模型对其训练数据的信息泄露，还可能带来隐私风险，因为成员会泄露个人的敏感信息。已有的工作表明，在黑盒环境下，成员推理攻击的成功与否与目标模型的泛化误差高度相关[47,64].对抗鲁棒模型的目的是通过确保每个输入样本周围的小区域(如<span class="math inline">\(l_\infty\)</span>)的预测不变来增强目标模型的鲁棒性，但是该目标只是在目标数据集上进行了优化。直觉上来看，对抗鲁棒模型可能增加模型的泛化误差和对训练集变化的敏感性，从而增加成员推理攻击的风险。</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923170816487.png" alt="image-20210923170816487" /><figcaption aria-hidden="true">image-20210923170816487</figcaption>
-</figure>
-<p>从图中可以看到，原模型和鲁棒模型的训练数据(成员数据)和测试数据（非成员数据）的交叉熵损失的直方图，可以看到，与原模型相比，鲁棒模型更容易区分是否为成员数据</p>
-<p>作者做了一系列实验，证明鲁棒模型比原模型更容易受到成员推理攻击。</p>
-<h1 id="background-and-related-work-adversarial-examples-and-membership-inference-attacks">BACKGROUND AND RELATED WORK: ADVERSARIAL EXAMPLES AND MEMBERSHIP INFERENCE ATTACKS</h1>
-<h2 id="adversarial-examples-amd-defenses">Adversarial Examples amd Defenses</h2>
-<p>对抗样本的定义：</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923182413911.png" alt="image-20210923182413911" /><figcaption aria-hidden="true">image-20210923182413911</figcaption>
-</figure>
-<p>其中<span class="math inline">\(B_\epsilon(x)\)</span>是在<span class="math inline">\(x\)</span>的perturbation budget <span class="math inline">\(\epsilon\)</span>的周围的一系列点组成的集合。通常使用<span class="math inline">\(l_p\)</span>ball作为生成对抗样本时的约束，即<span class="math inline">\(B_\epsilon(x)={x&#39;|||x&#39;-x||_p\leq\epsilon}\)</span>.在本文中考虑<span class="math inline">\(l_\infty\)</span>ball，因为它被大量对抗防御方案采用[16,33,34,40,50,21,61,66]</p>
-<p>上式的解被称作非定向的对抗样本，目的是为了实现任意的误分类，而定向的对抗样本则需要确保模型会误分类为特定的样本<span class="math inline">\(y&#39;\)</span>，即</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923183255747.png" alt="image-20210923183255747" /><figcaption aria-hidden="true">image-20210923183255747</figcaption>
-</figure>
-<p>为了实现对抗攻击的鲁棒性，研究人员不是用下面这种正常的算法</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923183359078.png" alt="image-20210923183359078" /><figcaption aria-hidden="true">image-20210923183359078</figcaption>
-</figure>
-<p>而是加上了额外的鲁棒损失函数</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923183426865.png" alt="image-20210923183426865" /><figcaption aria-hidden="true">image-20210923183426865</figcaption>
-</figure>
-<p>其中<span class="math inline">\(\alpha\)</span>原损失与鲁棒损失之间权衡的比率，<span class="math inline">\(l_R\)</span>是鲁棒损失，其可以被形式化为在约束<span class="math inline">\(B_\epsilon(x)\)</span>下最大化预测损失<span class="math inline">\(l&#39;\)</span>，即</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923183642808.png" alt="image-20210923183642808" /><figcaption aria-hidden="true">image-20210923183642808</figcaption>
-</figure>
-<p>其中<span class="math inline">\(l&#39;\)</span>可以和<span class="math inline">\(l\)</span>相同或者是近似的损失函数</p>
-<p>然而上式通常很难找到明确的解，因此，对抗防御的方案提出了不同的方法来近似鲁棒损失<span class="math inline">\(l_R\)</span>，可以分为两类：</p>
-<p><strong>Empirical defenses</strong></p>
-<p>在对抗训练算法可以被表达为： <img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923183933182.png" alt="image-20210923183933182" /></p>
-<p>有三种防御方案都可以归为这类：</p>
-<p>1）基于PGD的对抗训练</p>
-<p>这属于实证型的防御empirical defense method</p>
-<p>使用PGD生成对抗样本来最大化交叉熵损失(<span class="math inline">\(l&#39;=l\)</span>)，并完全在这些对抗样本上训练(<span class="math inline">\(\alpha=0\)</span>)</p>
-<p>PGD攻击包含T梯度下降step，这可以表示为</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923184339264.png" alt="image-20210923184339264" /><figcaption aria-hidden="true">image-20210923184339264</figcaption>
-</figure>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923184359197.png" alt="image-20210923184359197" /><figcaption aria-hidden="true">image-20210923184359197</figcaption>
-</figure>
-<p>2)分布式对抗训练</p>
-<p>与其如PGD严格遵循扰动约束，该方案通过求解交叉熵损失的拉格朗日松弛来生成对抗样本</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923184625043.png" alt="image-20210923184625043" /><figcaption aria-hidden="true">image-20210923184625043</figcaption>
-</figure>
-<p>他们推到了<span class="math inline">\(l_2\)</span>分布式鲁棒性的统计保证（在严格要求损失函数<span class="math inline">\(l\)</span>在<span class="math inline">\(x\)</span>上是平滑的推导得到)，本来这属于certified robustness,但是由于作者使用ReLU，这是非平滑的损失函数，同时是在<span class="math inline">\(l_\infty\)</span>距离内生成对抗样本，所以将该方案归为empirical</p>
-<p>3）基于差异的对抗训练</p>
-<p>不使用交叉熵，而是使用良性输出和对抗输出的差异，如KL散度作为损失函数，并结合原来的交叉熵损失</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923185428704.png" alt="image-20210923185428704" /><figcaption aria-hidden="true">image-20210923185428704</figcaption>
-</figure>
-<p><strong>Verifiable defense</strong></p>
-<p>尽管经验性、实证性的防御方案对最先进的对抗样本是有效的，但是并不能保证这种鲁棒性，为了获得鲁棒性的保证，研究人员提出了在对抗扰动约束下计算预测损失上界的验证方法。如果在经过验证的最坏情况下模型仍然能正确预测输入，则可以确定在对抗扰动约束下不存在误分类。</p>
-<p>所以，可验证防御方案通过使用验证过的最坏情况预测损失作为鲁棒损失函数<span class="math inline">\(l_R\)</span>考虑了验证过程。因此，现在的鲁棒训练算法为：</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923185927319.png" alt="image-20210923185927319" /><figcaption aria-hidden="true">image-20210923185927319</figcaption>
-</figure>
-<p>作者考虑了下列的verifiable defense methods</p>
-<p>1)duality-based verification</p>
-<p>通过在非凸ReLU操作上用凸松弛法求解其对偶问题，计算出验证过的最坏情况损失（worst case loss），然后只最小化这个过逼近的鲁棒损失值。还可以将这种对偶松弛方法与随机投影技术相结合，以扩展到更复杂的神经网络结构，如ResNet</p>
-<p>2）Abstract Interpretation-based verification</p>
-<p>利用抽象解释技术来计算worst-cases loss:利用抽象域(如区间域、环域)表示输入层的扰动约束，在其上应用abstract transformer,得到模型输出的最大验证范围，在logits上采用一个softplus函数来计算鲁棒损失函数，然后将其与原损失函数相结合<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923190502199.png" alt="image-20210923190502199" /></p>
-<p>3）Interval Bound Propagation-based verification</p>
-<p>将扰动约束表示为一个有界区间域，并将这个约束传播到输出层。鲁棒损失被计算为vertified worst-case 输出的交叉熵损失，然后与原损失函数结合作为训练期间最终的损失函数</p>
-<h2 id="membership-inference-attacks">Membership Inference Attacks</h2>
-<p>Shokri等人的成员推理攻击技术：为了训练推理模型，引入了影子模型技术：1.首先训练多个影子模型，模拟目标模型的行为2.基于影子模型在自身训练数据、测试数据上的输出，攻击者获得一个标记过的数据集，3.训练推理模型，对目标模型进行成员推理攻击。推理模型的输入是目标数据记录上的目标模型输出的预测向量</p>
-<p>如果是简单的模型的话，直接使用置信度的阈值进行攻击也是可行的</p>
-<h1 id="membership-inference-attacks-against-robust-models">MEMBERSHIP INFERENCE ATTACKS AGAINST ROBUST MODELS</h1>
-<p><strong>模型推理攻击的性能与目标模型的泛化误差高度相关。</strong>一个简单的攻击算法可以根据输入是否被正确分类来推断成员属性，在这种情况下，目标模型的训练精度和测试精度之间巨大的差距会导致显著的成员推理攻击影响(因为成员数据都被正确分类了，而非成员数据则没有)。鲁棒训练可能导致测试准确率下降，此外当评估鲁棒模型在对抗样本上的准确率时泛化误差会被扩大。因此，与原模型相比，鲁棒模型在良性环境或对抗性环境下，由于表现出更更大的泛化误差，所以可能会泄露更多的成员信息。</p>
-<p><strong>模型推理攻击的性能与目标模型对训练数据的敏感性有关。</strong>敏感性衡量的是数据点对模型性能的影响，通过计算在数据点在和不在训练集中时模型的预测差异得到。直观上来看，当一个训练数据点对目标模型有很大影响（敏感度大）时，它的模型预测和在测试点上的模型预测会有区别，攻击者因此就可以轻易区分是否为成员数据。鲁棒算法旨在确保模型预测对任何数据点周围的ball保持不变，在实际中，对训练数据保证了这一点，因此放大了训练数据对模型的影响，因此，与自然训练相比，鲁棒训练算法通过增加模型对训练数据的敏感性，使模型更容易受到成员推理攻击。</p>
-<p>为了验证上述观点，我们从下图就可以看出，与原模型相比，鲁棒模型在训练数据的预测损失和测试数据的预测损失之间存在较大的差异。</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923191959930.png" alt="image-20210923191959930" /><figcaption aria-hidden="true">image-20210923191959930</figcaption>
-</figure>
-<p>使用下式衡量成员推理攻击准确率</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/Privacy%20Risks%20of%20Securing%20Machine%20Learning%20Models%20against%20Adversarial%20Examples-CCS2019.assets/image-20210923193228871.png" alt="image-20210923193228871" /><figcaption aria-hidden="true">image-20210923193228871</figcaption>
-</figure>
-<p>还有些其他指标</p>
-<h1 id="experiment-setup">Experiment Setup</h1>
-<h1 id="conclusion">Conclusion</h1>
-<p>本文通过研究对抗训练方案的成员推理攻击的风险，将安全与隐私两个领域联系起来。为了评估成员推理攻击的营私风险，除了使用传统的基于良性输入的预测置信度的方法外，还提出了利用对抗鲁棒模型的方案的结构特性的推理方法。与原模型相比，所有6种鲁棒方法都会使机器学习模型更容易受到成员推理攻击。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/23/1OnTheTradeOff-NeurIPS2020/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yale's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/09/23/1OnTheTradeOff-NeurIPS2020/" itemprop="url">Untitled</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-09-23T14:51:05+08:00">
-                2021-09-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="abstract">Abstract</h1>
-<p>DNN容易受到对抗攻击，也容易受到厚么攻击，这两类攻击之间的相互作用还没有被仔细研究。</p>
-<p>本文通过实验研究对抗攻击对抗性和后门攻击鲁棒性之间是否会相互影响，并且证明，当网络对对抗攻击更具鲁棒性时，会更容易受到后门攻击，并分析了原因，介绍如何利用这种trade-off。</p>
-<p>该研究表明未来的防御研究应该在设计算法或者鲁棒性时需要同时考虑对抗攻击、后门攻击，以避免虚假的安全感。</p>
-<h1 id="introduction">Introduction</h1>
-<p>应对对抗攻击的方案可以分为两类：基于经验的和基于实证的，对应着理论上的certified robustness,adversarial training</p>
-<p>分别有：</p>
-<p>[2,3,8,10–13,15,21,28,35,40–43]</p>
-<p>[14,17,19,20,24,26,29,32,44]</p>
-<p>应对后门攻击的方案可以作者没有归类，因为写本文的时候应在18，19年，但是后门攻击刚起来，对应的防御方案不多，作者举例子包括在训练前检测和删除毒化数据[6,36]，或者在训练后对模型进行微调以消除后门[30,39] 当时这些防御方案都是只针对一种类型的攻击设计的，对抗攻击和后门攻击之间的相互作用还没有被研究过。</p>
-<p>对于攻击者可以同时操纵训练数据、测试数据的情况，了解两者之间的相互作用是至关重要的。</p>
-<p>本文通过实验研究对抗鲁棒性和后门鲁棒性之间的相互影响</p>
-<h1 id="related-works">Related works</h1>
-<p>这里分别对对抗攻击和后门攻击做了简介。</p>
-<p>作者这里提到的后门攻击是指通过数据投毒实现的后门攻击。这类后门攻击攻击有两种类型：dirty-label,clean-label，攻击者更喜欢后者，因为后者的标签是正确的，因此毒化数据更难被检测，但是clean-label攻击中的触发器在测试阶段要被添加到测试样本上，所以当前该类攻击都假设模型是由攻击者训练出来的，或者有个辅助模型，能够指出模型将会学习哪些特征并使用这些特征去增强触发器。</p>
-<p>后门攻击的防御可以分为训练前防御和训练后防御，在训练后防御中，对已经植入后门的模型的潜在的触发器进行逆向工程，然后使用新创建的数据集对模型进行微调，在微调过程中，模型会发现触发器对做出正确预测毫无用户，于是就“忘记”了后门。</p>
-<p>同时考虑两类攻击的工作还有【27】，【33】，前者指出数据投毒也可以用于降低模型的对抗鲁棒性，后者使用后门技术搭建蜜罐用于检测对抗攻击。</p>
-<h1 id="the-trade-off-and-its-cause">The trade off and its cause</h1>
-<p>对抗鲁棒性和后门鲁棒性不能同时轻易实现，因为存在trade-off</p>
-<h2 id="experiments">Experiments</h2>
-<p>分别在MNIST,CIFAR10，ImageNet上实验。</p>
-<p>首先使用常规训练和对抗训练对相同架构进行实验，并比较其鲁棒性</p>
-<p>为了评估模型的后门鲁棒性，作者设计了一种新的clean-label attack.（感觉就是普通的数据投毒攻击，根本不算clean-label）</p>
-<p>评估指标：良性测试集上的准确性、对抗鲁棒性（PGD生成的对抗样本数据集上的准确性）、后门攻击的成功率(全部毒化测试样本中被模型分类到目标类的比率)</p>
-<p>结果如下</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923152143824.png" alt="image-20210923152143824" /><figcaption aria-hidden="true">image-20210923152143824</figcaption>
-</figure>
-<p>对比标准训练和对抗训练所在的行，可以看到提高对抗鲁棒性的同时降低了后门鲁棒性</p>
-<p>除了对抗训练之外，还测试了另外两种对抗防御措施，即Lipschitz正则化[17]和特征去噪层[44]</p>
-<p>从上图中可以看到，单独应用时无效，和对抗训练配合时才有效</p>
-<p>另外对certified robustness defense做了实验，由于其不能扩展到非常深的网络和大型数据集，所以没有ImagetNet的</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923153432302.png" alt="image-20210923153432302" /><figcaption aria-hidden="true">image-20210923153432302</figcaption>
-</figure>
-<p><strong>the cause</strong></p>
-<p>为了理解为什么对抗鲁棒模型更容易受到后门攻击，作者使用了可视化技术研究模型学到了什么</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923153637046.png" alt="image-20210923153637046" /><figcaption aria-hidden="true">image-20210923153637046</figcaption>
-</figure>
-<p>从salience map（模型预测相对于输入的梯度）可以看到：</p>
-<p>根据b,c的左图，对抗训练的网络更依赖于与人类感知一致的高级特征进行预测(这和已有的工作[18,37]一致，即对抗样本之所以会被误分类是因为他们存在非鲁棒特征（即具有高度预测性，但是难以理解的特征）)，由于对抗训练得到的网络更依赖鲁棒的、高层次的特征进行预测，所以它也倾向于从后门触发器的特征进行学习，因为触发器提供了鲁棒特征，这些特征本身就是被制作为与目标类别强相关的</p>
-<h1 id="exploting-the-trade-off">Exploting the trade-off</h1>
-<p>作者研究了触发器的其他变量，包括trigger type,trigger size,poisoned data rate,trigger position</p>
-<p>trigger type的话除了上一节直接叠加的，这里作者叫做sticker（一些文献也叫做patch），还引入了两种：watermark和channel，前者就是水印，后者则是将特定区域的像素的的蓝色channel置零</p>
-<p>对应的毒化样本如下</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923154722102.png" alt="image-20210923154722102" /><figcaption aria-hidden="true">image-20210923154722102</figcaption>
-</figure>
-<p>结果如下</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923154835468.png" alt="image-20210923154835468" /><figcaption aria-hidden="true">image-20210923154835468</figcaption>
-</figure>
-<p>由于对抗鲁棒性变化不大，表中就没列出来，从表中可知</p>
-<p>即使将trigger size变小，后门攻击成功率依旧超过0.5，其他结论也都显而易见</p>
-<p>接下来检测后门攻击的防御方案[6,36,39]是否可以检测作者的方案，不过[6,36]在对抗训练得到的网络中无法防御后门攻击，这不意味着防御方案被绕过了，而是因为它们不适用于对抗鲁棒模型，整体的测试结果如下,其中a,b，c顺序对应接下来介绍的三类防御方案</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923161555316.png" alt="image-20210923161555316" /><figcaption aria-hidden="true">image-20210923161555316</figcaption>
-</figure>
-<p>根据模型在预测毒化测试样本和良性测试样本时的不同行为，我们可以猜测，可能神经网络中一些神经元被触发器特征激活，一些神经元被正常特征激活，因此，两类样本的神经元激活分布可能是不同的，所以可以通过检查激活来检测毒化测试样本</p>
-<p><strong>Spectral signature</strong></p>
-<p>该方案使用所有的样本训练一个辅助网络，假设目标类别已知，防御方案：1.为每个目标类别的样本计算辅助网络中的隐层上的神经元的激活向量；2.通过独立成分分析Independent component analysis(ICA)从每个激活向量中提取spectral signature；3.将sepctral siganature最远离“center（所有spectral signature的平均）”的样本识别为毒化样本.然后最终的模型使用移除毒化样本后的数据集进行训练</p>
-<p><strong>Activation clustering</strong></p>
-<p>根据激活空间中的相似性度量将样本分为两组，然后删除被人类或算法认为可以的组，接着删除在ground truth中有更多毒化样本的group实现防御。面对clean-label时，由于此时的毒化样本和良性样本非常相似，可以轻而易举逃避检测，此外存在许多误报，减少了目标类中良性样本的数量，造成数据不平衡。</p>
-<p>我们发现这种trade-off增强了neural cleanse的防御效果</p>
-<p>该方案是从毒化模型中逆向得到触发器，并将触发器加到各类样本上，对模型进行微调，从而让模型认为触发器特征是没用的。该方案对于正常训练的模型是无效的，因为不能通过逆向工程得到复杂的触发器，但是该方案对于对抗模型效果更佳，示意如下</p>
-<figure>
-<img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/OnTheTradeOff-NeurIPS2020.assets/image-20210923160240720.png" alt="image-20210923160240720" /><figcaption aria-hidden="true">image-20210923160240720</figcaption>
-</figure>
-<p>这似乎表明，对抗训练+neural cleanse可以同时提高对抗鲁棒性和后门鲁棒性</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/21/fooling-lime-and-shap/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2441,13 +2037,226 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/08/infosec2021-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/06/08/infosec2021-01/" itemprop="url">infosec2021-01</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-06-08T19:30:00+08:00">
+                2021-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>2021年网络空间安全国际学术研究交流会（上）参会小计</p>
+<p><strong>2020年9月研究生入学以来，由于疫情等因素的影响，这是我第一次参加线下学术界的会议，首先非常感谢段老师以及组委会老师的组织，能够邀请到大牛们以及做出顶级成果的博士、博后们来分享他们在20，21年被big4接收的工作。</strong><br />
+<strong>这两天会议日程排的很满，报告嘉宾们都非常不容易，对于我们参会者来说，真的是学到了很多。</strong><br />
+<strong>首先可能是因为这次请到的很多都是作为一作的博士、博后，他们对自己的工作都很熟悉，所以介绍起来游刃有余，包括UCR的屈宇博士、明尼苏达的吴秋实博士、复旦的张晓寒博后、清华的甘水滔博后等；其次请到的教授、研究员们都还是奋战在科研第一线的，讲起来滔滔不绝，如数家珍，这或许就是学术的魅力Orz，包括南科大的张殷乾老师、华科的袁斌老师等</strong> <strong>另，由于可能涉及版权问题，参会拍的照片就不放上来了，有心的同学的话完全可以试试直接邮箱联系对应的老师交流</strong></p>
+<h2 id="大概分享一下这次会议给我印象比较深的点">大概分享一下这次会议给我印象比较深的点</h2>
+<h3 id="section">1.</h3>
+<p>张玉清老师分享的big4的数据分析结论，从团队来看，UC系统甩开美国其他高校一条街，除去UC系统，中国的top5和美国的top5不相上下，国内近年big4发的最多的高校是清华、中科院、浙大；从团队来看，是复旦杨珉教授的团队，之后是清华段海新、国重陈恺老师；从趋势上看，做安全计算、区块链安全、机器学习安全、fuzzing的工作依次递减（fuzzing远低于前三者；这个安全计算不清楚张老师是怎么算的，可能是因为云计算、联邦学习等系统里都会涉及安全多方计算、差分隐私等技术，所以统计出来比较多）<br />
+### 2. 南洋理工大学的刘扬老师介绍的多年来做fuzzing的历程，听段海新老师介绍，刘老师在fuzzing的地位就是鼻祖级的。刘老师他们一直都是围绕自动机展开，把target转成自动机然后进一步fuzzing，自动机能这么玩，我之前是不知道的，加上没有做过学术界的fuzzing，这个报告算是长见识了<br />
+其实刘老师还介绍了很多其他的工作，都做的非常好，我居然是第一次听说刘老师，真是孤陋寡闻了。在报告的最后刘老师给出了一些经验，包括：</p>
+<ul>
+<li>每种方法都可以被enhanced
+<ul>
+<li>Symbolic Execution(whitebox)</li>
+<li>Good Test Cases(Blackbox)</li>
+<li>Feedback based Testing(Greybox)</li>
+</ul></li>
+<li>AFL的每个module都可以被enhanced</li>
+<li>很多其他的技术都可以被用来辅助增强AFL</li>
+<li>AFL作为一个动态分析工具可以被应用到很多其他领域，换句话说，你可以fuzz一切可以运行起来的东西</li>
+<li>AI和Fuzzing可以互相促进 ### 3. GRAYONE的作者、清华的博后甘水滔老师，介绍GRAYONE，之前是听张超老师介绍过，这次是第一次听一作讲这个工作，了解得更清楚了，可惜我已经对fuzzing没兴趣了Orz（后面苏璞睿老师和甘老师也有聊到，GRAYONE拆开的四个部分每一部分都是非常好也非常大的工作，其实都可以单独拿出来发），但是我刚进课题组的时候是有想过做fuzzing的，也看过一些paper，所以知道GRAYONE的价值有多大 ### 4. UCR的屈宇博士报告ccs2021的工作PalmTree，是做了一个embedding，对于用DL做代码安全的同学可能有参考价值，这也是之前我导师希望我做的方向之一，我们课题组也有师兄、同届的在做，我也不是很有兴趣~我是five<br />
+### 5. 做安全协议自动化的，一个是北邮的研三的同学（听段海新老师介绍，这可能是这次在infose上做报告的最年轻的人了，这位同学自己说从16年就开始专门研究ProVerief了，21年才有成果）基于该工具对FIDO UAF做分析，发在了NDSS2021;另一外是中科大的熊焰教授，提出了一个可以全自动做安全协议分析的框架（最关键的是引入了DQN，深度强化学习的经典框架之一，刘扬老师他们的很多工作也引入了DQL），非常厉害，对tls1.3还有区块链等都做出大量的成果，熊老师的报告特别有意思，还介绍了和big4中的三个会议的审稿人们argue的故事，长见识了<br />
+其实我在学校也有修安全协议的课，但是这次听的两个相关的报告才知道安全协议这么厉害，果然纸上得来终觉浅；另一方面，我在上安全协议的时候，课程涉及的密码学的东西太多了，也没有好好上，我自己也要吸取教训。如果是研究生还在选坑的同学，建议可以考虑下安全协议<br />
+### 6 6.今天上午是请了UCR的钱志云教授、NUS的梁振凯教授、最近因为比较有争议的明尼苏达大学的卢康杰教授分享做科研的经验教训；上午最后一个环节是panel，讨论了一些研究中的ethic的问题<br />
+大家都在提IRB（Instituitional Review Board）伦理审查委员会，国外高校、科研机构基本都有，但是国内还没有，段海新老师的一个博士也现身说法，介绍了由于对这方面的了解不够造成的不必要的麻烦。</li>
+</ul>
+<p>钱志云教授的topic是“how to look for ideas in computer science research”，更详细的版本有兴趣的同学可以去知乎看看，钱老师也发出来了。<br />
+<a href="https://zhuanlan.zhihu.com/p/341685279" target="_blank">链接在这</a><br />
+这里分享下这次钱老师分享的版本：</p>
+<ul>
+<li>起步的时候要培养研究的taste</li>
+<li>首先是多读论文，一周起码3，4篇，尽可能参加talks/reading group，讨论班这种形式</li>
+<li>对论文的idea要上心，考虑这几个问题：1.你对那种类型的paper感兴趣，2.是什么让你欣赏一篇paper的工作，3.作者是怎么想到这个idea的</li>
+<li>然后在对研究领域足够熟悉之后，要开始分解（breaking down）你的领域，可以从不同的方向去拆。以安全领域为例，可以这么拆：
+<ul>
+<li>根据domain来拆，可以分成system,network,hardware,social等</li>
+<li>根据style来拆，可以分成attack,defense,analysis,system building等</li>
+<li>根据technique来拆，可以分成manual analysis,program analysis,formal methods,design,data-driven approach(ai/ml)等</li>
+</ul></li>
+<li>然后就是要考虑怎么找idea了，这次钱老师分享了6种pattern
+<ul>
+<li>1.filling the blank,意思大概是说以dimension为列，technique为行，做个矩阵，然后填空，看看还有哪里是没有被研究过的，常见的dimension包括Assumption,domains,guarantee/property,methodology/techniques,datasets等；比如说在AI领域出现对图像的对抗样本攻击，那么可以考虑换个对象，把图像换成malware、NIDS等等来做；这里的关键是要将demension map out出来</li>
+<li>2.expansion.很多小的dimension只有当我们深入到某个领域后才能发现。比如钱老师自己的工作，Oakland 2012的tcp侧信道的研究，ccs2020上的dns cache poisoning attack等</li>
+<li>3.build a hammer and find nails。可以是任何有用的技能、技术、系统、甚至是数据集，只要这是你独有的，或者是你相比于其他人最擅长的。比如你对虚拟机特别熟悉，或者深入掌握了GAN，对抗样本等AI领域的技术，如果是系统安全如果你对Angr非常了解，或者你有别人没有的数据集如CAIDA等。有了这些当你的锤子，你再去找钉子，这时候做出的工作可能就要比别人要独特、要好</li>
+<li>4.start small,then generalize.找到一些signs，比如那些不容易被常识解释的现象，让你感到奇怪的观测结果等</li>
+<li>5.reproduction of prior work。复现前人的工作。在此期间，需要关注你做的结果和原作者的差异；当该方法应用到不同问题上时的局限性以及其他的发现</li>
+<li>6.external sources:from industry,news feed,etc。找工业届的痛点，工业届可以堆人力、大力出奇迹、能work就行，而学术界可以找到痛点去深入研究</li>
+<li>7.Others。其他的pattern，比如说人家做了attack，你就做defense，反之亦然；或者做些自动化的工作,比如逆向工程、漏洞发现、漏洞利用、补丁分析等领域已经很多人开始用这种pattern在做了</li>
+</ul></li>
+<li>此外，钱老师提到研究生需要注意idea formulation和idea execution上的差异，不仅要会动手，还要会动脑，不要一直依靠导师给idea，要花时间自己去找idea，途径包括:
+<ul>
+<li>保持好奇、勤于提问</li>
+<li>最好准备好问题去参加meeting,talk</li>
+<li>讨论班的论文阅读</li>
+<li>paper review，要学会从好的文章学习，也要学会从被拒稿的文章汲取经验</li>
+<li>常和你的实验室小伙伴交流</li>
+</ul></li>
+</ul>
+<p>梁振凯教授也分享了一些做研究的方法论，但是我听起来感觉比较玄学，没整明白，这里就不写了</p>
+<p>另外还分享了他三年前收的一个博士的工作，曾毅博士研究的方向和梁老师不同，但是梁老师也感兴趣，所以也支持曾博士做这个研究。我感兴趣的是曾博士的现身说法，他提到，如果组内没有相关积累的话，首先需要和导师协商好，至少要保证和导师的兴趣的余弦是非负的，换句话说有正相关的感觉，说人话就是最起码导师不反对，否则就很难办了；然后需要自己阅读近10到20年的全部高引用、或者你觉得有用的该主题下的论文，当然具体的年限取决于你的方向，比如你如果做对抗样本，你也就从14年开始看了。paper一定要多读！！！不管是钱老师还是梁老师，或者你导师，我相信都是这么说的；要把一条线的发展全部厘清，才能看到其中的semantic gap或者说research problem，这恰好是我们工作的motivation，这也是我们的insight，就可以据此开展工作了；还分享的一个经验就是，在找解决方法的时候，可以多读cross domain的paper，就是去别的领域找方法、思路，把他们的数学模型拉出来，可能会发现两个领域本质的方案是类似的，只不过具体场景不同而已；最好把自己的工作做成一个tool，或者system，这样在做下一篇文章的时候速度就比较快。<br />
+我现在在组里也是类似的状态，组里的积累不在AI安全这一块，而我对这一块比较感兴趣，所以听到梁老师的报告就比较上心Orz。当然，我导师是支持我做这个的，不过单打独斗的话，北邮那位同学花了5年时间发big4，NUS这位花了3年，我要到什么时候哈哈哈哈哈，现在研一快结束了，只有两年了，要加把劲了。 ### 7. 其实这是我目前在做的方向，但是这两位老师做的和我做的还是不太一样，所以没什么太大的启发 AI安全的：分别是国重的侯锐老师做的报告，从体系结构安全出发做的；另一个是国重的孟国柱老师的报告，介绍的他的博士何英哲的3篇文章（英文版综述发在了TSE 2020，2021发了一篇Usenix Security,提出在做黑盒攻击时的数据约减技术，还有篇在arxiv上是做验证数据删除的） 对我比较有价值的一张slides是划分了AI中可以做的方向，这里简单写一下，和我前期自行总结的也差不多：</p>
+<ul>
+<li>黑盒攻击
+<ul>
+<li>不是完全黑盒</li>
+<li>交互限制</li>
+<li>防御措施</li>
+</ul></li>
+<li>隐私保护
+<ul>
+<li>用户隐私保护（GDPR）</li>
+<li>联邦学习安全</li>
+<li>数据、模型水印</li>
+</ul></li>
+<li>系统的安全实现
+<ul>
+<li>系统漏洞（溢出等）</li>
+<li>部署（Quantization）</li>
+</ul></li>
+<li>模型可解释性
+<ul>
+<li>可推理</li>
+<li>可追溯</li>
+<li>可解释</li>
+</ul></li>
+<li>安全防护
+<ul>
+<li>差分隐私、安全多方计算</li>
+<li>后门模式检测</li>
+<li>模型加固</li>
+</ul></li>
+<li>人工智能伦理问题
+<ul>
+<li>性别、人种歧视</li>
+<li>安全事故追责</li>
+</ul></li>
+</ul>
+<h3 id="section-1">8.</h3>
+<p>涨知识系列：武大傅建明老师的安卓应用层虚拟化恶意代码分析；南科大张殷乾老师报告的AMD SEV安全、国重雷灵光老师报告的在TEE下的cache中间人攻击、阿里的蒸米报告的mac上的漏洞（完全听不懂），etc.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-right&quot;&gt;&lt;&#x2F;i&gt;</a>
-  </nav>
-
 
 
           </div>
@@ -2491,7 +2300,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
