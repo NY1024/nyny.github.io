@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Introduction 现在进行深度学习的训练有两种典型的情况，如下图所示  在图a中是中心化学习，N个用户有自己的本地数据集，并希望合作构建一个通用的分类器，所以他们会将所有的数据都上传到一个指定的位置在其中进行学习，服务器在合并后的数据集上进行训练，这种方法非常有效，因为模型可以访问所以数据，但是这不能保护每个参与方的隐私，因为可以直接访问敏感信息。所以就提出了第二种训练方式，如图b所示，每">
+<meta property="og:type" content="article">
+<meta property="og:title" content="model_reverse_attack">
+<meta property="og:url" content="http://example.com/2021/10/03/model-reverse-attack/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="Introduction 现在进行深度学习的训练有两种典型的情况，如下图所示  在图a中是中心化学习，N个用户有自己的本地数据集，并希望合作构建一个通用的分类器，所以他们会将所有的数据都上传到一个指定的位置在其中进行学习，服务器在合并后的数据集上进行训练，这种方法非常有效，因为模型可以访问所以数据，但是这不能保护每个参与方的隐私，因为可以直接访问敏感信息。所以就提出了第二种训练方式，如图b所示，每">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003085931039.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003091253502.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003093245076.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003091930464.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003092554989.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211002202530161.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003095105832.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003100908559.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003095629952.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003100023239.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003100529567.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003101957088.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003102029258.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003102330142.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003102402593.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003103144005.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003102837053.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003102421493.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20210929100809069.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20210929102636526.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20210929102834455.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20210929102334496.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003094811297.png">
+<meta property="og:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20210929102300377.png">
+<meta property="article:published_time" content="2021-10-03T12:54:29.000Z">
+<meta property="article:modified_time" content="2022-04-06T13:02:02.411Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/10/03/model-reverse-attack/image-20211003085931039.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/10/03/model-reverse-attack/"/>
+
+
+
+
+
+  <title>model_reverse_attack | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/03/model-reverse-attack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">model_reverse_attack</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-10-03T20:54:29+08:00">
+                2021-10-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="introduction">Introduction</h1>
+<p>现在进行深度学习的训练有两种典型的情况，如下图所示</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003085931039.png" class="">
+<p>在图a中是中心化学习，N个用户有自己的本地数据集，并希望合作构建一个通用的分类器，所以他们会将所有的数据都上传到一个指定的位置在其中进行学习，服务器在合并后的数据集上进行训练，这种方法非常有效，因为模型可以访问所以数据，但是这不能保护每个参与方的隐私，因为可以直接访问敏感信息。所以就提出了第二种训练方式，如图b所示，每个参与者在自己的设备上训练一个局部模型，并与其他用户共享模型的一小部分参数，通过收集和交换这些参数，可以训练一个模型，该模型的性能与中心化学习得到的模型性能差不多，但是该方案却能保护隐私，因为数据集不会直接暴露。</p>
+<span id="more"></span>
+<p>但是图b方案就安全了吗？本文介绍一种模型逆向攻击，可以在协作学习场景下窃取其他参与方的本地数据集中的敏感信息。</p>
+<p>我们方案的重点使用GAN进行模型逆向攻击，通过GAN中生成器和鉴别器的相互训练，可以生成似乎是来自训练集的样本，GAN不会看到实际的训练集，而只依赖于判别器中存储的信息，这个过程类似于司法部门用于识别嫌疑犯的面部合成图像，虽然作画的人没见过嫌疑人，但是根据目击者的反馈可以画出来。下图是GAN根据CIFAR10中“马”类而生成的样本</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003091253502.png" class="">
+<h1 id="background">Background</h1>
+<h2 id="原理">原理</h2>
+<p>给定来自分布p(x,y)的独立同分布样本，要训练一个模型，实际上是在求解下面的优化问题</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003093245076.png" class="">
+<p>上式中的L是损失函数，其衡量的是使用w误分类y的误差。Ω(θ)是用于避免过拟合的正则项。</p>
+<p>f (x; θ) 通过估计参数 θ可以归纳训练集，如果训练样本的信息不完整，那么根据f (x; θ) 也可以恢复出来。因此，如果攻击者希望获得原始训练集中的信息，只要能够接触到f (x; θ) 即可。例如支持向量机存储θ中每个类的原型样本，高斯过程存储所有训练点，因此攻击者在这些分类器中可以很容易学习到每个类的原型样本。不过对于深度学习来说，θ和训练数据之间的关系更加微妙，不过已经有研究表明从深度学习模型中获取隐私也是可能的。已有的模型逆向攻击方案表明，攻击者可以恢复出于训练集中的图像相似的图像，从而可以知道每个类的信息。</p>
+<p>从上面的分析我们已经知道，这是任何机器学习算法的固有属性。如果算法已经学习并提供了准确的分类，那么可以访问模型的攻击者就可以从类中获取信息。如果攻击者可以访问模型，它可以从每个类中恢复原型样本。</p>
+<h2 id="gan的训练过程">GAN的训练过程</h2>
+<p>在GAN中训练判别器区分来自原始训练集的图像和由生成器生成的图像，而生成器首先用随机噪声初始化，在每次迭代时，对生成器进行训练，以模拟判别器的训练集中的图像。GAN要求解的优化问题可以表示为</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003091930464.png" class="">
+<p>上式中xi是来自原始训练集的图像，zj是随机生成的图像(每个像素均匀分布在[0,255])，f (x;θD)是判别器，给定一幅图像，产生一个类标签，θD为其参数；g(z;θG)是生成器，给定随机输入产生图像。</p>
+<p>训练过程如下，首先我们在θD上计算梯度以最大化判别器的性能，因此f (x;θD)可以将区分出原始训练集中的样本也就是xi，以及由生成器生成的样本，即</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003092554989.png" class="">
+<p>然后我们在θG上计算梯度，这是为了让生成器生成的样本看起来与原始数据集中的样本足够相似</p>
+<p>当判别器无法区分样本是原始训练集中的还是由生成器生成时，此过程结束</p>
+<h1 id="threat-model">Threat Model</h1>
+<p>攻击者是协作学习的参与方，试图提取它并不知道的某一类数据的信息。攻击者会在暗中影响学习过程，欺骗受害者，让其泄露更多和目标类相关的信息。</p>
+<h1 id="proposed-attack">Proposed Attack</h1>
+<p>设攻击者A参与了协作学习，所有参与方事先就共同的学习目标达成一致，换句话说，他们对神经网络架构的类型和训练将得到的标签达成一致。</p>
+<p>设V是另一个参与方(假设这是受害者)，其声明的标签为[a,b]，攻击者声明的是[b,c],A没有关于类a的信息，攻击者的目标就是推理得到关于a的尽可能多的信息。</p>
+<p>攻击者使用GAN生成样本，这些样本看起来与受害者的a类样本很像。在分布式学习过程中，我们将这些样本标记为类c。所以受害者需要更加努力区分类c和类a，因为会透露更多关于类a的信息。也就是说，通过生成模仿类a的样本，可以让受害者提升训练前忽略关于类a的知识。GAN最初设计用于密度估计，因为我们可以从分类器的输出中了解数据的分布，而不需要直接看到数据，在攻击方案中，就利用这个特点欺骗受害者让其提供攻击者不知道的类的更多信息。为了简化起见，我们先考虑两方参与的协作学习(分别是攻击者和受害者)，每一方都可以声明任意数量的标签，并且类之间不需要有重叠。</p>
+<p>1.假设参与方为A,V.双方先就学习算法、框架、目标等达成一致</p>
+<p>2.然后V声明标签[a,b]，而A声明标签[b,c]</p>
+<p>3.然后开始进行协作学习的过程并进行几个epoch，知道参数服务器（parameter server,PS)以及两个本地模型达到的准确率都比特定阈值高的时候停止</p>
+<p>4.首先，受害者者开始训练网络：</p>
+<p>​ 1.V从PS下载一定比率的参数，并更新其局部模型</p>
+<p>​ 2.V的局部模型是在[a,b]上训练的</p>
+<p>​ 3.V将选中的本地模型参数上传到PS</p>
+<p>5.然后，攻击者开始训练网络：</p>
+<p>​ 1.A从PS下载一定比率的参数，并更新其局部模型</p>
+<p>​ 2.A训练它本地的GAN（V并不知道）来模仿受害者的类a</p>
+<p>​ 3.将GAN生成的样本标记为类c</p>
+<p>​ 4.A的局部模型是在[b,c]上训练的</p>
+<p>​ 5.A将选中的本地模型参数上传到PS</p>
+<p>然后在4和5之间迭代直至收敛</p>
+<p>上面描述的流程中的5.2，5.3的步骤就是攻击者为了尽可能多地学习目标类a的相关信息而做的额外工作，流程示意图如下所示</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211002202530161.png" class="">
+<p>图中，右边是受害者在训练，训练的是3的样本，其标签为a，以及1的样本，标签为b；左边是攻击者在训练，训练的是1的样本，其标签为b，以及使用GAN模仿生成类a的样本，标签为c，然后进行训练。只要A的本地模型随着时间的推移提升了准确性，GAN的攻击就会起作用。</p>
+<h1 id="实验">实验</h1>
+<h2 id="方案性能比较">方案性能比较</h2>
+<p>下表列出的是原图像、其他类似工作得到的图像，以及本文所用的基于GAN的方法得到的图像</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003095105832.png" class="">
+<p>从直观的对比就可以看出，其他方案没有生成明确的结果，而基于GAN的方法得到的图像与原始图像非常接近</p>
+<p>实际上图列出的是最后的结果，刚开始训练时恢复的结果并不会这么好，如下所示</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003100908559.png" class="">
+<p>在一定程度上，epoch跑的数量越大，则恢复的效果越好。</p>
+<h2 id="双方协作学习">双方协作学习</h2>
+<p>我们继续以MNIST数据集为例，在有两个参与方的协作学习中进行实验。第一个用户使用五个标签，为第二个用户使用六个标签。第一个用户可以访问0到4的图像(标签1到5)，第二个用户(对手)可以访问5到9的图像(标签6到10)。攻击者使用它的第六个类来提取第一个用户的标签上的信息。实验结果如下</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003095629952.png" class="">
+<p>上图中第一行是原图像，第二行是攻击得到的图像。三幅图分别对应三种不同的参数设置。在(a)中，用户上传和下载整个模型。在(b)中，用户下载了完整的模型，但只上传了每个epoch中10%的参数。最后，在(c)中，上传和下载的参数都只有10%。</p>
+<p>在AT&amp;T上的实验结果如下</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003100023239.png" class="">
+<p>我们将前20个类给第一个用户，其余20个类分配给攻击者。给攻击者额外的一个类来影响训练过程。我们以不同的参数配置进行实验。从上图的结果中我们可以看出该攻击方案重建后的人脸效果还不错，但是还是比MNIST的效果要差，这是因为该数据集本身图像的噪声更大，因为这个特定的数据集很小，当上传率很小时，模型的准确性会受到显著影，所以上图从右往左，图像恢复的效果越来越差。</p>
+<h2 id="多方协作学习">多方协作学习</h2>
+<p>在上个实验基础上，可以扩展到多方参与的场景。有41个参与者，其中40个是诚实的，1个是攻击者。每个诚实的参与者拥有与一个类相关的图像作为训练数据，而对手没有自己的训练数据。也就是说，对手只对生成器(G)产生的图像进行训练。θu = 1， θd = 1的攻击效果非常好</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003100529567.png" class="">
+<h2 id="复现">复现</h2>
+<p>参考DCGAN，定义生成器</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003101957088.png" class="">
+<p>定义判别器</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003102029258.png" class="">
+<p>数据集相关函数</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003102330142.png" class="">
+<p>调用GANInversionAttack</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003102402593.png" class="">
+<p>其中的关键部分为：</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003103144005.png" class="">
+<p>对应的函数定义如下：</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003102837053.png" class="">
+<p>进行训练</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003102421493.png" class="">
+<p>跑200个epoch，一个epoch保存一张</p>
+<img src="/2021/10/03/model-reverse-attack/image-20210929100809069.png" class="">
+<p>此时会在指定的输出文件夹中生成大量图像</p>
+<img src="/2021/10/03/model-reverse-attack/image-20210929102636526.png" class="">
+<p>训练集的原图像为：</p>
+<img src="/2021/10/03/model-reverse-attack/image-20210929102834455.png" class="">
+<p>打印出刚开始攻击时的前四张图像</p>
+<img src="/2021/10/03/model-reverse-attack/image-20210929102334496.png" class="">
+<p>攻击进行到一半时生成的图像</p>
+<img src="/2021/10/03/model-reverse-attack/image-20211003094811297.png" class="">
+<p>攻击结束后生成的最后四张图像</p>
+<img src="/2021/10/03/model-reverse-attack/image-20210929102300377.png" class="">
+<p>可以看到成功实现了攻击</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/09/29/how-to-attack-dl-system-backdoor-attack/" rel="next" title="how_to_attack_dl_system_backdoor_attack">
+                <i class="fa fa-chevron-left"></i> how_to_attack_dl_system_backdoor_attack
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/10/10/1010-PaperNotes/" rel="prev" title="211010_PaperNotes">
+                211010_PaperNotes <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#background"><span class="nav-number">2.</span> <span class="nav-text">Background</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">2.1.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gan%E7%9A%84%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">GAN的训练过程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#threat-model"><span class="nav-number">3.</span> <span class="nav-text">Threat Model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#proposed-attack"><span class="nav-number">4.</span> <span class="nav-text">Proposed Attack</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">5.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E6%80%A7%E8%83%BD%E6%AF%94%E8%BE%83"><span class="nav-number">5.1.</span> <span class="nav-text">方案性能比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E6%96%B9%E5%8D%8F%E4%BD%9C%E5%AD%A6%E4%B9%A0"><span class="nav-number">5.2.</span> <span class="nav-text">双方协作学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%96%B9%E5%8D%8F%E4%BD%9C%E5%AD%A6%E4%B9%A0"><span class="nav-number">5.3.</span> <span class="nav-text">多方协作学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0"><span class="nav-number">5.4.</span> <span class="nav-text">复现</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -262,6 +262,173 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/21/fooling-lime-and-shap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/09/21/fooling-lime-and-shap/" itemprop="url">Fooling-Lime-and-Shap:Arxiv阅读笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-09-21T17:08:36+08:00">
+                2021-09-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="摘要">摘要</h1>
+<p>依赖于输入扰动的事后解释技术(post hoc explanations)，如LIME和SHAP并不可靠</p>
+<p>我们提出了一种技术，允许攻击者能够制作一个任意希望的解释，有效地隐藏任意给定分类器的偏见。我们的方案可以用于构建任意有偏见的分类器，它对于输入数据分布的预测存在偏差，但是针对其构建的事后解释技术却无法发现分类器存在偏见。</p>
+<h1 id="引言">引言</h1>
+<p>由于机器学习模型的成功，人们开始将这些模型引入医疗保健、刑事司法等领域，在这些领域，模型是否可以被成功采用很大程度上取决于决策者是否能够很好理解和信任模型，只有决策者对模型行为有清楚的理解，他们才能诊断出这些模型中的错误和潜在偏差，并能够由此决定什么时候以及在多大程度上可以依赖这些模型。但是，机器学习摸的专有性质和不断增加的复杂性让专家们很难理解这些复杂的黑盒。为了帮助理解，研究人员突出了一些可解释性方法，比如LIME、SHAP,这类方法通过在数据中生成给定实例的扰动，并观察这些扰动对分类器的影响，来评估单个特征对特定预测的贡献。这种方法存在通用性，故常被用于解释许多分类器，比如复杂的集成模型、神经网络等。</p>
+<p>但是对这种可解释性技术的鲁棒性分析很少，我们的研究表明这类方法存在重大漏洞，可以被对手用来生成特定的分类器，该分类器上的事后解释由攻击者控制，从而可以掩盖攻分类器本身存在的歧视性偏见等性质。例如，通过我们的框架，可以生成具有高度歧视性的分类器(仅根据种族来判断是否可能犯罪),这些分类器由LIME等方法生成的解释是之看起来正常，有效隐藏了内部的歧视性偏见。</p>
+<p>我们制作了对种族严重歧视的分类器，对于任何测试实例，使用LIME、SHAP实现生成的关于分类器的解释从没有将种族标记为分类器重要的分类依据，从而证明我们制作的分类器成功欺骗了这些解释方法。</p>
+<h1 id="背景">背景</h1>
+<h2 id="lime-and-shap">LIME and SHAP</h2>
+<p>简单的模型如线性模型、决策树等容易被人类劣迹，但是复杂模型却并非如此。理解这类复杂模型的一类方法是构建更简单的可解释模型，用这些模型作为复杂模型的近似，其中LIME和SHAP是流行的两类技术，他们属于与模型无关的局部解释方法，可以解释任何给定的黑盒分类器，他们通过通过学习每个预测的局部可解释模型(如线性模型)，以一种可解释、可靠的方式解释任何分类器的单个预测，它们估计实例上的特征属性，确定每个特征对模型预测的贡献。</p>
+<p>设<span class="math inline">\(f\)</span>为为黑盒分类器，接收输入<span class="math inline">\(x_i\)</span>，输出预测类别，即<span class="math inline">\(f(x_i)\in C\)</span>,其中<span class="math inline">\(C\)</span>是所有类别的集合。设<span class="math inline">\(g\)</span>是选中的用于学习并解释<span class="math inline">\(f\)</span>的可解释模型，<span class="math inline">\(g\in G\)</span>，其中<span class="math inline">\(G\)</span>是线性模型的集合</p>
+<p>设<span class="math inline">\(g\)</span>的复杂度为<span class="math inline">\(\Omega(g)\)</span>（线性模型的复杂性可以由非零权重的数量衡量），将<span class="math inline">\(x\)</span>与<span class="math inline">\(x^,\)</span>的近似程度用<span class="math inline">\(\pi_x(x^,)\)</span>衡量</p>
+<p>SHAP和LIME的目标就是生成一种解释：1.在x附近来逼近黑盒行为；2.降低复杂度。</p>
+<p>此时的目标函数为</p>
+<p><img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/fooling/image-20210921160358055.png" /></p>
+<p>其中损失函数定义为</p>
+<p><img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/fooling/image-20210921160414729.png" /></p>
+<p>其中<span class="math inline">\(X^,\)</span>是在<span class="math inline">\(x\)</span>附近的输入的集合</p>
+<p><strong>LIME和SHAP的主要区别在于如何选择<span class="math inline">\(\Omega\)</span>和<span class="math inline">\(\pi_x\)</span></strong></p>
+<p>在LIME中，这些函数的定义是启发式的，<span class="math inline">\(\Omega(g)\)</span>是线性模型中的非零权重，<span class="math inline">\(\pi_x(x^,)\)</span>是使用余弦或者<span class="math inline">\(l_2\)</span>距离定义的。而在SHAP中，SHAP将这些函数的定义简历在博弈论原则的基础上，以保证解释满足某些期望的性质。</p>
+<h2 id="proposed-framework">Proposed Framework</h2>
+<p>攻击者的目的是欺骗解释性技术，并隐藏分类器的偏见</p>
+<p>将攻击者创建的分类器记做<span class="math inline">\(e\)</span>，它和<span class="math inline">\(f\)</span>在面对从真实数据分布中采样得到的样本时，做出的预测相近，但是当使用LIME,SHAP时不会揭示<span class="math inline">\(f\)</span>的潜在偏见</p>
+<h3 id="intuition">Intuition</h3>
+<p>LIME等技术通过构建局部可解释近似模型来解释给定黑盒模型的单个预测，每一个样本的局部近似都被设计用来捕获给定数据点附近的黑盒行为，这些邻域构成了由输入数据中单个实例的扰动特征生成的合成数据点。然而，使用这些扰动生成的实例可能是off-manifola或者out-of-distribution(OOD)的</p>
+<p>为了更好地理解由扰动生成的合成数据点的性质，我们进行了实验。</p>
+<p>我们使用LIME方法对输入实例进行扰动，然后对包含原始实例和扰动实例的组合数据集进行主成分分析PCA,将其降到2维</p>
+<p><img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/fooling/image-20210921161654496.png" /></p>
+<p>从图一中可以看到，合成的数据的分布与原始的实例的分布有很大的不同，这种现象是我们欺骗LIME的基础。</p>
+<p>攻击者可以在输入数据点上创建一个类似于原始分类器(可能具有很大的歧视性)的对抗性分类器，但是在扰动数据上的表现却与原始分类器不同，对抗性分类器表现地没有偏见并且是公平的，从而有效地欺骗LIME、SHAP。</p>
+<h3 id="building-adversarial-classifers">Building Adversarial Classifers</h3>
+<p>我们来看看攻击场景</p>
+<p>设<span class="math inline">\(f\)</span>是前面提到的有偏见的分类器，对手希望设计一个对抗性分类器，在用户生成这个黑盒的解释时，解释技术会被欺骗，认为这个模型是无害的。这个分类器接收的N个数据点组成的数据集<span class="math inline">\(X\)</span>来自于真实世界的分布<span class="math inline">\(X_{dist}\)</span>。为了欺骗解释性技术，攻击者设计的对抗分类器，在从<span class="math inline">\(X_{dist}\)</span>采样的数据点上显示有偏见的行为，而在不是来自<span class="math inline">\(X_{dist}\)</span>的数据点上保持没有偏见，由于LIME,SHAP输出的特征重要度严重依赖于扰动实例(通常是OOD样本)，因此得到的解释将使对抗分类器看起来无害。</p>
+<p>设<span class="math inline">\(\Psi\)</span>是一个没有偏见的分类器(基于与敏感属性不相干的无害特征进行预测),则对抗分类器<span class="math inline">\(e\)</span>的形式如下</p>
+<p><img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/fooling/image-20210921162944187.png" /></p>
+<p>创建这种分类器的难点就是我们需要判断给定的数据点是否来自<span class="math inline">\(X_{dist}\)</span></p>
+<h3 id="detecting-ood-samples">Detecting OOD Samples</h3>
+<p>为了创建分类器<span class="math inline">\(is\_OOD\)</span>,其用于判断数据点是否是out-of-distribution样本(<span class="math inline">\(is\_OOD(x)=True\)</span>)，我们需要构造新的数据集，我们扰动每个实例<span class="math inline">\(x\)</span>生成新的实例<span class="math inline">\(x_p\)</span>，设所有通过扰动得到的实例的集合为<span class="math inline">\(X_p\)</span>，然后将<span class="math inline">\(X\)</span>中所有实例的标签设置False，将<span class="math inline">\(X_p\)</span>中所有实例的标签设为True(在<span class="math inline">\(X\)</span>中的实例除外)，然后我们在联合数据集<span class="math inline">\(X_p\bigcup X\)</span>以及对应的标签上训练分类器即可。</p>
+<p>#Experimental results</p>
+<p>使用的数据集</p>
+<p><img src="https://raw.githubusercontent.com/NY1024/images/master/2021/09/23/fooling/image-20210921163724512.png" /></p>
+<h1 id="related-work">Related work</h1>
+<h2 id="perturbation-based-explanation-methods">Perturbation-based Explanation Methods</h2>
+<p>基于扰动的方法除了SHAP,LIME外，还有achor，它使用非线性规则来表达更灵活的局部解释，GAM将局部归因解释为联合加权排序，并使用k-medoids识别原型解释</p>
+<h2 id="criticism-of-post-hoc-explanations">Criticism of Post hoc Explanations</h2>
+<p>研究者认为事后解释是不可靠的，因为这些解释不一定忠实于基础模型，呈现的是相关性而不是原始计算的信息。此外，一些解释性技术对输入中的小扰动高度敏感，但是分类器的预测却保持不变。</p>
+<h2 id="adversarial-explanations">Adversarial Explanations</h2>
+<p>在图像分类领域，有一些关于操纵解释的研究，可以用人类无法察觉的方式，任意修改显著图(saliency map)</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/09/baai2021-liuyang/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -681,7 +848,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
