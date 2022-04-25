@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言 本文的标题是反后门攻击，在进一步读下去之前，我们自然要先知道什么是后门学习。 后门攻击，一般指通过毒化训练集的方式在由该数据集训练出的模型上植入后门，关于后门攻击的文章，在安全客上也有很多了，大家可以去了解详情。 本文要介绍的反后门攻击，其面临的场景和后门学习是一样的--攻击者给了毒化数据集，但是却希望能够在这个数据集上训练得到一个没有后门的模型，因为是在毒化数据上训练出干净模型，所以我们将">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Anti-Backdoor Learning(NeurIPS2021)">
+<meta property="og:url" content="http://example.com/2022/01/07/ABL/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="前言 本文的标题是反后门攻击，在进一步读下去之前，我们自然要先知道什么是后门学习。 后门攻击，一般指通过毒化训练集的方式在由该数据集训练出的模型上植入后门，关于后门攻击的文章，在安全客上也有很多了，大家可以去了解详情。 本文要介绍的反后门攻击，其面临的场景和后门学习是一样的--攻击者给了毒化数据集，但是却希望能够在这个数据集上训练得到一个没有后门的模型，因为是在毒化数据上训练出干净模型，所以我们将">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107182219046.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107182347627.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107182812936.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107183336946.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107184212762.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107194252196.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107194309287.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107190926439.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107191320956.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107191731505.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107192736370.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107194646182.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107194712237.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220107194937581.png">
+<meta property="og:image" content="http://example.com/2022/01/07/ABL/image-20220106145349213.png">
+<meta property="article:published_time" content="2022-01-07T13:32:55.000Z">
+<meta property="article:modified_time" content="2022-04-25T13:37:02.583Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/01/07/ABL/image-20220107182219046.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2022/01/07/ABL/"/>
+
+
+
+
+
+  <title>Anti-Backdoor Learning(NeurIPS2021) | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/07/ABL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Anti-Backdoor Learning(NeurIPS2021)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-01-07T21:32:55+08:00">
+                2022-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言">前言</h1>
+<p>本文的标题是反后门攻击，在进一步读下去之前，我们自然要先知道什么是后门学习。</p>
+<p>后门攻击，一般指通过毒化训练集的方式在由该数据集训练出的模型上植入后门，关于后门攻击的文章，在安全客上也有很多了，大家可以去了解详情。</p>
+<p>本文要介绍的反后门攻击，其面临的场景和后门学习是一样的--攻击者给了毒化数据集，但是却希望能够在这个数据集上训练得到一个没有后门的模型，因为是在毒化数据上训练出干净模型，所以我们将其称之为反后门攻击。这个工作来自于AI顶会NeurIPS 2021。</p>
+<p>这个技术的提出是有一定意义的。我们可以把深度学习中的后门攻击类比于软件安全中的供应链攻击，毒化数据相当于被黑客攻破的编译器等上游资源，反后门学习的作用就是在毒化数据上训练得到正常模型，其意义完全可以类比于在被植入后门的Xcode上编译出无后门的App。</p>
+<span id="more"></span>
+<h1 id="反后门学习">反后门学习</h1>
+<p>接着我们来形式化这个方案。</p>
+<p>我们现在面对的场景是这样子的：攻击者已经生成了毒化样本，并对训练集进行投毒，而作为用户，我们拿到的是毒化后的数据集，我们的目标是在这个毒化数据集基础上训练处不带有后门的模型。</p>
+<p>我们假设一个标准的分类任务的数据集为：</p>
+<img src="/2022/01/07/ABL/image-20220107182219046.png" class="">
+<p>其中Dc表示原数据，也可以说是感觉数据，Db表示毒化数据。那么训练一个DNN模型就是通过最小化下面的经验误差就可以了：</p>
+<img src="/2022/01/07/ABL/image-20220107182347627.png" class="">
+<p>其中，l表示损失函数，比如常用的交叉熵损失。</p>
+<p>从上面的公式中我们可以看到，整体的学习流程被分为了两部分，第一个是clean task，即在干净数据Dc上训练模型，第二个是backdoor task，即在毒化数据Db上训练模型。由于毒化样本通常与某个特定的目标类相关联，所以所有来自Db的数据可能都有着相同的标签。上面这个公式的分解非常清晰地表明了这种学习方式会同时学到两个任务，从而导致训练出的模型被嵌入后门。</p>
+<p>为了防止模型学习到后门样本，我们可以最小化下面的经验误差来进行学习：</p>
+<img src="/2022/01/07/ABL/image-20220107182812936.png" class="">
+<p>注意，上式中我们实际上是最大化了后门任务的训练。</p>
+<p>这种方法虽然看起来很直观，但是我们作为用户实际上并不知道哪些数据来自Db。当然，我们可以先检测出Db，然后将它从训练集中分类出来即可。那么该怎么检测呢？</p>
+<p>很明显，模型是通过数据训练出来的，那么用毒化数据训练出来的模型和干净数据训练出的模型的表现是不同的，甚至这种差异在模型训练期间应该就可以观察到。事实上也的确如此，研究人员应用多种后门攻击方案进行学习，得到了在干净数据和毒化数据上的损失情况，如下所示</p>
+<img src="/2022/01/07/ABL/image-20220107183336946.png" class="">
+<p>从图中可以看到，在这9种典型的后门攻击中，毒化样本上的训练损失在前几个epoch下降得要比干净样本快得多。</p>
+<p>这一现象说明，训练后门任务比训练正常任务要容易得多，这背后的原因其实不难解释，因为后门攻击就是在触发器和目标标签之间增强了相关性，所以才能简化和加速触发器的注入。所以为了使得后门攻击成功，模型就要更容易学习带有触发器的毒化样本才行。</p>
+<p>既然观察到了这个现象，我们就知道接下来该怎么做了。</p>
+<p>首先假设训练epoch的总数为T，我们可以将整个训练过程分为两个阶段，即前期训练和后期训练。用Tte表示两个阶段的转折点，当平均训练损失开始稳定时我们选择此时的epoch作为Tte。然后我们在前期训练期间进行后门隔离，后期训练期间进行后门遗忘。这两个阶段的损失函数如下所示</p>
+<img src="/2022/01/07/ABL/image-20220107184212762.png" class="">
+<h2 id="后门隔离">后门隔离</h2>
+<p>在前期训练阶段，我们应用局部梯度上升技术，使用上面公式中的损失函数LLGA将每个样本的损失限制在特定的阈值γ附近。梯度上升之所以被称为局部是因为最大化是围绕固定损失γ 进行的。换句话说，如果训练样本的损失低于 γ，将应用梯度上升以将其损失增加到 γ；否则，损失保持不变。这样子可以可以让毒化样本摆脱 γ 约束，因为它们的损失值下降得更快。这里的关键是选择合适的γ，过大的 γ 会影响模型学习原任务，而过小的 γ 可能不足以将原任务与后门任务分开。</p>
+<p>在前期训练结束时，我们实际上已经将样本分为了两部分：具有最低损失的p%的数据会被认为是Db，剩下的是Dc。</p>
+<p>当然了，这种方法不可能把全部的后门样本都检测并隔离出来，所以我们还需要在后期训练阶段应用后门遗忘。</p>
+<p>隔离出的部分后门样本，当γ = 0时如下所示</p>
+<img src="/2022/01/07/ABL/image-20220107194252196.png" class="">
+<p>此时还有一部分误报</p>
+<p>γ = 0.5时如下所示</p>
+<img src="/2022/01/07/ABL/image-20220107194309287.png" class="">
+<p>此时基本上没有误报的</p>
+<h2 id="后门遗忘">后门遗忘</h2>
+<p>在这一阶段，模型已经开始学到后门了，所以现在的问题就是怎么在学习Dc中的没被检测出的后门样本的同时是用欧冠已经检测出的后门样本Db训练模型让其遗忘后门。</p>
+<p>实现这个目标是有可能的，因为后门攻击有个显著的特点就是：触发器通常与一个特定的目标类别相关。所以可以上面公式中的LGGA来解决。</p>
+<p>我们在Db上定义了全局梯度下降，注意这里和之前提到的局部梯度下降不同，这里并没有限制在固定的损失值附近。</p>
+<h1 id="实验分析及复现">实验分析及复现</h1>
+<h2 id="分析">分析</h2>
+<p>为了证实反后门学习确实有效，这里选了10种典型的后门攻击进行实现，分别是：</p>
+<p>BadNets ，Trojan attack , Blend attack, Dynamic attack, Sinusoidal signal attack(SIG)，Clean-label attack(CL), Feature collision (FC) , Deep Feature Space Trojan Attack (DFST), Latent Backdoor Attack (LBA) Composite Backdoor Attack (CBA)</p>
+<p>同时和其他三种防御方案进行对标，实验数据如下</p>
+<img src="/2022/01/07/ABL/image-20220107190926439.png" class="">
+<p>表中的ASR表示攻击成功率，CA表示原任务的准确率。黑体的数据是同等情况下表现最好的，可以看到反对抗学习在多数情况的表现都是最优的。</p>
+<p>另外，我们之前提到过，隔离率的不同会影响到模型训练后的具体效果，通过实验也同样可以说明这一点，如下所示</p>
+<img src="/2022/01/07/ABL/image-20220107191320956.png" class="">
+<p>从图中可以看到，ASR的降低和CA之间是存在权衡的。比如一个较高的隔离率可以隔离更多的后门样本，更多的后门样本有助于后期的后门遗忘，所以可以更大幅度降低ASR，但是由于将更多的样本进行了遗忘，所以这也会导致CA的降低。</p>
+<p>还有一点也需要研究，那就是转折点，即区分前期训练和后期训练的那个epoch，这个没有理论指导，只能通过实验去试，得到的数据如下</p>
+<img src="/2022/01/07/ABL/image-20220107191731505.png" class="">
+<p>可以看到，当转折点选在第20个epoch时较好，越往后的话，该方案的表现越差。</p>
+<p>该方案的第一步是要检测或者说隔离出后门样本，那么其他检测后门样本的方法是否可以替换到本方案基于LGA的部分呢？典型的检测样本的方案有AC和SSA，我们可以分别试试看。如下所示</p>
+<img src="/2022/01/07/ABL/image-20220107192736370.png" class="">
+<p>可以看到，这两类方案的检出率都不如本方案的，更具体地说，在BadNets和Trojan上三类方案表现得差不多，但是在后四类就差得远了，这其实也不难解释，因为后四类使用了复杂的触发器（Blend、Dynamic、SIG 和 CL）覆盖整个图像的攻击会导致AC或SSA混淆，从而使这些检测方法无效。</p>
+<h2 id="复现">复现</h2>
+<p>后门隔离-计算损失的代码</p>
+<img src="/2022/01/07/ABL/image-20220107194646182.png" class="">
+<p>后门隔离-训练部分</p>
+<img src="/2022/01/07/ABL/image-20220107194712237.png" class="">
+<p>后门遗忘关键代码</p>
+<img src="/2022/01/07/ABL/image-20220107194937581.png" class="">
+<p>使用后门遗忘的效果如下所示</p>
+<img src="/2022/01/07/ABL/image-20220106145349213.png" class="">
+<p>从图中可以看到，后门遗忘的效果就是原任务的acc基本保持不变的同事，后门任务的acc或者说攻击成功率却一直在下降，在图中是从99.99降到了0.48</p>
+<h1 id="总结">总结</h1>
+<p>这个方案非常直观简洁，本质上是利用了后门攻击的两个特点：1.后门样本相比于原样本更容易被学习；2.带有触发器的后门样本与目标标签之间有很强的相关性。由此引出了所谓的反后门学习，其包括两个阶段，第一个阶段是在前期训练时使用局部梯度上升最大化两类样本之间的训练损失的差距，并以此为依据隔离毒化样本；第二个阶段就是使用全局梯度上升使用第一阶段的样本实现后门遗忘。</p>
+<p>另外，由于方案的Insight实在是太凝练了，所以作者还花了大量篇幅做其他的实验辅助说明，把这个工作做得非常彻底，这也许能给要发论文的师傅们带来些启发。</p>
+<h1 id="参考">参考</h1>
+<p>1.Anti-Backdoor Learning: Training Clean Models on Poisoned Data.</p>
+<p>2.BadNets: Identifying Vulnerabilities in the Machine Learning Model Supply Chain</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/11/09/Adversarial-reprogramming/" rel="next" title="Adversarial reprogramming of neural networks(arxiv 2018)">
+                <i class="fa fa-chevron-left"></i> Adversarial reprogramming of neural networks(arxiv 2018)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/01/08/HBC/" rel="prev" title="Honest-but-Curious Nets(CCS2021)">
+                Honest-but-Curious Nets(CCS2021) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%8D%E5%90%8E%E9%97%A8%E5%AD%A6%E4%B9%A0"><span class="nav-number">2.</span> <span class="nav-text">反后门学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E9%97%A8%E9%9A%94%E7%A6%BB"><span class="nav-number">2.1.</span> <span class="nav-text">后门隔离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E9%97%A8%E9%81%97%E5%BF%98"><span class="nav-number">2.2.</span> <span class="nav-text">后门遗忘</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90%E5%8F%8A%E5%A4%8D%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">实验分析及复现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">3.1.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0"><span class="nav-number">3.2.</span> <span class="nav-text">复现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
