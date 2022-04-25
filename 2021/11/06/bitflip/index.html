@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言 在之前的文章中我们已经介绍过针对深度学习系统的攻击手段，比如对抗样本攻击、后门攻击、模型窃取等，对抗样本攻击、后门攻击的目的都是为了让模型将某一特定测试样本分类到攻击者指定的类别。但是，从攻击者的角度来看，如果不考虑“隐蔽性”问题，是否存在一种方法可以全面降低模型的性能呢，而不仅仅是降低模型在某一特定样本上的性能。答案是肯定的，本文就介绍一种方案，其通过修改模型的权重全面降低模型的性能，或者">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Targeted bit-flip adversarial  weight attack(TPAMI2021)">
+<meta property="og:url" content="http://example.com/2021/11/06/bitflip/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="前言 在之前的文章中我们已经介绍过针对深度学习系统的攻击手段，比如对抗样本攻击、后门攻击、模型窃取等，对抗样本攻击、后门攻击的目的都是为了让模型将某一特定测试样本分类到攻击者指定的类别。但是，从攻击者的角度来看，如果不考虑“隐蔽性”问题，是否存在一种方法可以全面降低模型的性能呢，而不仅仅是降低模型在某一特定样本上的性能。答案是肯定的，本文就介绍一种方案，其通过修改模型的权重全面降低模型的性能，或者">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106125557038.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106125814418.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106130311348.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106130613107.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106130845608.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106130859727.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106131350016.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106131504533.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106131515546.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106131632161.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106131715170.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106132556886.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106133244663.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106133401651.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106133450177.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106133520889.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106133532360.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106161915450.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106170919970.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106173247742.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106173300161.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106172333764.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106173935661.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106174539148.png">
+<meta property="og:image" content="http://example.com/2021/11/06/bitflip/image-20211106175157226.png">
+<meta property="article:published_time" content="2021-11-06T13:22:25.000Z">
+<meta property="article:modified_time" content="2022-04-25T13:29:21.391Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/11/06/bitflip/image-20211106125557038.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/11/06/bitflip/"/>
+
+
+
+
+
+  <title>Targeted bit-flip adversarial  weight attack(TPAMI2021) | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/06/bitflip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Targeted bit-flip adversarial  weight attack(TPAMI2021)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-11-06T21:22:25+08:00">
+                2021-11-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言">前言</h1>
+<p>在之前的文章中我们已经介绍过针对深度学习系统的攻击手段，比如对抗样本攻击、后门攻击、模型窃取等，对抗样本攻击、后门攻击的目的都是为了让模型将某一特定测试样本分类到攻击者指定的类别。但是，从攻击者的角度来看，如果不考虑“隐蔽性”问题，是否存在一种方法可以全面降低模型的性能呢，而不仅仅是降低模型在某一特定样本上的性能。答案是肯定的，本文就介绍一种方案，其通过修改模型的权重全面降低模型的性能，或者说彻底摧毁模型，而修改权重的方案则是对位于内存中的模型权重进行比特翻转。</p>
+<span id="more"></span>
+<h1 id="模型权重及row-hammer攻击">模型权重及Row Hammer攻击</h1>
+<p>我们知道，深度学习系统训练的目的就是为了找到合适的权重，可以说权重是模型最宝贵的资产，所以我们自然需要考虑模型权重的安全性问题。不过之前很少有人考虑过这个方面，这可能是因为：1.神经网络通过被认为是一个抗权重变化的鲁棒系统，大家认为权重发生一点变化是无关紧要的；2.深度神经网络通过部署在高性能计算系统比如CPU，这些系统通过有多种保证数据完整性的方法，所以模型的权重不容易被修改。</p>
+<p>但是，目前已经有研究表明，通过row hammer、laser beam等常见的故障注入技术可以对模型权重进行修改，从而篡改深度神经网络。</p>
+<p>已经有人尝试利用row hammer技术攻击存储在DRAM中的DNN网络权重，不过该方案存在关键的限制，它们主要集中在非常脆弱的全精度DNN模型，这种模型的参数都是浮点型的，但是随机翻转浮点数的指数部分很容易导致DNN出错，其原因在于翻转浮点数的指数部分会将权值增加到一个非常大的值，从而导致爆炸输出。因此，该攻击技术可以用，但是攻击对象最好是有权值约束的，即将权值量化为定点值的模型，所以在下文我们还会介绍怎么对权重进行量化。</p>
+<p>我们的攻击是通过比特翻转进行的，这种技术已经比较成熟了。Kim等人就演示了通过频繁的数据访问就能在DRAM中引起内存位翻转，被称为Row-Hammer Attack (RHA)。攻击者可以使用RHA修改存储在DRAM存储单元中的数据，每次只翻转一位。也有研究工作通过为DRAM中的位翻转创建一个配置文件，row hammer可以有效地在软件堆栈中的任何地址上翻转单个位。根据最新的研究，常见的纠错技术如纠错码(ECC)和Intel SGX都无法抵御row hammer。现有的内存位翻转攻击(即row hammer)模型给DNN计算系统的安全性带来了巨大的挑战，因为为了最大限度地提高计算吞吐量，模型参数通常存储在主存即DRAM中，相当于直接暴露在敌方攻击者面前。</p>
+<p>此外，由于DNN应用被广泛部署在许多资源有限(如智能物联网设备、移动系统、边缘设备等)，它们缺乏必要的数据完整性检查机制，所以更容易受到攻击。</p>
+<h1 id="攻击方案">攻击方案</h1>
+<p>通过翻转少量的权重位实现对深度学习系统的攻击。</p>
+<p>使用一种称为PBS（Progressive Bit Search）的算法，识别存储在DRAM上的容易受攻击的DNN权重参数，通过最小的比特位翻转次数可以最大限度地降低模型的精度。</p>
+<p>首先我们需要形式化定义问题：</p>
+<p>给定一个量化的包含L个卷积或全连接层的DNN,我们将原始的浮点数形式的权值通过Nq-bits统一量化器量化到2^Nq-1层级。被量化的权值W在数学上可以用Nq位有符号整数表示，而在内存中，W是以二进制格式存储的，我们用B来表示。我们现在的目的是要找到用于翻转的最优权值组合，该问题可以表示为下面的优化问题</p>
+<img src="/2021/11/06/bitflip/image-20211106125557038.png" class="">
+<p>上式中，B^是扰动后的权重，x和t分别是向量化后的输入和目标输出</p>
+<p>我们以x为输入，用{B^l}l=1参数化的网络推理计算过程可以表示为：</p>
+<img src="/2021/11/06/bitflip/image-20211106125814418.png" class="">
+<p>L则用于计算DNN输出与目标输出之间的损失</p>
+<p>D则用于计算二进制形式的原权重向量和扰动后的权重向量之间的汉明距，而Nb则是最大汉明距</p>
+<h2 id="量化及编码">量化及编码</h2>
+<h3 id="权重量化">权重量化</h3>
+<p>我们逐层使用Nq-bits统一量化器对权重进行量化。对于第l层，从浮点形式的Wfp-l到定点形式(有符号整数)的Wl的量化过程可以描述为：</p>
+<img src="/2021/11/06/bitflip/image-20211106130311348.png" class="">
+<p>其中d是权重张量的维度，∆wl是权重量化器的步长。由于∆wl是第l层所有权重共享的系数，我们只存储其定点部分，也就是</p>
+<img src="/2021/11/06/bitflip/image-20211106130613107.png" class="">
+<h3 id="权重编码">权重编码</h3>
+<p>计算机通常将有符号整数以二进制的补码进行存储，这一点大家学过计算机组成原理的应该都清楚，这是为了在算术运算中的效率。给定一个权重元素w，其二进制的补码表示为：</p>
+<img src="/2021/11/06/bitflip/image-20211106130845608.png" class="">
+<p>其中b是w对应的二进制表示</p>
+<img src="/2021/11/06/bitflip/image-20211106130859727.png" class="">
+<p>利用上式中g函数的转换关系，我们也可以从定点形式的权重反向得到其二进制表示</p>
+<h2 id="比特翻转攻击">比特翻转攻击</h2>
+<p>这一步是攻击方案的关键之一，我们采用类似于FGSM的方式，FGSM大家应该都很熟悉，是生成对抗样本的经典方案，我们攻击方案的思路就是利用DNN的损失沿着其梯度上升方向翻转比特。我们以上式中的b为例，对b进行翻转攻击</p>
+<p>我们首先计算b关于损失的梯度</p>
+<img src="/2021/11/06/bitflip/image-20211106131350016.png" class="">
+<p>其中L是被b参数化的DNN的推理损失。</p>
+<p>最直接的操作就是使用上式得到的梯度进行比特翻转，并得到扰动后的比特如下</p>
+<img src="/2021/11/06/bitflip/image-20211106131504533.png" class="">
+<p>其中</p>
+<img src="/2021/11/06/bitflip/image-20211106131515546.png" class="">
+<p>然而，由于比特值是0，1组成的，像上式一样翻转比特会导致数据溢出。</p>
+<p>实际上我们应该根据下面的真值表进行翻转</p>
+<img src="/2021/11/06/bitflip/image-20211106131632161.png" class="">
+<p>上表中bi是原来的比特，bi^是扰动后的比特，m指示变换情况，L对bi求偏导的正负情况可以对应地用1或0表示</p>
+<p>因此，我们需要重新设计比特翻转的流程：</p>
+<img src="/2021/11/06/bitflip/image-20211106131715170.png" class="">
+<p>上式中的 ⊕是逐位异或的符号，m是掩码，用来指示某一位是否进行比特翻转的操作</p>
+<h2 id="渐进位搜索">渐进位搜索</h2>
+<p>我们知道整个深度学习网络有大量的参数，我们不可能在整个网络上对每个比特进行翻转，我们需要有一种更精确和有效的方式，这就是本小节会介绍的内容。我们使用渐进位搜索(progressive bit search)，其结合了梯度排序和渐进搜索，该方案会尝试在每个迭代中识别和翻转最脆弱的比特位，从而逐步降低模型的性能，直到达到预设的低精度或者达到预设的迭代次数。整个流程图如下</p>
+<img src="/2021/11/06/bitflip/image-20211106132556886.png" class="">
+<p>对于每次迭代，搜索过程可以分为两个连续的步骤：</p>
+<p>1.层内搜索：在选定的层内，记录并比较被选择的比特翻转后模型得到的推理损失</p>
+<p>2.跨层搜索：对网络的每一层进行独立的层内搜索，评估层内搜索时记录的损失变化量，从而识别出跨不同层的最脆弱的比特位。</p>
+<h3 id="层内搜索">层内搜索</h3>
+<p>在第k次迭代中，在第l层内通过梯度排序进行层内搜索</p>
+<p>给定向量化的输入x和目标t，推理、反向传播的过程会被依序执行以计算对于推理损失的梯度。然后，我们通过梯度∂L/∂b的绝对值对比特的脆弱性进行降序排序，并选出梯度前nb个的比特，这个过程可以写作：</p>
+<img src="/2021/11/06/bitflip/image-20211106133244663.png" class="">
+<p>其中，{Topnb}函数会返回一个指针，其指向选中的nb个比特在内存中的位置</p>
+<p>然后我们对其进行翻转</p>
+<img src="/2021/11/06/bitflip/image-20211106133401651.png" class="">
+<p>接着我们要记录翻转后模型推理损失的变化情况，其计算如下</p>
+<img src="/2021/11/06/bitflip/image-20211106133450177.png" class="">
+<p>其中</p>
+<img src="/2021/11/06/bitflip/image-20211106133520889.png" class="">
+<p>和</p>
+<img src="/2021/11/06/bitflip/image-20211106133532360.png" class="">
+<p>之间的唯一区别就是上面翻转的比特</p>
+<h3 id="跨层搜索">跨层搜索</h3>
+<p>跨层搜索是在整个网络内进行评估。</p>
+<p>在第k次迭代中，跨层搜索首先对每一层独立进行层内搜索，并生成损失集合{Lk1, Lk2，···，LkL}，然后我们可以识别出损失最大的层j，并在选定的j层中对选中的比特位进行比特翻转，即表示如下：</p>
+<img src="/2021/11/06/bitflip/image-20211106161915450.png" class="">
+<p>然后进行第k+1次迭代。</p>
+<p>在ResNet-18对ImageNet数据集上，攻击效果如下所示</p>
+<img src="/2021/11/06/bitflip/image-20211106170919970.png" class="">
+<p>图中的Nflip是攻击将top-1精度降低到11%以下所需的位翻转次数。</p>
+<p>在上面分别绘制了Top-1验证精度、Top-5验证精度、Sample loss和validation loss。基于攻击样本量的攻击性能可以发现:S(128) &gt; S(32) &gt; S(256) &gt; S(64) &gt; S(16)。从结果可以看出，即使输入样本大小很小，攻击仍然可以在非常小的比特翻转情况下生效。</p>
+<h1 id="实战">实战</h1>
+<h2 id="基础函数">基础函数</h2>
+<p>形式转换函数、权重转换函数</p>
+<img src="/2021/11/06/bitflip/image-20211106173247742.png" class="">
+<p>计算汉明距的函数</p>
+<img src="/2021/11/06/bitflip/image-20211106173300161.png" class="">
+<h2 id="模型量化">模型量化</h2>
+<p>对模型进行量化的函数，这里省略了非关键的部分，下面是对卷积进行量化的函数，对线性进行量化也是同理</p>
+<img src="/2021/11/06/bitflip/image-20211106172333764.png" class="">
+<h2 id="翻转权重">翻转权重</h2>
+<img src="/2021/11/06/bitflip/image-20211106173935661.png" class="">
+<h2 id="渐进位搜索算法">渐进位搜索算法</h2>
+<img src="/2021/11/06/bitflip/image-20211106174539148.png" class="">
+<p>实验结果如下</p>
+<img src="/2021/11/06/bitflip/image-20211106175157226.png" class="">
+<p>可以看到，在翻转2个比特后，已经将损失提升了20%左右。</p>
+<h1 id="参考">参考</h1>
+<p>1.Rakin A S, He Z, Fan D. Bit-flip attack: Crushing neural network with progressive bit search[C]//Proceedings of the IEEE/CVF International Conference on Computer Vision. 2019: 1211-1220.</p>
+<p>2.Rakin A S, He Z, Li J, et al. T-bfa: Targeted bit-flip adversarial weight attack[J]. IEEE Transactions on Pattern Analysis and Machine Intelligence, 2021.</p>
+<p>3.Mutlu O, Kim J S. Rowhammer: A retrospective[J]. IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems, 2019, 39(8): 1555-1571.</p>
+<p>4.Kim Y, Daly R, Kim J, et al. Flipping bits in memory without accessing them: An experimental study of DRAM disturbance errors[J]. ACM SIGARCH Computer Architecture News, 2014, 42(3): 361-372.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/10/13/NeuralCleanse/" rel="next" title="Neural_Cleanse_S&P2019">
+                <i class="fa fa-chevron-left"></i> Neural_Cleanse_S&P2019
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/11/09/Adversarial-reprogramming/" rel="prev" title="Adversarial reprogramming of neural networks(arxiv 2018)">
+                Adversarial reprogramming of neural networks(arxiv 2018) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%9D%83%E9%87%8D%E5%8F%8Arow-hammer%E6%94%BB%E5%87%BB"><span class="nav-number">2.</span> <span class="nav-text">模型权重及Row Hammer攻击</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">攻击方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8F%E5%8C%96%E5%8F%8A%E7%BC%96%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text">量化及编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%83%E9%87%8D%E9%87%8F%E5%8C%96"><span class="nav-number">3.1.1.</span> <span class="nav-text">权重量化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%83%E9%87%8D%E7%BC%96%E7%A0%81"><span class="nav-number">3.1.2.</span> <span class="nav-text">权重编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%94%E7%89%B9%E7%BF%BB%E8%BD%AC%E6%94%BB%E5%87%BB"><span class="nav-number">3.2.</span> <span class="nav-text">比特翻转攻击</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%90%E8%BF%9B%E4%BD%8D%E6%90%9C%E7%B4%A2"><span class="nav-number">3.3.</span> <span class="nav-text">渐进位搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%82%E5%86%85%E6%90%9C%E7%B4%A2"><span class="nav-number">3.3.1.</span> <span class="nav-text">层内搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E5%B1%82%E6%90%9C%E7%B4%A2"><span class="nav-number">3.3.2.</span> <span class="nav-text">跨层搜索</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">4.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E5%87%BD%E6%95%B0"><span class="nav-number">4.1.</span> <span class="nav-text">基础函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96"><span class="nav-number">4.2.</span> <span class="nav-text">模型量化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BF%BB%E8%BD%AC%E6%9D%83%E9%87%8D"><span class="nav-number">4.3.</span> <span class="nav-text">翻转权重</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%90%E8%BF%9B%E4%BD%8D%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95"><span class="nav-number">4.4.</span> <span class="nav-text">渐进位搜索算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
