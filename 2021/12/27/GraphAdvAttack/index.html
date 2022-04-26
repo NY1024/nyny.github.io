@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言 深度学习已经在许多领域得到了广泛的应用，如文本、图像、音频、视频等，相应领域的对抗攻击安全客上也有文章介绍过了，包括图像、视频、音频等。事实上，这类数据格式在形式上有着统一而规整的尺寸和维度，它们也被称作欧式结构（Euclidean Structure）。但是除此之外，现实生活中存在大量的非欧式结构的图数据，例如互联网、知识图谱、社交网络、蛋白质、化合物分子等。尽管深度学习在欧式结构数据上取">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Adversarial Attacks on Neural Networks for Graph Data(KDD2018)">
+<meta property="og:url" content="http://example.com/2021/12/27/GraphAdvAttack/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="前言 深度学习已经在许多领域得到了广泛的应用，如文本、图像、音频、视频等，相应领域的对抗攻击安全客上也有文章介绍过了，包括图像、视频、音频等。事实上，这类数据格式在形式上有着统一而规整的尺寸和维度，它们也被称作欧式结构（Euclidean Structure）。但是除此之外，现实生活中存在大量的非欧式结构的图数据，例如互联网、知识图谱、社交网络、蛋白质、化合物分子等。尽管深度学习在欧式结构数据上取">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227211516970.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227211844004.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227191813859.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227212019163.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227192840626.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227192855225.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227193024280.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227193206724.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227193217650.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227193313475.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227193406531.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227193609209.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227193626011.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227195300513.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227195510889.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227195546492.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227195610416.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227195711277.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227200033568.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227200522352.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227200749767.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227200808601.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227200823874.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227201004205.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227210615769.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227210713386.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227210926817.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227211129344.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227201752869.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227201906619.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227201924443.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227202026011.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227202107789.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227201409388.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227205314655.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227205610778.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227205739029.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227205036165.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227204933419.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227204302823.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227203629121.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227203753099.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227203826481.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227203902039.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227203938398.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227203951147.png">
+<meta property="og:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227204032058.png">
+<meta property="article:published_time" content="2021-12-27T00:34:07.000Z">
+<meta property="article:modified_time" content="2022-04-26T00:44:36.621Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/12/27/GraphAdvAttack/image-20211227211516970.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/12/27/GraphAdvAttack/"/>
+
+
+
+
+
+  <title>Adversarial Attacks on Neural Networks for Graph Data(KDD2018) | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/27/GraphAdvAttack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Adversarial Attacks on Neural Networks for Graph Data(KDD2018)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-12-27T08:34:07+08:00">
+                2021-12-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言">前言</h1>
+<p>深度学习已经在许多领域得到了广泛的应用，如文本、图像、音频、视频等，相应领域的对抗攻击安全客上也有文章介绍过了，包括图像、视频、音频等。事实上，这类数据格式在形式上有着统一而规整的尺寸和维度，它们也被称作欧式结构（Euclidean Structure）。但是除此之外，现实生活中存在大量的非欧式结构的图数据，例如互联网、知识图谱、社交网络、蛋白质、化合物分子等。尽管深度学习在欧式结构数据上取得巨大的成功，但在图结构数据上，基于神经网络的深度学习表现得并不好。</p>
+<p>在图结构数据中，节点与节点之间的边连接可能是均匀分布的，也可能是不均匀的。节点与节点之间没有严格意义上的先后顺序。对于神经网络的输入端而言，这些数据没有固定的输入尺寸。在数学表达上，这些数据与欧式结构数据相比，每一个区块的特征矩阵维度都不是统一的，如下图所示。</p>
+<span id="more"></span>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227211516970.png" class="">
+<p>由于无法使用统一规整的算子对数据编排，导致CNN等神经网络不能再直接对其进行诸如卷积和池化等操作，也就不再有局部连接、权值共享、特征抽象等性质。近年来Gori等人用RNN来压缩节点信息和学习图节点标签，首次提出图神经网络（Graph Neural Network，GNN）这一概念。之后大佬提出图卷积网络（Graph Convolutional Network，GCN），正式将CNN用于对图结构数据建模。GCN通过整合中心节点和邻居节点的特征和标签信息，给出图中每个节点的规整表达形式，并将其输入到CNN中。这样一来GCN就能利用多尺度的信息，组合成更高层次的表达，其有效地利用了图结构信息和属性信息，为深度学习中其他神经网络迁移至图上提供了标准的范式。由此，开启了GNN研究的热潮。</p>
+<p>在GNN受到广泛关注的背景下，其安全性如何还没有被探究过。本文将分析并复现图对抗攻击的开山之作--《Adversarial Attacks on Neural Networks for Graph Data》，这个工作获得了KDD 2018的Best paper，可见其含金量。</p>
+<h1 id="基础">基础</h1>
+<p>图上最常用的任务之一就是节点分类：给定一个(带属性的)图和少数节点的类标签，任务是预测剩余节点的标签，如预测社交网络中的用户类型等。虽然节点分类问题在此前已经有多种经典方案可以解决，但是这几年由于图神经网络的领域的研究进展，大家发现图卷积网络在包括节点分类在内的图学习任务中达到了很好的表现。这类的方法厉害的地方在于它们利用图的关系信息来进行分类，而不是仅仅单独考虑实例如节点及其特征，节点之间的关系（边)也被利用来进行学习了，如下所示，表现的是layer0的一个节点是如何通过网络从周围的节点收集信息的。</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227211844004.png" class="">
+<p>在之前的一些文章中，我们已经提到神经网络容易受到对抗样本的攻击，那么在图神经网络里面是否也可能存在类似的攻击呢。这是显然的，我们来类比一下，对于计算机视觉中的图像分类任务而言，我们在进行对抗样本攻击时，攻击者需要生成一些扰动，改变某些像素值从而实现攻击，那么在图神经网络里面呢？我们知道它是依靠边、节点信息的，所以攻击者只需要修改这些内容就可以了，那么如何修改，以及怎样才能保证修改最小化的同时而攻击又最有效呢？这就是我们需要研究的地方。</p>
+<p>对图神经网络进行攻击的做法，说起来确实很简单，就是改变节点的特征或者图的结构。如下所示，在下图中我们把以节点分类任务为例，将想要错误分类的节点称为目标节点target node,将攻击者可以控制修改的节点称为攻击节点attacker node，我们对其施加扰动，从而使得目标节点被误分类。</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227191813859.png" class="">
+<p>但是这里最明显的一个挑战就在于，我们已经知道，这里存在着关系效应，模型在进行预测时并不是仅仅基于单个实例，而是会考虑实例之间的关系，所以可能我们仅修改某一个是不够的；同时，这些关系信息的传播又会带来级联效应，也就是说我们在修改一个实例的同时也会影响许多其他实例。这个问题是亟待解决的。此外，图像是由连续特征组成的，但是图的结构(节点特征)是离散的，因此在图像上进行的攻击算法如FGSM等这类基于梯度的方法是不适用的，我们的关键就在于怎么找到一个离散域的对抗样本，而且不被人察觉，对于图像我们直接说比较像素值修改前后的数值变化就可以，而对于图，我们如何定义这一点，这也是需要考虑的。</p>
+<h2 id="节点分类">节点分类</h2>
+<p>我们假设要攻击的是一个具有二值节点特征的图上的节点分类任务。我们先来看看形象化表示的例子，下图中节点代表每个空手道练习者，边代表空手道之外这些成员之间的互动。要预测的问题是区分一个给定的成员是忠于Mr. Hi还是John H。</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227212019163.png" class="">
+<p>上图左边是问题的初始条件，右边是可能的解决方案，每个节点都根据联盟进行了分类。该数据集可以用于其他图问题，如无监督学习。我们以图像为类比，节点层次的预测问题类似于图像分割，我们试图标记图像中每个像素的角色。而如果类比于文本，类似的任务就是预测句子中每个单词的词性(例如名词、动词、副词等)。</p>
+<p>再来看看形式化的表示，设G=(A,X)是一个属性图，其中 A ∈ {0,1}^N×N 是表现连接的邻接矩阵，X∈{0,1}N ×D表示节点的特征，我们用xv∈{0,1}D表示节点v的D维特征向量，我们假设节点ids是V={1,...,N},特征ids是F={1,...D}</p>
+<p>给定有标签节点的V的子集VL(设类标签为C={1,2,...ck})，节点分类任务的目标是学习一个函数g:V-&gt;C，这会将v中的每个节点映射到C中的一类。由于对于给定的测试实例预测已经做完了，这些在训练前都已经知道了，这就是一个典型的transductive learning的场景。</p>
+<p>我们关注于使用图卷积层的节点分类，设隐层l+1被定义为</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227192840626.png" class="">
+<p>其中</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227192855225.png" class="">
+<p>这是输入图G在通过identity matrix In加了自循环后的邻接矩阵。</p>
+<p>Wl是可以被训练的层l的矩阵权重</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227193024280.png" class="">
+<p>σ(·)是激活函数</p>
+<p>在第一层我们有</p>
+<p>H(0)=X,也就是说使用节点特征作为输入。用于隐表示H依赖于邻接实例，所有的实例都被couple在一起。我们将GNN作为一个单个的隐层：</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227193206724.png" class="">
+<p>其中，</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227193217650.png" class="">
+<p>输出的Zvc表示的是将节点v分类为类c的概率。这里，我们使用θ代表一系列参数，比如</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227193313475.png" class="">
+<p>最优的参数θ会被通过最小化以下交叉熵的方式以自监督的方式被学习到：</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227193406531.png" class="">
+<p>其中cv训练集中给出的v的标签。在训练之后，Z就表示了图中每个实例的类概率。</p>
+<h2 id="攻击模型">攻击模型</h2>
+<p>攻击者的目标是在图</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227193609209.png" class="">
+<p>上产生一些小的扰动，是其变为</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227193626011.png" class="">
+<p>此时的分类性能会下降。</p>
+<p>如果修改的是A(0),那我们称之为结构攻击，如果修改的是X(0)，那我们称之为特征攻击</p>
+<p>假设我们的目标节点是v0，我们希望改变v0的预测。由于数据非独立同分布的特性，节点v0的输出不仅依赖于节点自身，同时依赖于图中的其他节点。因为我们扰动的范围不限于节点v0，同时我们也可以通过修改其他节点来实现我们的目的。所以我们这里引入攻击节点A，对于G(0)的扰动就受到这些节点的约束，即：</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227195300513.png" class="">
+<p>如果目标节点不属于攻击节点，我们就称这种攻击方式为间接攻击，因为v0被没有被直接操作，而如果目标节点属于攻击节点，我们则称这种攻击方式为直接攻击。</p>
+<p>为了确保攻击者不会完全地修改图，我们要进行通过预算∆限制允许的改变范围：</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227195510889.png" class="">
+<p>我们将符合以上要求的扰动记做：</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227195546492.png" class="">
+<p>此时我们的问题可以被定义为：</p>
+<p>给定一个图</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227195610416.png" class="">
+<p>和一个目标节点v0、攻击节点A</p>
+<p>设cold表示基于图G(0)的节点v0的类</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227195711277.png" class="">
+<p>上式表达的意思是，当我们找到一个扰动后的可以将v0分类为cnew,并且与cold有最大的距离的图G'。这里实际上是一个双层优化问题。我们也可以进一步简化，我们考虑规避攻击，假设参数是静态的并且是基于原来的图进行学习的，即</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227200033568.png" class="">
+<h2 id="扰动预算">扰动预算</h2>
+<p>现在还有个问题，怎么保证对图的扰动不会被注意到？</p>
+<p>仅仅考虑预算∆可能是不够的。如果复杂的数据需要一个大的∆，我们仍然想要一个看起来真实的图G'。因此，我们的核心思想是使用那些可以保留图的特定内在性质的扰动。</p>
+<h3 id="保留图结构的扰动">保留图结构的扰动</h3>
+<p>图结构最显著的特征就是它的度的分布，在实际网络中，度分布往往类似于幂律形状。如果两个网络显示出非常不同的度分布，很容易将它们区分开来。因此，我们的目标是只产生与输入相似的幂律行为的扰动。为此，我们引用幂律分布的统计双样本检验。也就是说，我们使用似然比检验来估计G(0)和G '的二度分布是来自同一分布还是来自单个分布。我们首先估计幂律分布p (x)∝x−α的标度参数α(等价于G ')。虽然在离散数据的情况下没有精确的和封闭的解来估计α，但是可以导出一个近似表达式，在这里我们将图G转换为</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227200522352.png" class="">
+<p>其中dmin表示幂律测试中一个节点所需的最小度</p>
+<p>DG则是一个多重集，包括了节点度的列表，其中dvG是G的节点v的度。通过这种方法就可以估计了。</p>
+<p>给定尺度参数αx，对样本的对数似然性Dx可以很容易地计算为</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227200749767.png" class="">
+<p>利用这些对数似然分数，我们建立了显著性检验，估计两个样本DG(0)和DG '是否来自相同的幂律分布(原假设H0)，而不是单独的幂律分布(H1)。也就是说，我们提出了两个相互竞争的假设</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227200808601.png" class="">
+<p>经过似然比检验后，最终的检验统计量为</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227200823874.png" class="">
+<p>拒绝原假设H0的典型p值(即两个样本都来自不同的分布)是0.05，即在统计学上，在20个案例中，我们拒绝原假设，尽管它成立(第一类错误)。虽然在我们的例子中，我们不能很容易地计算第二类误差，但一般来说，第一类和第二类误差概率呈反比关系。因此，通过选择一个非常保守的对应于高类型I错误的p值，我们可以减少类型II错误的概率。因此，我们将临界p值设为0.95，也就是说，如果我们从相同的幂律分布中抽样二度序列，我们将在95%的情况下拒绝零假设，然后可以根据最初的怀疑来调查数据是否已经受损。另一方面，如果我们修改的图的度序列通过了这个非常保守的检验，我们可以得出这样的结论:度分布的变化是不明显的。</p>
+<p>使用χ2分布中的上述p值，我们只接受度分布满足的扰动G'=(A',X')，其中度的分布满足</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227201004205.png" class="">
+<h3 id="保持特征统计量的扰动">保持特征统计量的扰动</h3>
+<p>由于设计基于共现的统计检验需要对特征上的联合分布进行建模，这对于相关多元二进制数据来说是难以处理的，因此我们将其称为确定性检验。在这方面，将特性设置为0是不重要的，因为它不会引入新的共现。问题是:什么样的特征会被认为是不值得注意的?</p>
+<p>为了回答这个问题，我们在来自G(0)的特征的共发生图C=(F,E)上考虑一个概率随机漫步者，其中F是特征的集合，E⊆F × F表示到目前为止哪些特征同时出现。我们认为，如果从节点u最初呈现的特征开始的随机步行者到达特征i的概率非常大，那么添加特征i是不明显的。形式上，设</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227210615769.png" class="">
+<p>是节点u表现出来的特征集合。我们认为如果满足下式，则表明将特征i加到节点u上是不会被注意到的</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227210713386.png" class="">
+<p>其中，dj表示共现图C的度。</p>
+<p>也就是说,假设概率步行者从任意特征j∈Su开始，在执行一个步骤之后，它将以概率σ达到我特征i。在我们的实验中，我们简单地选择σ为最大可达概率的一半，即</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227210926817.png" class="">
+<p>如果满足上述原则，实际上就会有这两个效果:第一，特征i与u的许多特征(即在其他节点上)同时出现的概率高;当它们被添加时，就不那么明显了。第二，特征i仅与特征j∈Su同时出现，而不是特定于节点u(例如，特征j几乎与所有其他特征同时出现)有低概率;加上“i”将会引人注目。因此，实现了添加特征却不被注意的效果。 使用上述测试，我们只在特征值满足下式时才接收扰动G'</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227211129344.png" class="">
+<h1 id="生成对抗图">生成对抗图</h1>
+<p>我们使用一种顺序方法，首先攻击代理模型，从而获得被攻击的图。这个图随后被用来训练最终的模型。实际上，这种方法可以直接被视为可迁移性的检查，因为我们并不特别关注使用的模型，而是只关注代理模型。</p>
+<p>为了获得一个易于处理的代理模型，却仍然应用到图卷积的思想，我们对模型进行线性化，用一个简单的线性激活函数代替非线性σ(.)，得到</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227201752869.png" class="">
+<p>由于W(1)和W(2)是需要学习的参数，因此可以将它们合为单个矩阵W∈RD ×K。</p>
+<p>由于我们的目标是最大化目标v0的对数似然的差异(给定一个特定的budget∆)，因此可以忽略由softmax引起的与实例相关的归一化。因此，对数概率可以简单地简化为Aˆ2 XW。因此，如果训练的代理模型(未损坏)输入了带有学习参数W的数据，我们定义了代理损失</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227201906619.png" class="">
+<p>并尝试求解</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227201924443.png" class="">
+<p>这个问题虽然简单得多，但由于离散域和约束，仍然难以解决。因此，我们使用一个可扩展的贪婪近似方案。为此，我们定义了评分函数来评估从添加/删除一个特征f =(u,i)或者edgee=(u,v)到任意graphg =(a,X)所得到的额外损失:</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227202026011.png" class="">
+<p>近似解的方案伪码如下</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227202107789.png" class="">
+<h3 id="复杂度分析">复杂度分析</h3>
+<p>候选集的生成(即哪些边/特征允许改变)和score function可以递增计算，并利用图的稀疏性，从而确保可伸缩性。算法的运行时复杂度可以很容易地计算如下</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227201409388.png" class="">
+<p>其中thv0表示节点v0在算法运行过程中2-hop邻居的大小。</p>
+<p>在每个∆次迭代中，每个攻击者评估潜在的边扰动(最多N)和特征扰动(最多D).对于前者，由于有两个卷积层，需要更新目标的2-hop邻域。假设图是稀疏的，thv0远小于N。每个特征在恒定的时间内进行特征扰动。因为所有的约束都可以在常数时间内检查，所以它们不会影响复杂度。</p>
+<h1 id="复现及分析">复现及分析</h1>
+<h2 id="分析">分析</h2>
+<p>先来看看攻击所需的运行时间，根据前面分析的复杂度，在下图中，我们可以看到，我们的算法与图结构的扰动数和考虑的影响节点的数量线性相关。</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227205314655.png" class="">
+<p>接下来我们评估两种攻击类型的Nettack的性能:分别是规避攻击和投毒攻击。在下图中，每个点代表一个目标节点。</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227205610778.png" class="">
+<p>正如我们所见，直接攻击是非常成功的——即使是在这个棘手的投毒攻击中，几乎每个目标都被错误分类了。而间接的攻击(显示在双线右侧)更加困难。接下来看看在GCN和CLN上的攻击效果</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227205739029.png" class="">
+<p>可以看到，不论是哪种情况，我们发现直接攻击比间接攻击更困难。在这些方案中，我们也比较了两种基线Rnd和FGSM，如图所示，Nettack的表现优于两者。</p>
+<p>在下表中我们总结了不同数据集和分类模型的结果。</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227205036165.png" class="">
+<p>这里给出的是正确分类的目标节点的比例。在我们评估的所有数据集上，邻模型上的对抗扰动都是可迁移到所有三个模型上的。我们看到FGSM的性能比Nettack差，原因之前已经说过的，因为梯度方法对离散数据不是最优的。下图显示了这种情况的原因:当改变A中的元素时，我们绘制了梯度与损失的实际变化之间的关系</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227204933419.png" class="">
+<p>通常梯度不能很好地接近损失。而Nettack的一个关键优势是，我们可以精确和有效地计算出ls的变化。</p>
+<p>在之前的实验中，我们假设攻击者知道输入图的全部知识，这是假设最强的情况。接下来我们分析在知识有限的情况下的结果:给定一个目标节点v0，我们只提供相对于Cora图的大小增加的子图。我们通过选择距离v0越来越远的节点来构造这些子图，即我们首先选择1跳邻居，然后选择2跳邻居，以此类推，直到我们达到所需的图大小。然后对子图进行扰动。然后，这些扰动被迁移到我们训练GCN的全图中。下图是绘制了攻击者只有关于数据的有限知识的情况下的攻击效果</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227204302823.png" class="">
+<p>上图比较了直接攻击和间接攻击。在直接攻击中可以看到，即使只观察到图的10%，仍然可以显著地攻击它。如果攻击者知道整个图，则需要的扰动次数最少。在间接攻击中，我们注意到需要更多的扰动和75%的图大小，攻击才能成功。尽管如此，这个实验攻击者并不需要掌握全部的数据的知识就可以成功发动攻击</p>
+<h2 id="复现">复现</h2>
+<p>首先确定后要目标节点，同时训练代理模型</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227203629121.png" class="">
+<p>初始化相关参数，这里比较重要的就是扰动次数</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227203753099.png" class="">
+<p>开始投毒</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227203826481.png" class="">
+<p>我们这里扰动的是特征，可以将其打印出来</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227203902039.png" class="">
+<p>接下来我们分别在有扰动和没有扰动的情况下训练GCN</p>
+<p>这是没有扰动的</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227203938398.png" class="">
+<p>这是有扰动的</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227203951147.png" class="">
+<p>然后可以分别将可视化的结果打印出来</p>
+<img src="/2021/12/27/GraphAdvAttack/image-20211227204032058.png" class="">
+<p>可以看到攻击生效了</p>
+<h1 id="参考">参考</h1>
+<p>1.https://distill.pub/2021/gnn-intro/</p>
+<p>2.图神经网络前沿进展与应用</p>
+<p>3.Adversarial Attacks on Neural Networks for Graph Data</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/11/28/GraphBackdoor/" rel="next" title="GraphBackdoor">
+                <i class="fa fa-chevron-left"></i> GraphBackdoor
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/01/07/ABL/" rel="prev" title="Anti-Backdoor Learning(NeurIPS2021)">
+                Anti-Backdoor Learning(NeurIPS2021) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-number">2.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E5%88%86%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">节点分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">攻击模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%B0%E5%8A%A8%E9%A2%84%E7%AE%97"><span class="nav-number">2.3.</span> <span class="nav-text">扰动预算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E7%95%99%E5%9B%BE%E7%BB%93%E6%9E%84%E7%9A%84%E6%89%B0%E5%8A%A8"><span class="nav-number">2.3.1.</span> <span class="nav-text">保留图结构的扰动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%9D%E6%8C%81%E7%89%B9%E5%BE%81%E7%BB%9F%E8%AE%A1%E9%87%8F%E7%9A%84%E6%89%B0%E5%8A%A8"><span class="nav-number">2.3.2.</span> <span class="nav-text">保持特征统计量的扰动</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%AF%B9%E6%8A%97%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">生成对抗图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%88%86%E6%9E%90"><span class="nav-number">3.0.1.</span> <span class="nav-text">复杂度分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0%E5%8F%8A%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">复现及分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90"><span class="nav-number">4.1.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0"><span class="nav-number">4.2.</span> <span class="nav-text">复现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
