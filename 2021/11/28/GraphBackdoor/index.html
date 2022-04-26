@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言 目前，图结构的数据被应用于各种安全敏感领域(例如恶意软件分析,内存取证,欺诈检测，药物发现等)，而随着图神经网络的兴起，研究人员尝试将图神经网络应用于这类数据上实施分析，发现都能达到非常先进的水平。在这种趋势下，图神经网络是否安全，便是安全研究人员关注的重点，本文介绍首次实现针对图神经网络进行后门攻击的研究工作，该工作发表于安全四大之一的USENIX Security 2021，它将提出的攻">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GraphBackdoor">
+<meta property="og:url" content="http://example.com/2021/11/28/GraphBackdoor/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="前言 目前，图结构的数据被应用于各种安全敏感领域(例如恶意软件分析,内存取证,欺诈检测，药物发现等)，而随着图神经网络的兴起，研究人员尝试将图神经网络应用于这类数据上实施分析，发现都能达到非常先进的水平。在这种趋势下，图神经网络是否安全，便是安全研究人员关注的重点，本文介绍首次实现针对图神经网络进行后门攻击的研究工作，该工作发表于安全四大之一的USENIX Security 2021，它将提出的攻">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128141123604.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128140856680.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211122091536502.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211122092306485.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211122094106833.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211122095450651.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211122100616676.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211122101736524.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211122103453616.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211122124517679.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211122124733544.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211122125616187.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128130151200.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128132900891.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128133229324.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128130848678.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128132224244.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128132247912.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/2021-11-28_11-19_1.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/2021-11-28_11-19_2.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128134646610.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128134153868.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128133817532.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128134940950.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128135120297.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128135155997.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/2021-11-28_11-18.png">
+<meta property="og:image" content="http://example.com/2021/11/28/GraphBackdoor/2021-11-28_11-19.png">
+<meta property="article:published_time" content="2021-11-28T00:23:22.000Z">
+<meta property="article:modified_time" content="2022-04-26T00:30:20.913Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/11/28/GraphBackdoor/image-20211128141123604.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/11/28/GraphBackdoor/"/>
+
+
+
+
+
+  <title>GraphBackdoor | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/28/GraphBackdoor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GraphBackdoor</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-11-28T08:23:22+08:00">
+                2021-11-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言">前言</h1>
+<p>目前，图结构的数据被应用于各种安全敏感领域(例如恶意软件分析,内存取证,欺诈检测，药物发现等)，而随着图神经网络的兴起，研究人员尝试将图神经网络应用于这类数据上实施分析，发现都能达到非常先进的水平。在这种趋势下，图神经网络是否安全，便是安全研究人员关注的重点，本文介绍首次实现针对图神经网络进行后门攻击的研究工作，该工作发表于安全四大之一的USENIX Security 2021，它将提出的攻击命名为GTA。</p>
+<h1 id="基础">基础</h1>
+<h2 id="特点">特点</h2>
+<p>同样是后门攻击，图上的后门攻击有哪些特点呢？</p>
+<p>目前的后门攻击基本是在图像领域展开研究的，与结构化、连续的数据(如图像)不同，图数据本质上是非结构化和离散的，需要具有相同性质的查询触发器。GTA将触发器定义为特定的子图，包括拓扑结构和描述(节点和边)特征，这为攻击者提供了一个大的设计范围。此外GTA不是为所有图定义一个固定的触发器，而是根据单个图的特征生成触发器，这优化了攻击的有效性(例如，误分类置信度)和规避性(例如，扰动幅度)。如下所示，第三行是被GTA植入触发器后的图，图中红色的子图是触发器，可以看到，每个图的触发器都是不同的。</p>
+<span id="more"></span>
+<img src="/2021/11/28/GraphBackdoor/image-20211128141123604.png" class="">
+<p>总的来说，GTA本质上也是要生成一个木马GNN，训练该模型时的核心是双层优化，对木马GNN和触发器生成器的参数进行轮流优化，但是由于假设攻击者没有访问下游分类器的能力，因此优化的目标是针对它们的潜在表达形式（embedding）的L2距离，即要保证正常GNN和木马GNN在干净输入时要保证较为相似的潜在表达输出，也要保证木马GNN在带有木马的输入（非攻击目标类）和目标类干净输入时较为相似的潜在表达输出。</p>
+<p>我们知道，GNN被应用的领域可以被简单的分为两类，分别是inductive task和transductive task，前者的代表性任务就是图分类，后者的代表性任务就是节点分类。而GTA对两者都可实施攻击。</p>
+<h2 id="inductive-task和transductive-task">Inductive task和Transductive task</h2>
+<p>这里我们顺便再提一下inductive task和transductive task的区别与联系。</p>
+<p>inductive task翻译成中文可以叫做<strong>“归纳式学习”</strong>，顾名思义，就是从已有数据中归纳出模式来，应用于<strong>新的数据和任务</strong>。我们常用的机器学习模式，就是这样的：根据已有数据，学习分类器，然后应用于新的数据或任务</p>
+<p>transductive task翻译成中文可以叫做<strong>“直推式学习”</strong>，指的是由当前学习的知识直接推广到给定的数据上。其实相当于是<strong>给了一些测试数据</strong>的情况下，结合已有的训练数据，看能不能推广到测试数据上</p>
+<p>我们以下图为例，可以更直观地进行解释</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128140856680.png" class="">
+<p>设现在的任务是：已知ABC的类别，求问号的类别</p>
+<p>inductive learning就是只根据现有的ABC，用比如kNN距离算法来预测，在来一个新的数据的时候，还是只根据5个ABC来预测；而transductive learning直接以某种算法观察出数据的分布，这里呈现三个cluster，就根据cluster判定，不会建立一个预测的模型，如果一个新的数据加进来就必须重新算一遍整个算法，新加的数据也会导致旧的已预测问号的结果改变。</p>
+<h2 id="图神经网络gnn">图神经网络GNN</h2>
+<p>GNN以图G为输入，包括其拓扑结构和描述特征，并为每个结点v生成表示(embedding) <span class="math inline">\(z_v\)</span>，设Z表示矩阵形式的节点嵌入。</p>
+<p>我们考虑一个基于领域聚合范式的GNN:</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211122091536502.png" class="">
+<p>其中，Z(k)是第k次迭代后的节点嵌入，同时也是传递给邻居节点的message，而aggregation 函数则依赖于来自上一次迭代的邻接矩阵A、可训练的参数、以及节点嵌入Z(k-1)</p>
+<p>通常Z(0)被初始化为G的节点特征。为了得到图嵌入<span class="math inline">\(z_G\)</span>,readout函数会集合来自最后一次迭代K的节点嵌入：</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211122092306485.png" class="">
+<p>总的来说，GNN建模了一个函数f，为G生成了<span class="math inline">\(z_G\)</span>=f(G)</p>
+<h2 id="预训练gnn">预训练GNN</h2>
+<p>对于有标签数据非常稀疏或者训练非常昂贵的领域来说，使用预训练模型是非常好的选择。在迁移学习的环境下，如下所示，一个预训练的GNN f与下游的分类器h一起组成了端到端的系统</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211122094106833.png" class="">
+<p>举例而言，对于一个化学药物分类任务，给定一个分子的图G，首先将其映射到其嵌入<span class="math inline">\(z_G\)</span>=f(G),然后进行分类<span class="math inline">\(y_G=h(z_G)\)</span></p>
+<p>与f相比，h明显更简单(比如就是一个全连接层)。注意，训练f的数据往往与下游任务不同，但具有相似的特征(例如，一般分子与有毒分子)。经常有必要对系统进行微调。可以选择执行full-tuning来同时训练f和h，或者只训练h但f固定的partial-tuning。</p>
+<h2 id="威胁模型">威胁模型</h2>
+<p>我们假设的威胁模型如上图所示，给定一个预训练的GNN <span class="math inline">\(f_{\theta_0}\)</span>,攻击者在不修改架构的同时修改参数伪造一个GNN <span class="math inline">\(f_\theta\)</span></p>
+<p>我们假设敌手有能力接触到下游任务所用的数据集。在将<span class="math inline">\(f_\theta\)</span>和下游分类器h集成为一个端到端系统后，用户会进行微调以满足下游任务。为了让攻击更实际，我们假设攻击者不知道用户使用的分类器h的情况，也不清楚是如何微调系统的。</p>
+<h1 id="gta攻击">GTA攻击</h1>
+<p>我们以图分类任务为例来说明。</p>
+<p>给定一个预训练GNN <span class="math inline">\(\theta_0\)</span>，攻击者希望伪造一个木马模型<span class="math inline">\(\theta\)</span>，它会让系统对嵌入了触发器的图误分类为指定的类<span class="math inline">\(y_t\)</span>,而在正常的图上是正常的分类</p>
+<p>我们将触发器设计为子图<span class="math inline">\(g_t\)</span>(包括拓扑结构和描述特征),并设计一个mixing 函数m(.;<span class="math inline">\(g_t\)</span>)，用于将图G和触发器<span class="math inline">\(g_t\)</span>混合从而生成一个嵌入了触发器的图m(G;<span class="math inline">\(g_t\)</span>)</p>
+<p>因为攻击者的目标可以定义为：</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211122095450651.png" class="">
+<p>h是微调后的下游的分类器，G代表的是任务中的任意图。直观上，第一个目标规定了所有触发器嵌入图都被误分类为目标类(即攻击有效性)，第二个目标则保证了原始gnn和木马gnn在良性图上的行为是不可区分的(即攻击规避性)。</p>
+<p>不过通过上式来寻找最优的触发器和木马模型是non-trivial的：</p>
+<p>•由于攻击者无法访问下游模型h，直接根据上式优化<span class="math inline">\(g_t\)</span>和$ $是不现实的。</p>
+<p>•由于<span class="math inline">\(g_t\)</span>和$ <span class="math inline">\(的相互依赖，每次更新\)</span>g_t<span class="math inline">\(都需要对\)</span> $进行昂贵的计算。</p>
+<p>•存在多种组合方式，这意味着存在一个禁止性搜索空间。</p>
+<p>•对所有图使用通用触发器<span class="math inline">\(g_t\)</span>忽略了单个图的特征，易于被检测。</p>
+<p>为了解决以上问题</p>
+<p>1.我们不是将<span class="math inline">\(g_t\)</span>和$ $与最终预测相关联，而是根据特征表示对它们进行优化;</p>
+<p>2.采用双层优化公式，<span class="math inline">\(g_t\)</span>作为超参数，$ $作为模型参数，交叉优化;</p>
+<p>3.mixing函数m作为一个有效的替换算子，在G内找到并替换与<span class="math inline">\(g_t\)</span>最相似的子图g;</p>
+<p>4.我们引入了自适应触发器的概念，即<span class="math inline">\(g_t\)</span>对每个给定的图G进行特别优化（每个图G都会得到一个特定的gt）。</p>
+<p>接下来我们分别介绍双层优化问题、mixing函数、以及触发器生成等攻击的关键部分</p>
+<h2 id="双层优化问题">双层优化问题</h2>
+<p>我们已经知道，攻击者从下游任务数据集取样得到的数据由实例(G,<span class="math inline">\(y_G\)</span>)组成,G是图，<span class="math inline">\(y_G\)</span>是标签</p>
+<p>我们使用<span class="math inline">\(g_t\)</span>和$ $分别作用upper-level和lower-level变量来构建bi-level 优化目标</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211122100616676.png" class="">
+<p>上式中，<span class="math inline">\(l_{atk}\)</span>和<span class="math inline">\(l_{ret}\)</span>分别代表量化攻击有效性和准确性保持的损失项，对应于我们前面定义的目标</p>
+<p>因为无法访问分类器h，我们不再将<span class="math inline">\(l_{atk}\)</span>和<span class="math inline">\(l_{ret}\)</span>与最终预测关联，而是根据潜在表示(latent representation)定义它们。</p>
+<p>我们把数据集Dfen为两部分，D[<span class="math inline">\(y_t\)</span>]是目标类t的图，D[\<span class="math inline">\(y_t\)</span>]是其他类的图</p>
+<p><span class="math inline">\(l_{atk}\)</span>确保<span class="math inline">\(f_ \theta\)</span>会为D[<span class="math inline">\(y_t\)</span>]以及D[\<span class="math inline">\(y_t\)</span>]中嵌入了触发器的图生成相似的嵌入</p>
+<p>而<span class="math inline">\(l_{ret}\)</span>则确保<span class="math inline">\(f_ \theta\)</span>和<span class="math inline">\(f_ {\theta0}\)</span>为D中的图生成相似的嵌入，即满足如下公式</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211122101736524.png" class="">
+<p>其中$ $用于衡量嵌入的不相似度，在我们的实验中可以使用L2距离</p>
+<p>不过准确求解上式的代价是非常昂贵的，由于是bi-level公式，每当<span class="math inline">\(g_t\)</span>被更新，就需要重新计算$ $(换句话说，需要在D上重新训练f)</p>
+<p>所以我们提出了近似的求解算法，通过在<span class="math inline">\(l_{atk}\)</span>和<span class="math inline">\(l_{ret}\)</span>上交替执行梯度下降来迭代优化<span class="math inline">\(g_t\)</span>和$ $</p>
+<p>在第i次迭代时，给定当前的触发器<span class="math display">\[g^{(i-1)}_t\]</span>以及模型$ ^{i-1}<span class="math inline">\(,我们首先通过固定\)</span><span class="math inline">\(g^{(i-1)}_t\)</span><span class="math inline">\(，在\)</span>l_{ret}<span class="math inline">\(上执行梯度下降计算\)</span> ^{(i)}<span class="math inline">\(。在实际操作中，这一步会运行\)</span>n_{io}<span class="math inline">\(次迭代，这个参数代表的是inner-outer optimization ratio，用于平衡\)</span>l_{atk}<span class="math inline">\(和\)</span>l_{ret}<span class="math inline">\(的优化。然后在对\)</span> ^{(i)}<span class="math inline">\(执单步梯度下降后通过最小化\)</span>l_{atk}<span class="math inline">\(得到\)</span><span class="math inline">\(g^{(i)}_t\)</span>$</p>
+<p>对于<span class="math inline">\(g_t\)</span>的梯度可以通过下式近似</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211122103453616.png" class="">
+<h2 id="mixing-函数">Mixing 函数</h2>
+<p>mixing函数满足两个目的：</p>
+<p>1.对给定的触发器<span class="math inline">\(g_t\)</span>，需要在图G中找到最适合替换的子图g</p>
+<p>2.使用<span class="math inline">\(g_t\)</span>替换g</p>
+<p>这里存在很多组合方法，我们将Mixing function限制为一个有效的替换操作符，也就是说，m(G;<span class="math inline">\(g_t\)</span>)会使用<span class="math inline">\(g_t\)</span>替换G中的g</p>
+<p>为了最大化攻击的规避性，我们最好使用一个类似于<span class="math inline">\(g_t\)</span>的子图</p>
+<p>因此，我们就有了约束:1.g和gt的size是一样的，比如具有相同数量的节点；2.他们有最小的图编辑距离</p>
+<p>在图G中找到与gt相似(子图同构)的子图g是一个NP难的问题，我们采用了基于回溯的算法VF2来满足我们设置的情况。VF2通过映射gt中的下一个节点到G中，并反向操作，由此递归地扩展部分匹配。当我们搜索到最相似的子图时，我们就保持当前最高的相速度并且在部分匹配超过这个阈值时提前终止匹配。</p>
+<h2 id="触发器生成">触发器生成</h2>
+<p>在前面的式子中，我们假设对于所有的图都是应用了统一的触发器，尽管这样实施起来比较简单，但是这儿还存在可以优化的地方：</p>
+<p>1.忽略了单个图的性质，并且攻击可能没那么有效；</p>
+<p>2.每个嵌入了触发器的图都是共享同样的pattern，这会让其更容易被检测出来</p>
+<p>那么是否可以对每个图都生成特定的触发器并能够最大化有效性和规避性呢？</p>
+<p>我们设计了一个自适应的触发器生成器函数$ _w(.)<span class="math inline">\(，给定G的子图g，它会生成触发器\)</span>g_t$</p>
+<p>从high level来看，该函数包括两个关键的操作：1.首先把g中的每个结点i映射到其编码<span class="math inline">\(z_i\)</span>，这个编码了g的节点特征和拓扑结构；2.其应用了两个生成器函数，第一个讲g的编码映射到<span class="math inline">\(g_t\)</span>的拓扑结构，第二个将g的节点编码到<span class="math inline">\(g_t\)</span>的节点特征</p>
+<p><strong>怎么编码g的特征和上下文呢？</strong>我们使用图注意力机制。给定节点对i,j,我们计算注意力系数$ _{ij}<span class="math inline">\(，这表示j对于i的重要程度（基于他们的节点特征以及拓扑关系）,然后我们应用非线性转换计算其邻居编码的聚合（权重系数就是相应的注意力系数）作为i的编码。我们使用D训练一个注意力网络，在下文中我们将i的编码表示为\)</span>z_i$</p>
+<p><strong>怎么将g的编码映射到<span class="math inline">\(g_t\)</span>?</strong><span class="math inline">\(g_t\)</span>包括两部分，即拓扑结构和节点特征。给定两个节点i,j以及对应的编码，我们使用参数化的余弦相似度定义它们在<span class="math inline">\(g_t\)</span>中的连接度<span class="math display">\[A_{i,j}\]</span></p>
+<img src="/2021/11/28/GraphBackdoor/image-20211122124517679.png" class="">
+<p>其中<span class="math inline">\(W_c\)</span>是可学习的，<span class="math inline">\(1_P\)</span>是指示函数，如果p为真则返回1，否则返回0.如果相似度分数超过0.5则i,j在<span class="math inline">\(g_t\)</span>中是相连的</p>
+<p>同时，对于g中的节点i，我们定义其在<span class="math inline">\(g_t\)</span>中的特征为：</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211122124733544.png" class="">
+<p>我们将这些可学习的参数都称为w，将g的编码映射到{<span class="math inline">\(X_i\)</span>}和{<span class="math inline">\(A_{ij}\)</span>}作为触发器生成器函数$ _w(g)$</p>
+<p><strong>怎么解决g和<span class="math inline">\(g_t\)</span>之间的依赖关系？</strong>大家可能会发现mixing 函数 g=m(G;<span class="math inline">\(g_t\)</span>)和触发器生成器函数<span class="math inline">\(g_t= \phi_w(g)\)</span>是相互依赖的。为了解决这个鸡生蛋蛋生鸡的问题，我们交错地更新g和<span class="math inline">\(g_t\)</span></p>
+<p>我们随机选择g初始化，在第i次迭代时，我们首先基于i-1次迭代的得到的<span class="math inline">\(g^{(i-1)}\)</span>来更新触发器<span class="math display">\[g^{i}_t\]</span>,然后基于<span class="math display">\[g^{i}_t\]</span>更新选中的子图<span class="math display">\[g^{i}\]</span></p>
+<h2 id="整体流程">整体流程</h2>
+<p>GTA攻击的整体流程如下所示</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211122125616187.png" class="">
+<p>在其核心部分(4-6行)，交替更新模型$ $，触发器生成器函数 $ _w(.)$以及从每个图中选择的子图g</p>
+<h1 id="复现">复现</h1>
+<h2 id="安装dgl">安装DGL</h2>
+<p>在进行复现之前，我们先要额外安装一个库：DGL，这是为方便实现图形神经网络模型族而构建的。它提供了消息传递的多功能控制、通过自动批处理和高度调优的稀疏矩阵内核进行的速度优化，以及可扩展到数亿个节点和边的图形的多GPU/CPU训练。</p>
+<p>由于DGL分cpu版本和gpu版本，所以安装的时候一定要适配自己的环境.</p>
+<p>下图是我复现时安装所用的命令</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128130151200.png" class="">
+<h2 id="加载数据及训练目标模型">加载数据及训练目标模型</h2>
+<p>论文提到使用7类公开的安全敏感的数据集，如下所示</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128132900891.png" class="">
+<p>表格中，Graphs是指数据集中图的数量，Avg.#Nodes是指平均每个图中的节点数，Avg.#Edge是指平均每个图中边的数量，Classes是指类的数量，Graphs[class]指class类的图的数量，target class则是攻击者选择的攻击目标类</p>
+<p>我们这里使用其中之一--AIDS</p>
+<p>加载数据集后打印相关数据</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128133229324.png" class="">
+<p>可以看到和论文给的表格中的值是相符的，说明加载数据这一部分是没问题的</p>
+<p>论文中提到可以实现三种SOTA模型，这里我们复现就以GCN为例,代码如下</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128130848678.png" class="">
+<p>训练模型</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128132224244.png" class="">
+<p>测试模型</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128132247912.png" class="">
+<p>结果如下</p>
+<img src="/2021/11/28/GraphBackdoor/2021-11-28_11-19_1.png" class="">
+<img src="/2021/11/28/GraphBackdoor/2021-11-28_11-19_2.png" class="">
+<p>可以看到训练了40个epoch之后，准确率达到了96.30%</p>
+<p>然后保存该模型，接下里进行后门攻击</p>
+<h2 id="后门攻击">后门攻击</h2>
+<p>主体代码</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128134646610.png" class="">
+<p>生成触发器</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128134153868.png" class="">
+<p>注入触发器</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128133817532.png" class="">
+<p>其中还有一些关键的地方，包括生成器的代码实现</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128134940950.png" class="">
+<p>以及训练生成器的代码实现</p>
+<p>训练拓扑生成器</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128135120297.png" class="">
+<p>训练特征生成器</p>
+<img src="/2021/11/28/GraphBackdoor/image-20211128135155997.png" class="">
+<p>攻击代码运行后结果如下</p>
+<img src="/2021/11/28/GraphBackdoor/2021-11-28_11-18.png" class="">
+<img src="/2021/11/28/GraphBackdoor/2021-11-28_11-19.png" class="">
+<p>可以看到攻击成功率达到了100%</p>
+<h1 id="参考">参考</h1>
+<p>1.Xi Z, Pang R, Ji S, et al. Graph backdoor[C]//30th {USENIX} Security Symposium ({USENIX} Security 21). 2021.</p>
+<p>2.https://docs.dgl.ai/</p>
+<p>3.Ryan A. Rossi and Nesreen K. Ahmed. The Network Data Repository with Interactive Graph Analytics and Visualization. 2015.</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/11/09/Adversarial-reprogramming/" rel="next" title="Adversarial reprogramming of neural networks(arxiv 2018)">
+                <i class="fa fa-chevron-left"></i> Adversarial reprogramming of neural networks(arxiv 2018)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/01/07/ABL/" rel="prev" title="Anti-Backdoor Learning(NeurIPS2021)">
+                Anti-Backdoor Learning(NeurIPS2021) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80"><span class="nav-number">2.</span> <span class="nav-text">基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inductive-task%E5%92%8Ctransductive-task"><span class="nav-number">2.2.</span> <span class="nav-text">Inductive task和Transductive task</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9Cgnn"><span class="nav-number">2.3.</span> <span class="nav-text">图神经网络GNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83gnn"><span class="nav-number">2.4.</span> <span class="nav-text">预训练GNN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A8%81%E8%83%81%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.5.</span> <span class="nav-text">威胁模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gta%E6%94%BB%E5%87%BB"><span class="nav-number">3.</span> <span class="nav-text">GTA攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E5%B1%82%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">双层优化问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mixing-%E5%87%BD%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">Mixing 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E5%99%A8%E7%94%9F%E6%88%90"><span class="nav-number">3.3.</span> <span class="nav-text">触发器生成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-number">3.4.</span> <span class="nav-text">整体流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">复现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85dgl"><span class="nav-number">4.1.</span> <span class="nav-text">安装DGL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE%E5%8F%8A%E8%AE%AD%E7%BB%83%E7%9B%AE%E6%A0%87%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.2.</span> <span class="nav-text">加载数据及训练目标模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E9%97%A8%E6%94%BB%E5%87%BB"><span class="nav-number">4.3.</span> <span class="nav-text">后门攻击</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
