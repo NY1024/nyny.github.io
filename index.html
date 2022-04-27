@@ -669,6 +669,131 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/28/Quantization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/12/28/Quantization/" itemprop="url">Qu-ANTI-zation(ANIPS 2021)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-12-28T08:36:38+08:00">
+                2021-12-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="前言">前言</h1>
+<p>随着深度神经网络模型的性能增加，神经网络的深度越来越深，接踵而来的是深度网络模型的高存储高功耗的弊端，严重制约着深度神经网络在资源有限的应用环境和实时在线处理的应用.例如8层的 AlexNet装有600000个网络节点, 0.61亿个网络参数， 需要花费240MB内存存储和7.29亿浮点型计算次数(FLOPs)来分类一副分辨率为224×224的彩色图像 .同时，随着神经网络模型深度的加深,存储的开销将变得越大.同样来分类一副分辨率为224 × 224的彩色图像 ，如果采用拥有比8层AlexNet更多的16层的VGGNet，则有1500000个网络节点、1.44 亿个网络参数 ，需要花费528MB内存存储和150亿浮点型计算次数 ;ResNet-152装有 0.57亿个网络参数,需要花费230MB内存存储和113亿浮点型计算次数.</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2021/12/28/Quantization/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/12/27/GraphAdvAttack/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1416,133 +1541,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/03/model-reverse-attack/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yale's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/10/03/model-reverse-attack/" itemprop="url">model_reverse_attack</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-10-03T20:54:29+08:00">
-                2021-10-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="introduction">Introduction</h1>
-<p>现在进行深度学习的训练有两种典型的情况，如下图所示</p>
-<img src="/2021/10/03/model-reverse-attack/image-20211003085931039.png" class="">
-<p>在图a中是中心化学习，N个用户有自己的本地数据集，并希望合作构建一个通用的分类器，所以他们会将所有的数据都上传到一个指定的位置在其中进行学习，服务器在合并后的数据集上进行训练，这种方法非常有效，因为模型可以访问所以数据，但是这不能保护每个参与方的隐私，因为可以直接访问敏感信息。所以就提出了第二种训练方式，如图b所示，每个参与者在自己的设备上训练一个局部模型，并与其他用户共享模型的一小部分参数，通过收集和交换这些参数，可以训练一个模型，该模型的性能与中心化学习得到的模型性能差不多，但是该方案却能保护隐私，因为数据集不会直接暴露。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2021/10/03/model-reverse-attack/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1593,7 +1591,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
