@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Yales blog mainly focused on security of AI">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Yale&#39;s blog">
+<meta property="og:url" content="http://example.com/page/3/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="Yales blog mainly focused on security of AI">
+<meta property="og:locale">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/page/3/"/>
+
+
+
+
+
+  <title>Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left 
+  page-home">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+  <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/08/infosec2021-01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/06/08/infosec2021-01/" itemprop="url">infosec2021-01</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-06-08T19:30:00+08:00">
+                2021-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>2021年网络空间安全国际学术研究交流会（上）参会小计</p>
+<p><strong>2020年9月研究生入学以来，由于疫情等因素的影响，这是我第一次参加线下学术界的会议，首先非常感谢段老师以及组委会老师的组织，能够邀请到大牛们以及做出顶级成果的博士、博后们来分享他们在20，21年被big4接收的工作。</strong><br />
+<strong>这两天会议日程排的很满，报告嘉宾们都非常不容易，对于我们参会者来说，真的是学到了很多。</strong><br />
+<strong>首先可能是因为这次请到的很多都是作为一作的博士、博后，他们对自己的工作都很熟悉，所以介绍起来游刃有余，包括UCR的屈宇博士、明尼苏达的吴秋实博士、复旦的张晓寒博后、清华的甘水滔博后等；其次请到的教授、研究员们都还是奋战在科研第一线的，讲起来滔滔不绝，如数家珍，这或许就是学术的魅力Orz，包括南科大的张殷乾老师、华科的袁斌老师等</strong> <strong>另，由于可能涉及版权问题，参会拍的照片就不放上来了，有心的同学的话完全可以试试直接邮箱联系对应的老师交流</strong></p>
+<h2 id="大概分享一下这次会议给我印象比较深的点">大概分享一下这次会议给我印象比较深的点</h2>
+<h3 id="section">1.</h3>
+<p>张玉清老师分享的big4的数据分析结论，从团队来看，UC系统甩开美国其他高校一条街，除去UC系统，中国的top5和美国的top5不相上下，国内近年big4发的最多的高校是清华、中科院、浙大；从团队来看，是复旦杨珉教授的团队，之后是清华段海新、国重陈恺老师；从趋势上看，做安全计算、区块链安全、机器学习安全、fuzzing的工作依次递减（fuzzing远低于前三者；这个安全计算不清楚张老师是怎么算的，可能是因为云计算、联邦学习等系统里都会涉及安全多方计算、差分隐私等技术，所以统计出来比较多）<br />
+### 2. 南洋理工大学的刘扬老师介绍的多年来做fuzzing的历程，听段海新老师介绍，刘老师在fuzzing的地位就是鼻祖级的。刘老师他们一直都是围绕自动机展开，把target转成自动机然后进一步fuzzing，自动机能这么玩，我之前是不知道的，加上没有做过学术界的fuzzing，这个报告算是长见识了<br />
+其实刘老师还介绍了很多其他的工作，都做的非常好，我居然是第一次听说刘老师，真是孤陋寡闻了。在报告的最后刘老师给出了一些经验，包括：</p>
+<ul>
+<li>每种方法都可以被enhanced
+<ul>
+<li>Symbolic Execution(whitebox)</li>
+<li>Good Test Cases(Blackbox)</li>
+<li>Feedback based Testing(Greybox)</li>
+</ul></li>
+<li>AFL的每个module都可以被enhanced</li>
+<li>很多其他的技术都可以被用来辅助增强AFL</li>
+<li>AFL作为一个动态分析工具可以被应用到很多其他领域，换句话说，你可以fuzz一切可以运行起来的东西</li>
+<li>AI和Fuzzing可以互相促进 ### 3. GRAYONE的作者、清华的博后甘水滔老师，介绍GRAYONE，之前是听张超老师介绍过，这次是第一次听一作讲这个工作，了解得更清楚了，可惜我已经对fuzzing没兴趣了Orz（后面苏璞睿老师和甘老师也有聊到，GRAYONE拆开的四个部分每一部分都是非常好也非常大的工作，其实都可以单独拿出来发），但是我刚进课题组的时候是有想过做fuzzing的，也看过一些paper，所以知道GRAYONE的价值有多大 ### 4. UCR的屈宇博士报告ccs2021的工作PalmTree，是做了一个embedding，对于用DL做代码安全的同学可能有参考价值，这也是之前我导师希望我做的方向之一，我们课题组也有师兄、同届的在做，我也不是很有兴趣~我是five<br />
+### 5. 做安全协议自动化的，一个是北邮的研三的同学（听段海新老师介绍，这可能是这次在infose上做报告的最年轻的人了，这位同学自己说从16年就开始专门研究ProVerief了，21年才有成果）基于该工具对FIDO UAF做分析，发在了NDSS2021;另一外是中科大的熊焰教授，提出了一个可以全自动做安全协议分析的框架（最关键的是引入了DQN，深度强化学习的经典框架之一，刘扬老师他们的很多工作也引入了DQL），非常厉害，对tls1.3还有区块链等都做出大量的成果，熊老师的报告特别有意思，还介绍了和big4中的三个会议的审稿人们argue的故事，长见识了<br />
+其实我在学校也有修安全协议的课，但是这次听的两个相关的报告才知道安全协议这么厉害，果然纸上得来终觉浅；另一方面，我在上安全协议的时候，课程涉及的密码学的东西太多了，也没有好好上，我自己也要吸取教训。如果是研究生还在选坑的同学，建议可以考虑下安全协议<br />
+### 6 6.今天上午是请了UCR的钱志云教授、NUS的梁振凯教授、最近因为比较有争议的明尼苏达大学的卢康杰教授分享做科研的经验教训；上午最后一个环节是panel，讨论了一些研究中的ethic的问题<br />
+大家都在提IRB（Instituitional Review Board）伦理审查委员会，国外高校、科研机构基本都有，但是国内还没有，段海新老师的一个博士也现身说法，介绍了由于对这方面的了解不够造成的不必要的麻烦。</li>
+</ul>
+<p>钱志云教授的topic是“how to look for ideas in computer science research”，更详细的版本有兴趣的同学可以去知乎看看，钱老师也发出来了。<br />
+<a href="https://zhuanlan.zhihu.com/p/341685279" target="_blank">链接在这</a><br />
+这里分享下这次钱老师分享的版本：</p>
+<ul>
+<li>起步的时候要培养研究的taste</li>
+<li>首先是多读论文，一周起码3，4篇，尽可能参加talks/reading group，讨论班这种形式</li>
+<li>对论文的idea要上心，考虑这几个问题：1.你对那种类型的paper感兴趣，2.是什么让你欣赏一篇paper的工作，3.作者是怎么想到这个idea的</li>
+<li>然后在对研究领域足够熟悉之后，要开始分解（breaking down）你的领域，可以从不同的方向去拆。以安全领域为例，可以这么拆：
+<ul>
+<li>根据domain来拆，可以分成system,network,hardware,social等</li>
+<li>根据style来拆，可以分成attack,defense,analysis,system building等</li>
+<li>根据technique来拆，可以分成manual analysis,program analysis,formal methods,design,data-driven approach(ai/ml)等</li>
+</ul></li>
+<li>然后就是要考虑怎么找idea了，这次钱老师分享了6种pattern
+<ul>
+<li>1.filling the blank,意思大概是说以dimension为列，technique为行，做个矩阵，然后填空，看看还有哪里是没有被研究过的，常见的dimension包括Assumption,domains,guarantee/property,methodology/techniques,datasets等；比如说在AI领域出现对图像的对抗样本攻击，那么可以考虑换个对象，把图像换成malware、NIDS等等来做；这里的关键是要将demension map out出来</li>
+<li>2.expansion.很多小的dimension只有当我们深入到某个领域后才能发现。比如钱老师自己的工作，Oakland 2012的tcp侧信道的研究，ccs2020上的dns cache poisoning attack等</li>
+<li>3.build a hammer and find nails。可以是任何有用的技能、技术、系统、甚至是数据集，只要这是你独有的，或者是你相比于其他人最擅长的。比如你对虚拟机特别熟悉，或者深入掌握了GAN，对抗样本等AI领域的技术，如果是系统安全如果你对Angr非常了解，或者你有别人没有的数据集如CAIDA等。有了这些当你的锤子，你再去找钉子，这时候做出的工作可能就要比别人要独特、要好</li>
+<li>4.start small,then generalize.找到一些signs，比如那些不容易被常识解释的现象，让你感到奇怪的观测结果等</li>
+<li>5.reproduction of prior work。复现前人的工作。在此期间，需要关注你做的结果和原作者的差异；当该方法应用到不同问题上时的局限性以及其他的发现</li>
+<li>6.external sources:from industry,news feed,etc。找工业届的痛点，工业届可以堆人力、大力出奇迹、能work就行，而学术界可以找到痛点去深入研究</li>
+<li>7.Others。其他的pattern，比如说人家做了attack，你就做defense，反之亦然；或者做些自动化的工作,比如逆向工程、漏洞发现、漏洞利用、补丁分析等领域已经很多人开始用这种pattern在做了</li>
+</ul></li>
+<li>此外，钱老师提到研究生需要注意idea formulation和idea execution上的差异，不仅要会动手，还要会动脑，不要一直依靠导师给idea，要花时间自己去找idea，途径包括:
+<ul>
+<li>保持好奇、勤于提问</li>
+<li>最好准备好问题去参加meeting,talk</li>
+<li>讨论班的论文阅读</li>
+<li>paper review，要学会从好的文章学习，也要学会从被拒稿的文章汲取经验</li>
+<li>常和你的实验室小伙伴交流</li>
+</ul></li>
+</ul>
+<p>梁振凯教授也分享了一些做研究的方法论，但是我听起来感觉比较玄学，没整明白，这里就不写了</p>
+<p>另外还分享了他三年前收的一个博士的工作，曾毅博士研究的方向和梁老师不同，但是梁老师也感兴趣，所以也支持曾博士做这个研究。我感兴趣的是曾博士的现身说法，他提到，如果组内没有相关积累的话，首先需要和导师协商好，至少要保证和导师的兴趣的余弦是非负的，换句话说有正相关的感觉，说人话就是最起码导师不反对，否则就很难办了；然后需要自己阅读近10到20年的全部高引用、或者你觉得有用的该主题下的论文，当然具体的年限取决于你的方向，比如你如果做对抗样本，你也就从14年开始看了。paper一定要多读！！！不管是钱老师还是梁老师，或者你导师，我相信都是这么说的；要把一条线的发展全部厘清，才能看到其中的semantic gap或者说research problem，这恰好是我们工作的motivation，这也是我们的insight，就可以据此开展工作了；还分享的一个经验就是，在找解决方法的时候，可以多读cross domain的paper，就是去别的领域找方法、思路，把他们的数学模型拉出来，可能会发现两个领域本质的方案是类似的，只不过具体场景不同而已；最好把自己的工作做成一个tool，或者system，这样在做下一篇文章的时候速度就比较快。<br />
+我现在在组里也是类似的状态，组里的积累不在AI安全这一块，而我对这一块比较感兴趣，所以听到梁老师的报告就比较上心Orz。当然，我导师是支持我做这个的，不过单打独斗的话，北邮那位同学花了5年时间发big4，NUS这位花了3年，我要到什么时候哈哈哈哈哈，现在研一快结束了，只有两年了，要加把劲了。 ### 7. 其实这是我目前在做的方向，但是这两位老师做的和我做的还是不太一样，所以没什么太大的启发 AI安全的：分别是国重的侯锐老师做的报告，从体系结构安全出发做的；另一个是国重的孟国柱老师的报告，介绍的他的博士何英哲的3篇文章（英文版综述发在了TSE 2020，2021发了一篇Usenix Security,提出在做黑盒攻击时的数据约减技术，还有篇在arxiv上是做验证数据删除的） 对我比较有价值的一张slides是划分了AI中可以做的方向，这里简单写一下，和我前期自行总结的也差不多：</p>
+<ul>
+<li>黑盒攻击
+<ul>
+<li>不是完全黑盒</li>
+<li>交互限制</li>
+<li>防御措施</li>
+</ul></li>
+<li>隐私保护
+<ul>
+<li>用户隐私保护（GDPR）</li>
+<li>联邦学习安全</li>
+<li>数据、模型水印</li>
+</ul></li>
+<li>系统的安全实现
+<ul>
+<li>系统漏洞（溢出等）</li>
+<li>部署（Quantization）</li>
+</ul></li>
+<li>模型可解释性
+<ul>
+<li>可推理</li>
+<li>可追溯</li>
+<li>可解释</li>
+</ul></li>
+<li>安全防护
+<ul>
+<li>差分隐私、安全多方计算</li>
+<li>后门模式检测</li>
+<li>模型加固</li>
+</ul></li>
+<li>人工智能伦理问题
+<ul>
+<li>性别、人种歧视</li>
+<li>安全事故追责</li>
+</ul></li>
+</ul>
+<h3 id="section-1">8.</h3>
+<p>涨知识系列：武大傅建明老师的安卓应用层虚拟化恶意代码分析；南科大张殷乾老师报告的AMD SEV安全、国重雷灵光老师报告的在TEE下的cache中间人攻击、阿里的蒸米报告的mac上的漏洞（完全听不懂），etc.</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/">&lt;i class&#x3D;&quot;fa fa-angle-left&quot;&gt;&lt;&#x2F;i&gt;</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
+
+
+          </div>
+          
+
+
+          
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
