@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言 银弹（英语：silver bullet）是一种由白银制成的子弹，有时也被称为银弹。在西方的宗教信仰和传说中作为一种武器，是唯一能和狼人、女巫及其他怪物对抗的利器。银色子弹也可用于比喻强而有力、一劳永逸地适应各种场合的解决方案。 计算机科班出身的同学在学习软件工程时，应该都看过或者听说过一本书：《人月神话》，这是软件工程领域的圣经，其中一篇收录的一篇论文名为《没有银弹：软件工程的本质性与附属性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="no-silver-bullet">
+<meta property="og:url" content="http://example.com/2021/09/25/no-silver-bullet/index.html">
+<meta property="og:site_name" content="Yale&#39;s blog">
+<meta property="og:description" content="前言 银弹（英语：silver bullet）是一种由白银制成的子弹，有时也被称为银弹。在西方的宗教信仰和传说中作为一种武器，是唯一能和狼人、女巫及其他怪物对抗的利器。银色子弹也可用于比喻强而有力、一劳永逸地适应各种场合的解决方案。 计算机科班出身的同学在学习软件工程时，应该都看过或者听说过一本书：《人月神话》，这是软件工程领域的圣经，其中一篇收录的一篇论文名为《没有银弹：软件工程的本质性与附属性">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925204928937.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925205917631.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925210116670.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925210252702.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925210358668.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925210453720.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925210819943.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925211012136.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925211109340.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925211254320.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925211333157.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925211650164.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925212031699.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925214014161.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925214251727.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925214353691.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925214403094.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925214931057.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925215126699.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925215635838.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925222359864.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925223134367.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925223608809.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925224217482.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925220607159.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925221104198.png">
+<meta property="og:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925221424537.png">
+<meta property="article:published_time" content="2021-09-25T01:06:05.000Z">
+<meta property="article:modified_time" content="2022-04-28T01:16:13.861Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/09/25/no-silver-bullet/image-20210925204928937.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/09/25/no-silver-bullet/"/>
+
+
+
+
+
+  <title>no-silver-bullet | Yale's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Yale's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/25/no-silver-bullet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yale's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">no-silver-bullet</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-09-25T09:06:05+08:00">
+                2021-09-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言">前言</h1>
+<p>银弹（英语：silver bullet）是一种由白银制成的子弹，有时也被称为银弹。在西方的宗教信仰和传说中作为一种武器，是唯一能和狼人、女巫及其他怪物对抗的利器。银色子弹也可用于比喻强而有力、一劳永逸地适应各种场合的解决方案。</p>
+<p>计算机科班出身的同学在学习软件工程时，应该都看过或者听说过一本书：《人月神话》，这是软件工程领域的圣经，其中一篇收录的一篇论文名为《没有银弹：软件工程的本质性与附属性工作》，Brooks在其中引用了这个典故 ，说明在软件开发过程里是没有万能的终杀性武器的，只有各种方法综合运用，才是解决之道。而各种声称如何如何神奇的理论或方法，都不是能杀死“软件危机”这头狼人的银弹。此后，在软件界，银弹（Silver Bullet）成了一个通用的比拟流行开来。</p>
+<p>在信息安全领域同样如此，也不存在银弹，没有万能、适用于各场景的技术。在工业界做安全永远是在追求trade-off，因为安全、效率和成本三者不可兼得；在学术界则需要兼顾安全和隐私两方面，如果一项技术没有全面经过全面考量，则可能带来更大的潜在风险。</p>
+<span id="more"></span>
+<p>个人的研究方向为人工智能安全，所以本文以人工智能安全领域为例，以实际技术展现“没有银弹”这一真香定律是如何被印证的。</p>
+<h1 id="鲁棒性与隐私性">鲁棒性与隐私性</h1>
+<p>目前人工智能领域的研究存在明显的局限，即安全Security与隐私Privacy通常是分开考虑的，并没有综合考虑两类技术之间的相互影响。事实上，安全与隐私是密不可分的，我们知道在安全领域有四大顶会、两大订刊，其中有S&amp;P，对应的就是Security and Privacy；TIFS，这里的F代表的是Forensics,指的就是隐私，S代表是Security。</p>
+<p>我们可以来研究为了提升面临对抗攻击而采取的防御措施，会对隐私保护方面造成什么影响。</p>
+<p>在信息安全四大之一的CCS 2019上就有研究人员对六种先进的对抗防御方法保护的模型进行隐私攻击，分析鲁棒模型面临隐私成员推理攻击时的被成功攻击的情况。</p>
+<p>为什么会想到研究这方面的交叉影响呢？我们来看下面这幅图</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925204928937.png" class="">
+<p>图中显示的在CIFAR10数据集上训练的自然模型(即没有经过对抗训练等方式防御的原模型)和鲁棒模型(即经过对抗训练等方式极大提升了对抗鲁棒性的模型)的损失值的直方图。这里蓝色的是训练集数据，或者说是成员数据，粉色的测试集数据，或者说是非成员数据。与自然模型相比，我们可以看到，鲁棒模型中成员数据与非成员数据之间的损失分布差异更大，也就是说在鲁棒模型上更容易区分出数据是否为成员数据。</p>
+<p>研究人员引入了六种增强对抗鲁棒性的方法以及使用成员推理攻击来评估模型隐私容易被攻击的程度。</p>
+<h2 id="增强对抗鲁棒性的六种方案">增强对抗鲁棒性的六种方案</h2>
+<p>首先需要定义对抗样本</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925205917631.png" class="">
+<p>上式中的B是perturbation budget，也叫做perturbation constraint，扰动约束。一般我们使用lp范数来表示，即B的输出满足</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925210116670.png" class="">
+<p>模型正常训练的损失函数为：</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925210252702.png" class="">
+<p>但是为了在扰动约束下提供对抗鲁棒性，防御方案都会在此基础上加上额外的鲁棒损失函数，此时整体的损失如下</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925210358668.png" class="">
+<p>其中的α是在自然损失与鲁棒损失之间的权衡系数。上式中的lr表示定义为：</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925210453720.png" class="">
+<p>上式中的l'可以和l相同，也可以是近似l的损失函数</p>
+<p>但是上式的精确解通常很难求解，于是对抗防御方案提出了不同的方式来近似鲁棒损失，我们可以将他们分为两类</p>
+<h3 id="empirical-defenses">Empirical defenses</h3>
+<p>基于经验的防御方案用先进的攻击方案在每个训练步骤生成对抗样本并计算其预测损失来近似鲁棒损失，此时的鲁棒训练算法可以表示为：</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925210819943.png" class="">
+<p>该类方案中我们使用下面三种</p>
+<h4 id="pgd-based-adversarial">PGD-Based Adversarial</h4>
+<p>使用投影梯度下降方案生生成对抗样本，以最大化交叉熵损失(l'=l)，并只在这些对抗样本上进行训练(α=0)，此时的对抗样本可以表示为：</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925211012136.png" class="">
+<h4 id="distributional-adversarial-training">Distributional Adversarial Training</h4>
+<p>通过求解交叉熵损失的拉格朗日松弛来生成对抗样本，公式为：</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925211109340.png" class="">
+<h4 id="difference-based-adversarial-training">Difference-based Adversarial Training</h4>
+<p>使用原样本的输出与对抗样本的输出之间的差异（比如可以使用KL散度）作为损失函数l',并将其余自然交叉熵损失结合</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925211254320.png" class="">
+<p>其中的对抗样本也是使用PGD生成的</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925211333157.png" class="">
+<p>只不过现在攻击的目标是最大化输出差异</p>
+<h3 id="verifable-defenses">Verifable defenses</h3>
+<p>该类方案就是在对抗扰动约束B下计算预测损失l'的上界，如果在经过验证的最坏情况下，输入仍然可以被正确预测，那么就意味着在B下对抗样本不会被预测错误。因此，这类方案在训练期间加入验证过程，使用已验证的最坏情况的预测损失作为鲁棒损失lr，此时的鲁棒训练算法可以如下所示</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925211650164.png" class="">
+<p>上式中的V是经过验证的预测损失l'的上界</p>
+<p>我们考虑该类类型中的三种典型方案</p>
+<h4 id="duality-based-verification">Duality-Based Verification</h4>
+<p>通过在非凸ReLU运算上求解其具有凸松弛的对偶问题来计算已验证的最坏损失，然后仅最小化该过度逼近的鲁棒损失值(α = 0，l′= l)，此外，通过进一步将这种对偶松弛方法与随机投影技术相结合，可以扩展到更复杂的神经网络结构如ResNet等。</p>
+<h4 id="abstract-interpretation-based-verification">Abstract Interpretation-Based Verification</h4>
+<p>使用一个抽象域(如区间域)来表示输入层的对抗性扰动约束，并通过对其应用抽象变换，获得模型输出的最大验证范围。他们在logits上采用softplus函数来计算鲁棒损失值，然后将其与自然训练损失(α=0)相结合，即</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925212031699.png" class="">
+<h4 id="interval-bound-propagation-based-verification">Interval Bound Propagation-Based Verification</h4>
+<p>将扰动约束表示为有界区间域，并将该边界传播到输出层。将已验证过的最坏情况输出的交叉熵损失作为鲁棒损失(l′= l)，然后与自然预测损失(α 􏰡不等于0)结合作为训练期间的最终损失值</p>
+<h2 id="成员推理攻击">成员推理攻击</h2>
+<p>Shokri等人设计了一种基于训练推理模型的成员推理攻击方法，以区分对训练集成员和非成员的预测。为了训练推理模型，他们引入了影子训练技术:(1)对手首先训练多个模拟目标模型行为的“影子模型”，(2)基于影子模型在自己的训练和测试样本上的输出，对手获得一个标记过的(标签为in表示成员，out表示非成员)数据集，以及(3)最后将推理模型训练为一个神经网络，对目标模型进行推理攻击。推理模型的输入是目标数据记录上的目标模型的预测向量。</p>
+<h2 id="原因">原因</h2>
+<p>成员推理攻击与两个因素有关：</p>
+<h3 id="泛化误差">泛化误差</h3>
+<p>成员推断攻击的性能与目标模型的泛化误差高度相关。一些非常简单的攻击方案可以根据输入是否被正确分类来进行成员推理攻击，此时，目标模型的训练和测试精度之间的巨大差异导致了极大的成员推断攻击成功率(因为大多数成员数据会被被正确分类，而非成员数据不会)。而又有研究表明，鲁棒训练会导致模型在测试阶段的准确率下降，当使用对抗样本评估模型的鲁棒模型的准确率时，泛化误差会更大。</p>
+<p>所以，与自然模型相比，鲁棒模型会泄露更多的成员数据信息。</p>
+<h3 id="模型敏感度">模型敏感度</h3>
+<p>成员推断攻击的性能与目标模型对训练数据的敏感性相关。敏感性是指一个数据点对目标模型的性能的影响，它是通过计算在有和没有这个数据点的情况下模型训练的预测差来实现的。直观上来说，当数据点对模型的影响较大，即模型对该数据较敏感时，模型对应的预测是不同于对其他数据点的预测是，因此攻击者可以很容易地区分是否为成员数据。而防御方案，或者说鲁棒训练算法，为了提升鲁棒性，其为确保训练数据点周围的小区域，模型对其的预测保持相同，从而放大了训练数据对模型的影响。</p>
+<p>所以，与自然模型相比，防御方案增加了鲁棒模型对训练数据的敏感性，泄露了更多的成员数据信息，模型更容易受到成员推理攻击。</p>
+<h2 id="成员推理攻击度量">成员推理攻击度量</h2>
+<p>我们使用下式评估成员推理攻击的准确性：</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925214014161.png" class="">
+<p>上式中的I函数，如果是成员数据则为1，否则为0</p>
+<p>随机猜测的话，很明确，准确性是50%，为了进一步衡量成员推理攻击的有效性，可以使用成员推理优势来定义，其定义为：</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925214251727.png" class="">
+<h2 id="实验分析">实验分析</h2>
+<p>表中的acc表示accuracy，而adv-train acc,adv-test acc表示在PGD攻击上的accuracy，从结果可以看到，这三类empirical defense方法在使模型更鲁棒的同时，也会让模型更容易受到隐私攻击</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925214353691.png" class="">
+<p>上表是在Yale Face数据集上的实验结果，基于上文中最近给出的那条公式，我们可以算出，自然模型具有11.70%的推理优势，而鲁棒模型具有37.66%的推理优势</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925214403094.png" class="">
+<p>上表是在Fashion-MNIST数据集上的实验结果，同样可以计算得到自然模型具有14.24%的推理优势，而鲁棒模型具有高达28.98%的推理优势。</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925214931057.png" class="">
+<p>上表是在CIFAR10数据集上的实验结果，同样可以计算得到自然模型具有14.86%的推理优势，而鲁棒模型具有高达51.34%的推理优势.</p>
+<p>我们还可以更仔细地进行分析敏感性和泛化误差，这里以CIFAR10数据集为例，分析使用基于PGD的对抗训练方法对成员推理攻击的影响。</p>
+<p>下表是对两个模型做了敏感性分析，图中x轴是重训练过程中不在训练集中的的数据点的id编号(以敏感性大小排序)，y轴则是原模型与重训练模型之间的预测置信度的差异，这是衡量模型灵敏度的。从图中可见，与自然模型相比，鲁棒模型对训练数据更加敏感。</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925215126699.png" class="">
+<p>下面则是分析泛化误差的表，从表中可以看到，随着更多的训练点用于计算训练损失，由于在测试精度和训练精度上的泛化误差更加扩大，所以成员推理攻击的精度也增加了。</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925215635838.png" class="">
+<p>限于篇幅，另外三种增强模型对抗鲁棒性的方案对于隐私攻击的作用这里不再分析，效果也是类似的。</p>
+<h1 id="对抗攻击与后门攻击">对抗攻击与后门攻击</h1>
+<p>上一部分介绍的是安全与隐私两个方面之间的相互影响，那么在安全方面，我们熟悉的对抗攻击和后门攻击又会有什么样的相互影响呢？</p>
+<p>在安全四大之一的CCS 2020的论文《A Tale of Evil Twins: Adversarial Inputs versus Poisoned Models》则研究了两者的影响。</p>
+<p>这篇文章实际上探索的是攻击方案中的关键组件：对抗攻击中的对抗样本以及后门攻击中的毒化模型，文章研究的是这两个攻击向量之间的相互影响。</p>
+<p>把这两个攻击向量放在一起比较的话，会更直观一点，我们可以看下图：</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925222359864.png" class="">
+<p>对抗样本是扰动良性样本x，得到x*,将其输入良性模型f，导致模型分类出错</p>
+<p>毒化模型是扰动良性模型f，得到f*,将良性样本x输入f*，导致模型分类出错</p>
+<p>攻击目的是一样的，但是手段不同</p>
+<p>对抗样本是以fidelity，即保真度为代价对良性样本进行扰动(需要确保对抗样本保留了原样本的感知质量)，而毒化模型以sepcificity，即特异性为代价，对良性模型进行扰动(需要确保不会影响到非目标类别样本的预测)。</p>
+<p>两类扰动可以用下图形象表示出来</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925223134367.png" class="">
+<p>研究人员将两类攻击向量纳入统一的框架进行综合实验，发现了有意思的结论如下</p>
+<h2 id="杠杆效应">杠杆效应</h2>
+<p>下表所示是在四个数据集上的实验，研究的是在统一攻击时，如何在对抗样本的保真度和毒化模型的特异性之间进行权衡</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925223608809.png" class="">
+<p>从表中我们可以看到，在攻击效率(k)一定的情况下，两者之间存杠杆效应，以图d为例，当保真度损失从0增加到0.05，特异性损失减少了0.48以上；而特异性损失的轻微增加也会导致保真度的显著提高，如图a，随着特异性损失从0增加到0.1，特异性损失下降0.37。</p>
+<p>该效应的发现告诉我们，攻击者在设计攻击方案时需要考虑更多的因素，才能实现完美的攻击。</p>
+<h2 id="强化效应">强化效应</h2>
+<p>研究人员测量了不同的保真度和特异性损失下，对抗攻击、中毒攻击以及联合攻击可以到的攻击效果（用平均错误分类置信度表示）,如下图所示</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925224217482.png" class="">
+<p>首先我们发现，联合攻击比单个的攻击实现了更强的攻击效果，例如在ISIC的情况下(图 (c))，保真度损失固定为0.2，敌对攻击达到𝜅约0.25；特异性损失固定为0.2，中毒发作达到𝜅为0.4左右；而在这种设置下，IMC达到0.8以上的𝜅，这是因为联合攻击时同时优化了训练和推理过程中引入的扰动；其次我们发现，联合攻击可以到达单个攻击无法达到的攻击效能。在四个图中，联合攻击在适当的保真度和特异性下可以达到𝜅 = 1，而单独的对抗(或后门)攻击(即使保真度或特异性损失固定为1)仅能够到达小于0.9的𝜅。</p>
+<p>这一效应的发现告诉我们攻击者在设计攻击方案时，如果希望实现更强的攻击效果，可以考虑同时引入这两类技术，甚至可以起到1+1&gt;2的效果。</p>
+<h1 id="对抗防御与后门防御">对抗防御与后门防御</h1>
+<p>在安全的防御方面，我们熟悉的对抗攻击和后门攻击又会有什么样的相互影响呢？</p>
+<p>来自NeurIPS 2020的论文研究了对抗鲁棒性对后门鲁棒性之间的影响。</p>
+<p>用于提升对抗鲁棒性的防御技术已经介绍过了，我们这里不再赘述。</p>
+<h2 id="原因-1">原因</h2>
+<p>为什么通过防御方案提升了对抗鲁棒性的模型更容易受到后门攻击呢？我们可以用可视化技术来进行分析</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925220607159.png" class="">
+<p>上图中给出了大象图像的原图与毒化图像（右下角加了火狐浏览器的logo作为触发器）的salience map（模型预测相对于输入的梯度）,图b是原模型给出的显著图，图c是鲁棒模型给出的显著图，很明显，在c中我们可以看到，经过对抗训练的鲁棒模型更依赖于高级特征做出预测，这些特征更符合人类的感知，所以它倾向于从触发器中进行学习，因为触发器提供了与目标标签密切相关的鲁棒特征，所以在c中的右边的图中可以看到，模型更加关注触发器所在的位置。</p>
+<h2 id="实验分析-1">实验分析</h2>
+<p>下表给出的是各种增强对抗鲁棒性的方案接受评估时的测量得到的指标，我们主要关注第4，5列，可以看到。第一行是原模型，其他的都是鲁棒模型，可以看到，鲁棒模型的鲁棒性确实相比原模型上升了，但是相应地，后门攻击成功率也上升了</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925221104198.png" class="">
+<p>上表给出的是empirical defense的总结结果，下表给出的是certified robustness方案的总结结果</p>
+<img src="/2021/09/25/no-silver-bullet/image-20210925221424537.png" class="">
+<p>从结果中我们也可以得出同样的结论</p>
+<h1 id="总结">总结</h1>
+<p>安全领域没有银弹，总是需要在各类因素之间做出权衡。</p>
+<p>出现对抗攻击后，研究人员想尽办法提升对抗鲁棒性，但是却没有考虑到鲁棒性的提升也加剧了隐私保护方面的风险，安全与隐私兼顾并不容易。除了安全与隐私两方面见的交叉影响外，安全方面的攻击方案之间也存在相互影响，对抗攻击和后门攻击便是如此，在攻击方面，两类方案会相互影响，不仅存在杠杆效应，还存在相互强化的效应，这就给安全防御带来了挑战，利用杠杆效应，攻击者只需要在承受较小的一方面的损失，确保回去较大的另一方面的回报；而利用强化效应，更是可以实现单一攻击向量不具备的攻击效果。而在防御方面，对抗鲁棒性好的模型更容易受到后门攻击，这意味着面临攻击时，我们采取的防御方案看似保证了安全，但实际上引入了另一类攻击的风险，这反而会给我们造成假象，迷惑我们。</p>
+<p>安全领域没有银弹，所以才有红蓝双方的arms race，攻防技术才能不断发展，这正是我们安全从业人员的兴趣所在。</p>
+<h1 id="参考">参考</h1>
+<p>1.https://zh.wikipedia.org/wiki/%E9%8A%80%E8%89%B2%E5%AD%90%E5%BD%88</p>
+<p>2.https://baike.baidu.com/item/%E6%B2%A1%E6%9C%89%E9%93%B6%E5%BC%B9/5036116</p>
+<p>3.Privacy Risks of Securing Machine Learning Models against Adversarial Examples</p>
+<p>4.A Tale of Evil Twins: Adversarial Inputs versus Poisoned Models</p>
+<p>5.On the Trade-off between Adversarial and Backdoor Robustness</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/09/23/OnTheTradeOff-NeurIPS2020/" rel="next" title="OnTheTradeOff-NeurIPS2020">
+                <i class="fa fa-chevron-left"></i> OnTheTradeOff-NeurIPS2020
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/09/27/defense4aa/" rel="prev" title="Naive review on defense for AE">
+                Naive review on defense for AE <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%B2%81%E6%A3%92%E6%80%A7%E4%B8%8E%E9%9A%90%E7%A7%81%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">鲁棒性与隐私性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A2%9E%E5%BC%BA%E5%AF%B9%E6%8A%97%E9%B2%81%E6%A3%92%E6%80%A7%E7%9A%84%E5%85%AD%E7%A7%8D%E6%96%B9%E6%A1%88"><span class="nav-number">2.1.</span> <span class="nav-text">增强对抗鲁棒性的六种方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#empirical-defenses"><span class="nav-number">2.1.1.</span> <span class="nav-text">Empirical defenses</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pgd-based-adversarial"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">PGD-Based Adversarial</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#distributional-adversarial-training"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">Distributional Adversarial Training</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#difference-based-adversarial-training"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">Difference-based Adversarial Training</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#verifable-defenses"><span class="nav-number">2.1.2.</span> <span class="nav-text">Verifable defenses</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#duality-based-verification"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">Duality-Based Verification</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#abstract-interpretation-based-verification"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">Abstract Interpretation-Based Verification</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#interval-bound-propagation-based-verification"><span class="nav-number">2.1.2.3.</span> <span class="nav-text">Interval Bound Propagation-Based Verification</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%91%98%E6%8E%A8%E7%90%86%E6%94%BB%E5%87%BB"><span class="nav-number">2.2.</span> <span class="nav-text">成员推理攻击</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0"><span class="nav-number">2.3.</span> <span class="nav-text">原因</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%9B%E5%8C%96%E8%AF%AF%E5%B7%AE"><span class="nav-number">2.3.1.</span> <span class="nav-text">泛化误差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%95%8F%E6%84%9F%E5%BA%A6"><span class="nav-number">2.3.2.</span> <span class="nav-text">模型敏感度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%91%98%E6%8E%A8%E7%90%86%E6%94%BB%E5%87%BB%E5%BA%A6%E9%87%8F"><span class="nav-number">2.4.</span> <span class="nav-text">成员推理攻击度量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90"><span class="nav-number">2.5.</span> <span class="nav-text">实验分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E6%8A%97%E6%94%BB%E5%87%BB%E4%B8%8E%E5%90%8E%E9%97%A8%E6%94%BB%E5%87%BB"><span class="nav-number">3.</span> <span class="nav-text">对抗攻击与后门攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A0%E6%9D%86%E6%95%88%E5%BA%94"><span class="nav-number">3.1.</span> <span class="nav-text">杠杆效应</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%BA%E5%8C%96%E6%95%88%E5%BA%94"><span class="nav-number">3.2.</span> <span class="nav-text">强化效应</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E6%8A%97%E9%98%B2%E5%BE%A1%E4%B8%8E%E5%90%8E%E9%97%A8%E9%98%B2%E5%BE%A1"><span class="nav-number">4.</span> <span class="nav-text">对抗防御与后门防御</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E5%9B%A0-1"><span class="nav-number">4.1.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90-1"><span class="nav-number">4.2.</span> <span class="nav-text">实验分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
