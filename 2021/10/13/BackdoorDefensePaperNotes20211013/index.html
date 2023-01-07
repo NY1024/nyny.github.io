@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Cassandra: Detecting Trojaned Networks from Adversarial Perturbations 以对抗扰动的形式捕获神经网络的指纹，而这些扰动是利用了网络的梯度信息。 在网络中插入后门会改变网络的决策边界，而这些决策边界被有效地编码在对抗扰动中 我们从网络的全局扰动中训练一个双流网络，并在每个扰动内定位高能量的区域，用于检测后门。前者编码了网络的决策边界">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BackdoorDefensePaperNotes20211013">
+<meta property="og:url" content="http://example.com/2021/10/13/BackdoorDefensePaperNotes20211013/index.html">
+<meta property="og:site_name" content="Elwood&#39;s blog">
+<meta property="og:description" content="Cassandra: Detecting Trojaned Networks from Adversarial Perturbations 以对抗扰动的形式捕获神经网络的指纹，而这些扰动是利用了网络的梯度信息。 在网络中插入后门会改变网络的决策边界，而这些决策边界被有效地编码在对抗扰动中 我们从网络的全局扰动中训练一个双流网络，并在每个扰动内定位高能量的区域，用于检测后门。前者编码了网络的决策边界">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013125234633.png">
+<meta property="og:image" content="http://example.com/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013130935249.png">
+<meta property="og:image" content="http://example.com/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013131557570.png">
+<meta property="og:image" content="http://example.com/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013131912392.png">
+<meta property="og:image" content="http://example.com/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013131919857.png">
+<meta property="article:published_time" content="2021-10-13T12:08:25.000Z">
+<meta property="article:modified_time" content="2023-01-07T12:11:41.533Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013125234633.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/10/13/BackdoorDefensePaperNotes20211013/"/>
+
+
+
+
+
+  <title>BackdoorDefensePaperNotes20211013 | Elwood's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Elwood's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/13/BackdoorDefensePaperNotes20211013/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Elwood's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">BackdoorDefensePaperNotes20211013</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-10-13T20:08:25+08:00">
+                2021-10-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="cassandra-detecting-trojaned-networks-from-adversarial-perturbations">Cassandra: Detecting Trojaned Networks from Adversarial Perturbations</h2>
+<p>以对抗扰动的形式捕获神经网络的指纹，而这些扰动是利用了网络的梯度信息。</p>
+<p>在网络中插入后门会改变网络的决策边界，而这些决策边界被有效地编码在对抗扰动中</p>
+<p>我们从网络的全局扰动中训练一个双流网络，并在每个扰动内定位高能量的区域，用于检测后门。前者编码了网络的决策边界，后者编码了未知的触发器形状。</p>
+<p>我们提出了第一个基于深度学习的木马检测网络(TDN)。该方法分为两个阶段，第一个阶段是两流神经网络，输出模型中包含木马的概率，第二个阶段是预测木马模型中的目标类。</p>
+<span id="more"></span>
+<p>我们使用大规模的良性模型、毒化模型作为数据集，来训练分类器</p>
+<p>理论论证：植入后门的行为本质上是在训练过程中对模型优化加上了额外的约束。其后果是模型的决策边界会被调整以同时满足主任务和后门任务，另外，模型必须对局部模式（触发器）有更强的响应能力，如果我们可以对两点观察进行编码，就可以检测后门模型。对于前者，我们使用通用对抗扰动，这是样本无关的，可以合理捕获决策边界的指纹；对于后者，我们在对抗扰动中找到高能量的局部区域。此外，我们还假设后门模型比良性模型更容易被最小的通用扰动能量欺骗，本文的方案就是利用这三个因素来进行检测的。</p>
+<p>我们的假设是，木马感染的网络表现出不同于典型的良性分类网络的决策边界。我们的方法利用了这一事实，通过检索网络决策边界的指纹，然后在这些指纹上训练分类器，将查询网络分类为良性或木马感染</p>
+<p>由于普遍的对抗摄动捕获了决策边界[14]的几何形状，良性和特洛伊模型的摄动预计在性质上有显著的不同。</p>
+<h1 id="detecting-backdoor-in-deep-neural-networks-via-intentional-adversarial-perturbations">Detecting Backdoor in Deep Neural Networks via Intentional Adversarial Perturbations</h1>
+<p>南航薛明富老师团队的工作,做的比较简单，基本是Cassandra的第一阶段工作的简化版</p>
+<p>具体来说，给定一个不可信的图像，对抗性扰动被有意地添加到图像中。如果模型对扰动图像的预测与对未扰动图像的预测一致，则将输入图像视为后门实例</p>
+<p>本文提出的防御方法包括两个步骤。第一步是用一小组干净的图像从后门模型生成通用对抗性扰动[13]。</p>
+<p>第二步是后门检测，总结如下。如图1所示，给定一个不可信的图像，将上一步产生的普遍扰动添加到该图像中。然后，将受摄图像和相应的未受摄图像都输入到不可信模型中。如果不受信任的模型被后门，没有扰动的后门实例将被误分类为目标标签。当加入通用对抗性扰动[13]时，携带触发器的后门实例仍将被归类为目标标签。然而，给定一个干净的图像，在添加扰动后，它的预测标签将改变为另一个标签。因此，如果后门模型总是预测图像为相同的标签，无论是否普遍扰动，该图像被认为是一个后门实例。同时，将预测的标签视为目标标签</p>
+<img src="/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013125234633.png" class="">
+<h1 id="a-unified-framework-for-analyzing-and-detecting-malicious-examples-of-dnn-models">A Unified Framework for Analyzing and Detecting Malicious Examples of DNN Models</h1>
+<p>西交陈宇飞老师团队的工作</p>
+<p>分析后门防御和对抗防御之间的关系</p>
+<p>这个框架是基于我们的观察，即对抗性例子和后门例子在推理过程中都有异常，与良性样本有高度的区别。因此，我们对现有的四种检测后门的对抗防御方法进行了重新设计和修改</p>
+<p>在推理阶段检测毒化样本</p>
+<p>首先，对抗性例证与后门例证之间存在一些相似之处。这两种方法都需要小扰动来强化错误的预测输出。因此，它们在推理过程中表现出一定的异常，可以用类似的方法检测。在此基础上，我们可以将对抗样例检测方法应用到后门样例检测中。我们根据后门样本的模型敏感性、特征空间和激活空间中的行为，确定了四种区分后门样本和正常样本的有效方法。</p>
+<p>两种攻击中的扰动都通过移动样本点以越过决策边界来反映。对抗性攻击中的扰动是特定于输入的。因此，对于每个样本，广告需要确定样本可以跨越边界的最小距离。为了使距离最小，生成的AEs非常接近边界。对于后门攻击，扰动是通用的，表明移动方向和距离是固定的。由于参数的修改，决策边界发生了变化。这些条件可以使移位的数据点远离决策边界，以确保每个BE都能越过边界。</p>
+<img src="/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013130935249.png" class="">
+<p>第一种方法，基于模型突变</p>
+<img src="/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013131557570.png" class="">
+<p>第二种方法，基于激活空间</p>
+<img src="/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013131912392.png" class="">
+<p>不同网络层激活空间中的样本be-行为。假设正常样本的行为与对抗性样本的行为不同。正常样本在不同的层间有稳定的行为，并逐渐收敛到最终正确的标签。相比之下，AEs的行为发生了巨大的变化:在前几层，AEs的行为与正常的样品相似，因为原始输入主导行为。在更深层次上，AEs表现出不同的行为，这是由扰动引起的，从而做出错误的决定。</p>
+<p>第三种方法，核密度估计</p>
+<img src="/2021/10/13/BackdoorDefensePaperNotes20211013/image-20211013131919857.png" class="">
+<p>关键的见解是，在特性空间中，具有错误分类标签t的AEs与具有实际标签t的正常样品具有不同的行为。对于给定的样本，我们可以计算它与相同预测标签的正常样本之间的距离。距离越大表示样本可能存在恶意。该方法利用核密度估计量化最后一层隐层特征空间中的距离。</p>
+<p>第四种方法，局部本征维度</p>
+<p>类似核密度估计的思想</p>
+<p>没太多创新</p>
+<h1 id="top-backdoor-detection-in-neural-networks-via-transferability-of-perturbation">TOP: Backdoor Detection in Neural Networks via Transferability of Perturbation</h1>
+<p>在有毒模型中，对抗扰动比在干净模型中更容易从图像转移到图像。</p>
+<p>我们确定了中毒模型的一个特征，这个特征是在没有任何触发例子的情况下可以检测到的:它们的对抗性扰动(TOP)从一个图像到另一个图像的可转移性</p>
+<h1 id="what-doesnt-kill-you-makes-you-robuster-adversarial-training-against-poisons-and-backdoors">What Doesn’t Kill You Makes You Robust(er): Adversarial Training against Poisons and Backdoors</h1>
+<p>在这项工作中，我们扩展了对抗性训练框架，以防御(训练时间)中毒和后门攻击。我们的方法使网络对中毒的影响脱敏，通过在训练期间制造毒药，并将它们注入训练批次。</p>
+<p>在这项工作中，我们采用对抗性训练来防御数据中毒和后门攻击。</p>
+<h1 id="adversarial-examples-are-useful-too">Adversarial examples are useful too!</h1>
+<p>在毒化模型和良性模型上产生的对抗样本的平均图存在差异</p>
+<h1 id="aegis-exposing-backdoors-in-robust-machine-learning-models">AEGIS: Exposing Backdoors in Robust Machine Learning Models</h1>
+<p>在本文中，我们证明了对抗性鲁棒模型容易受到后门攻击。随后，我们观察到后门反映在这些模型的特征表示中。然后，通过一种称为AEGIS的检测技术，利用这种观察来检测后门感染的模型。AEGIS利用特征聚类有效检测后门感染的鲁棒深度神经网络(DNNs)。</p>
+<p>我们观察到毒害训练集为毒害类引入了混合输入分布。这导致一个对抗鲁棒模型学习多个特征表示对应于每个输入分布。相反，从一个干净的训练数据中，对抗性鲁棒模型只学习特定预测类[2]的一个特征表示。因此，在学习到的特征表示的数量上使用不变式，就有可能检测后门感染的鲁棒模型。我们利用特征聚类来检查这个不变量，并检测后门感染的鲁棒模型。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/10/13/NeuralCleanse/" rel="next" title="Neural_Cleanse_S&P2019">
+                <i class="fa fa-chevron-left"></i> Neural_Cleanse_S&P2019
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/11/06/bitflip/" rel="prev" title="Targeted bit-flip adversarial  weight attack(TPAMI2021)">
+                Targeted bit-flip adversarial  weight attack(TPAMI2021) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#cassandra-detecting-trojaned-networks-from-adversarial-perturbations"><span class="nav-number">1.</span> <span class="nav-text">Cassandra: Detecting Trojaned Networks from Adversarial Perturbations</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#detecting-backdoor-in-deep-neural-networks-via-intentional-adversarial-perturbations"><span class="nav-number"></span> <span class="nav-text">Detecting Backdoor in Deep Neural Networks via Intentional Adversarial Perturbations</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#a-unified-framework-for-analyzing-and-detecting-malicious-examples-of-dnn-models"><span class="nav-number"></span> <span class="nav-text">A Unified Framework for Analyzing and Detecting Malicious Examples of DNN Models</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#top-backdoor-detection-in-neural-networks-via-transferability-of-perturbation"><span class="nav-number"></span> <span class="nav-text">TOP: Backdoor Detection in Neural Networks via Transferability of Perturbation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#what-doesnt-kill-you-makes-you-robuster-adversarial-training-against-poisons-and-backdoors"><span class="nav-number"></span> <span class="nav-text">What Doesn’t Kill You Makes You Robust(er): Adversarial Training against Poisons and Backdoors</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#adversarial-examples-are-useful-too"><span class="nav-number"></span> <span class="nav-text">Adversarial examples are useful too!</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#aegis-exposing-backdoors-in-robust-machine-learning-models"><span class="nav-number"></span> <span class="nav-text">AEGIS: Exposing Backdoors in Robust Machine Learning Models</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
