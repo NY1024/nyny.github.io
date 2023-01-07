@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言 基于kill-chain检测APT活动的工作在我们一段时间的背景调研后，找到了很多成熟的方案，但是更多的还是专注于kill-chain中的具体的某一阶段展开实施，比如针对漏洞利用阶段，专门研究APT样本的手法从而进行针对性的检测。 但是个人以为，APT的检测，在将它的具体攻击活动映射到kill-chain每一阶段后，分别进行检测，其实并不一定是最优解，可能只是达到了局部极大值而已，系统工程的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KillChain-Based-Common-Practice-to-Detect-APT">
+<meta property="og:url" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/index.html">
+<meta property="og:site_name" content="Elwood&#39;s blog">
+<meta property="og:description" content="前言 基于kill-chain检测APT活动的工作在我们一段时间的背景调研后，找到了很多成熟的方案，但是更多的还是专注于kill-chain中的具体的某一阶段展开实施，比如针对漏洞利用阶段，专门研究APT样本的手法从而进行针对性的检测。 但是个人以为，APT的检测，在将它的具体攻击活动映射到kill-chain每一阶段后，分别进行检测，其实并不一定是最优解，可能只是达到了局部极大值而已，系统工程的">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312105729938.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312105742142.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312120403736.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312120454661.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312120516201.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312120528299.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312120620808.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312115446682.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312115512605.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312114806794.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312102751346.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312114240080.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312103047472.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312113502731.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312113551153.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312113656226.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312113824433.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312114029285.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312103337018.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312103418471.png">
+<meta property="og:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312104503100.png">
+<meta property="article:published_time" content="2023-03-12T12:38:53.000Z">
+<meta property="article:modified_time" content="2023-01-07T12:44:30.515Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Artificial Intelligence,CyberSecurity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312105729938.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/"/>
+
+
+
+
+
+  <title>KillChain-Based-Common-Practice-to-Detect-APT | Elwood's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Elwood's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Elwood's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">KillChain-Based-Common-Practice-to-Detect-APT</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-03-12T20:38:53+08:00">
+                2023-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言">前言</h1>
+<p>基于kill-chain检测APT活动的工作在我们一段时间的背景调研后，找到了很多成熟的方案，但是更多的还是专注于kill-chain中的具体的某一阶段展开实施，比如针对漏洞利用阶段，专门研究APT样本的手法从而进行针对性的检测。</p>
+<p>但是个人以为，APT的检测，在将它的具体攻击活动映射到kill-chain每一阶段后，分别进行检测，其实并不一定是最优解，可能只是达到了局部极大值而已，系统工程的思想告诉我们，为了最好地实现系统的目的，对系统的组成要素、组织结构、信息流、控制机构等进行分析研究的科学方法，需要运用各种组织管理技术，使系统的整体与局部之间的关系协调和相互配合，实现总体的最优运行。</p>
+<p>目前为止，还没有看到一套总体最优的APT检测方案，但是在各阶段分别展开检测做的攻击却有很多，在总体最优方案出来前，我们不妨先来分析总结现有的分阶段检测的研究思路，以把握现在的趋势。另外由于现在处在AI时代，各种所谓data-drive intelligence的技术都被应用在安全领域，工作数不胜数，本文的目的在于对已有的APT检测进行一定程度的总结，并给出基于数据驱动的检测方案的典型流程，同时会简单介绍基本的机器学习模型的原理，以促进对APT检测工作的进一步研究。</p>
+<span id="more"></span>
+<h1 id="kill-chain各阶段的典型检测方案">kill-chain各阶段的典型检测方案</h1>
+<p>我们根据kill-chain的7步依次介绍一些典型方案，很多都是比较成熟的工作了，由于篇幅所限，在下面的各个小节中会以一个工作为例稍微介绍下每个阶段的检测是怎么做的，希望能够给各位师傅一些帮助。</p>
+<h2 id="reconnaissance">Reconnaissance</h2>
+<p>在信息收集阶段，主要的侦察技术可以分为两种：主动侦察和被动侦察。在被动侦察中，攻击者与目标之间没有直接的交互，而在主动侦察中，入侵者与目标之间进行交互，获取可用的信息。</p>
+<p>用于检测这一阶段的工作包括思科团队[2]提出的检测系统指纹，[3、4]提出的检测DNS，[5]提出的基于robot.txt的访问警报。</p>
+<p>这里简单介绍下，在[2]中实现系统指纹的被动识别，利用多会话模型中TLS以及TCP/IP和HTTP协议的数据特性使用机器机器模型实现操作系统的识别，对于操作系统主要版本和次要版本的准确率分别为99.4%和97.5%。以下是根据主要操作系统类型观察到的网络活动总结。</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312105729938.png" class="">
+<p>总览如下</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312105742142.png" class="">
+<h2 id="weaponization">Weaponization</h2>
+<p>这一阶段是武器化的过程，由于攻击者在这一阶段不会与目标系统进行交互，所以我们无法实现检测</p>
+<h2 id="delivery">Delivery</h2>
+<p>在这一阶段，攻击者向目标部署payload。攻击者可以通过多种方式发送有效载荷，包括恶意电子邮件、点击下载、水坑攻击或受感染的USB设备等。</p>
+<p>典型的检测方法中，包括检测恶意链接[6]、注入攻击[7]等。</p>
+<p>以检测恶意链接为例，传统上已经有许多过滤机制来检测恶意url了，包括黑名单法、启发式分类法等。这些传统机制依赖于关键字匹配和URL语法匹配。因此，这些传统的机制无法有效地应对不断发展的技术和网络访问技术。而且这些方法在检测短url、暗网url等方面也存在不足。所以可以考虑使用建立在复杂的机器学习方法之上的检测模型，比如[6]利用新的url特征和行为、机器学习算法和大数据技术组成实现新的检测方案，其检测流程如下</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312120403736.png" class="">
+<p>所用的特征如下：</p>
+<p>下表是URL的词法特征</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312120454661.png" class="">
+<p>下表是基于主机的特征</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312120516201.png" class="">
+<p>下表是所用的相关特征</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312120528299.png" class="">
+<p>在不同的数据集上分别利用SVM和RF的检测结果如下</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312120620808.png" class="">
+<p>可以看到利用机器学习的方法来做检测效果是非常好的。</p>
+<h2 id="exploitation">Exploitation</h2>
+<p>这是漏洞利用阶段，这方面的工作也非常多，比如检测暴力破解、哈希传递、任务调度、脚本攻击等，这里来看一个检测powershell的工作[8]</p>
+<p>我们知道，PowerShell命令可以很容易地动态生成、从内存中执行、编码和混淆，从而使PowerShell执行的代码的日志记录和取证分析具有挑战性。因此，PowerShell越来越多地被网络犯罪分子用作他们攻击工具链的一部分，主要用于下载恶意内容和横向移动。[8]实现了基于“传统”自然语言处理(NLP)的检测器和基于字符级卷积神经网络(cnn)的检测器。之所以还要加上cnn，是因为作者发现由于后一分类器能够检测出成功绕过前一分类器的恶意命令。</p>
+<h2 id="installation">Installation</h2>
+<p>在这一阶段。攻击者经常使用一个dropper和downloader禁用反病毒等安全监控工具，以避免在安装恶意软件时被检测到，常见的攻击行为包括提权、注入攻击等，这里介绍一个工作[9]。</p>
+<p>[9]对于赛门铁克在2011年发现的大量有针对性的攻击进行了深入分析，通过分析这些活动的特征和动态，他们认为8个攻击活动在被利用的漏洞披露日期前约两周开始，因此当时很可能使用了0-day攻击。</p>
+<p>以钓鱼邮件为例，在入侵阶段其典型工作流程如下</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312115446682.png" class="">
+<p>作者他们分析出的攻击时间线</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312115512605.png" class="">
+<p>他们使用的方法概括起来说，就是对于每一次有针对性的攻击，提取若干攻击特征，以电子邮件为例，选取了以下特征，这些特征可能与来自同一攻击者团队的攻击相关联:电子邮件附件、源IP地址、发件人地址、电子邮件主题、发送日期、目标邮箱(To字段)、邮件代理和反病毒签名的MD5哈希和模糊哈希。然后通过使用适当的相似度度量来建立攻击样本之间关于每个所选攻击特征的关系。在最后一步中，所有特征相似度通过一个聚合模型进行融合，该模型反映了一些高级行为，例如，在n个攻击特征中，至少需要k个高度相似的攻击特征，才能将不同的攻击样本归为同一轮攻击。在此分析中，还需要为攻击特征分配了不同的权重，对MD5、电子邮件主题、发件人发件人和IP地址等特征给予了更高的重要性;对AV签名和邮件代理的重要性较低，对其他特性的重要性中等。</p>
+<h2 id="command-and-control">Command and Control</h2>
+<p>这一阶段，攻击者获得目标的管理控制权，并建立一个后门来维护持久访问。这一阶段常见的检测领域包括：恶意IP地址检测，恶意SSL证书检测，恶意流量检测等。在社区里已经有一篇利用检测C2流量进而检测APT的文章了，这里也不展开介绍了。</p>
+<h2 id="action-on-objectives">Action on Objectives</h2>
+<p>这是kill-chain的最后一部分。其实对应的APT的活动就是横向移动、资产/数据发现和数据外移等阶段。有基于横向移动的活动、DNS隧道等进行检测的，这里分析基于DNS隧道进行检测[10]的例子。</p>
+<p>[10]提出了一种新的基于机器学习进行检测的方法，其输入是DNS流量日志，它们不断地按域分组。在一个足够长的时间段内收集日志，这是为了能够检测数据交换速度相对较慢的恶意软件。然后周期性地对收集到的每个域的日志进行特征提取阶段。接着对每个域的特征进行分类阶段，以确定该域是否用于数据交换。然后使用Isolation Forest异常检测模型进行分类，该模型是事先使用了合法、正常流量进行训练过的。在分类之后，对任何被分类为异常的域(即用于数据交换的域)的请求将被无限期地被block，从而阻止数据泄漏。</p>
+<p>整个系统的涉及如下所示</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312114806794.png" class="">
+<h1 id="检测流程">检测流程</h1>
+<p>我们使用所谓的data-drive intelligence标准流程来检测APT各阶段，其实一套规范的组合拳，即准备数据集，进行特征提取、特征选择、攻击阶段分类，然后保存模型并使用。</p>
+<h2 id="准备数据集">准备数据集</h2>
+<p>这里用的数据集是由参考[1]提出的，其原始数据集由8个特征和3676个观测值映射到作者提出的6个APT阶段的标签中。</p>
+<p>在数据集准备阶段，我们对数据集进行重构，进行特征提取和选择，如下所示</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312102751346.png" class="">
+<h2 id="特征提取">特征提取</h2>
+<p>特征提取是指从样本数据中获取一组特征，用以提高分类器的性能。</p>
+<p>实际情况下可以使用多种特征提取方法进行测试，如主成分分析(PCA)、多对应分析(MCA)和多因素分析(MFA)等。</p>
+<p>由于我们使用的这个数据集包含定性和定量变量，所以选择MFA作为特征提取方法。</p>
+<h2 id="特征选取">特征选取</h2>
+<p>特征选择的目的是根据排序只选择最重要的特征，以降低复杂性，去除噪声，提高模型的效率。</p>
+<p>特征选择过程的目标是建立一个不太复杂但全面的模型，同时通过去除冗余或不太相关的未来来降低精度。</p>
+<p>特征选择的方法有很多，如下所示</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312114240080.png" class="">
+<p>这里我们使用基于信息熵理论的方法，选择Information Gain (IG)、Gain Ratio (GR)和OneR作为特征选择方法。</p>
+<p>Information Gain就是我们常说的信息增益。在概率论和信息论中，信息增益是非对称的，用以度量两种概率分布P和Q的差异。信息增益描述了当使用Q进行编码时，再使用P进行编码的差异。通常P代表样本或观察值的分布，也有可能是精确计算的理论分布。Q代表一种理论，模型，描述或者对P的近似。</p>
+<p>在将信息增益用在特征选择上时，信息增益就是目标列（y）整体信息熵和特征列每一个类别分组下对应目标列信息熵期望的差值。整体来看是y值的整体分布和y值在不同特征类型别下分布累加的差距。依此来衡量变量对目标（y）列的区分度，或者叫纯度。但是信息增益评价指标会倾向于类别个数比较多的列。所以特征选择过程中会配合增益率一块使用，或者对特征列进行分分箱离散化时特征列类别个数相近，从而去除特征类别个数对评价指标的影响。</p>
+<p>Gain Ratio是上一段提到的增益率，其考虑了分支数量和尺寸的因素。</p>
+<p>它们选出的前5个特征总结如下表所示。用这三个方法是因为它们都根据相关性提供分数和排名特征。</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312103047472.png" class="">
+<h2 id="分类器">分类器</h2>
+<p>现在有许多监督学习算法被广泛应用于分类，包括朴素贝叶斯、支持向量机(SVM)、随机森林、k-NN、决策树和线性分类器等。</p>
+<p>朴素贝叶斯的关键在于其背后的贝叶斯定理，我们可以从条件概率进行推导</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312113502731.png" class="">
+<p>支持向量机是一类按监督学习方式对数据进行二元分类的广义线性分类器，其决策边界是对学习样本求解的最大边距超平面，这其实从下图就可以非常直观的理解</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312113551153.png" class="">
+<p>决策树是在已知各种情况发生概率的基础上，通过构成决策树来求取净现值的期望值大于等于零的概率，评价项目风险，判断其可行性的决策分析方法，是直观运用概率分析的一种图解法。 由于这种决策分支画成图形很像一棵树的枝干，故称决策树。比如要买一个好的西瓜，其决策树如下</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312113656226.png" class="">
+<p>随机森林是一个包含多个决策树的分类器，并且其输出的类别是由个别树输出的类别的众数而定。理解了决策树，就不难理解随机森林了，比如西瓜有A类和B类，有n个树，大多数选择买B类，那么我们就买B类</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312113824433.png" class="">
+<p>Knn，中文名就是最近邻居法，是一种用于分类和回归的非参数统计方法。在k-NN分类中，输入包含特征空间中的k个最接近的训练样本，输出是一个分类族群。一个对象的分类是由其邻居的“多数表决”确定的，k个最近邻居中最常见的分类决定了赋予该对象的类别。也就是我们所谓的近朱者赤近墨者黑。</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312114029285.png" class="">
+<p>以上图为例，当k=3时，就预测位置样本为class B，当k=7时，则预测它为class A。</p>
+<h2 id="评估">评估</h2>
+<p>以上步骤都完成并训练好模型之后，就需要检测模型的性能，即评估阶段。首先我们需要确定评估指标，其实作为分类任务，评估指标大家用的都差不多，常见的包括准确度(Acc)、检出率(DR)、f测量值(F1)和误报率(FAR)。其计算公式分别如下</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312103337018.png" class="">
+<p>其中TP和TN分别为True Positive和Negative, FP和FN分别为False Positive和Negative。</p>
+<p>以朴素贝叶斯为例，三种特征选择方法得到的评估结果如下所示</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312103418471.png" class="">
+<p>从上面可以看出，使用OneR特征的预测准确率最高，为91.1%，使用GainRatio特征的预测准确率最低，为1.2%。使用OneR的检出率最高。f1测试的结果显示，来自OneR的特征得分最高，预测为91.2%。</p>
+<p>这说明，对于SVM分类器而言，OneR选出的特征是最有效的。</p>
+<p>这里另外要强调一点，特征工程对于基于机器学习的检测算法而言非常重要，特征的数量、质量都会对结果有巨大的影响，一个方案的好坏取决于数据集、模型、特征，对于小厂或者不是专门做安全的团队来说，只能用公开的数据集，那么第一个因素不用考虑了，能做的就是通过设计或者选择模型、特征来提升性能，下表是是用5种典型的分类器在不同特征的分类准确率的结果，可以明显看到这两个因素都检测性能的影响。</p>
+<img src="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/image-20220312104503100.png" class="">
+<h1 id="参考">参考</h1>
+<p>1.I. Ghafir, M. Hammoudeh, V. Prenosil, L. Han, R. Hegarty et al., “Detection of advanced persistentthreat using machine-learning correlation analysis,” Future Generation Computer Systems, vol. 89, pp.349–359, 2018.</p>
+<p>2.B. Anderson and D. McGrew, “OS fingerprinting: New techniques and a study of information gain and obfuscation,” in Proc. IEEE Conf. on Communications and Network Security, Las Vegas, 2017.</p>
+<p>6 F. Vanhoenshoven, G. Napoles, R. Falcon, K. Vanhoof and M. Koppen, “Detecting malicious URLsusing machine learning techniques,” in Proc. IEEE Symp. Series on Computational Intelligence, Athens,Greece, pp. 1–8, 2016.</p>
+<p>7 S. Gupta and B. B. Gupta, “Cross-site scripting (XSS) attacks and defense mechanisms: Classificationand state-of-the-art,” International Journal of System Assurance Engineering and Management, vol. 8,pp. 512–530, 2017.</p>
+<p>8 D. Hendler, S. Kels and A. Rubin, “Detecting malicious powershell commands using deep neuralnetworks,” in Proc. Asia Conf. on Computer and Communications Security, Incheon, Korea, pp. 187–197, 2018.</p>
+<p>9 O. Thonnard, L. Bilge, G. O’Gorman, S. Kiernan and M. Lee, “Industrial espionage and targetedattacks: Understanding the characteristics of an escalating threat,” in Proc. Int. Workshop on RecentAdvances in Intrusion Detection, Amsterdam, The Netherlands, pp. 64–85, 2012.</p>
+<p>10 A. Nadler, A. Aminov and A. Shabtai, “Detection of malicious and low throughput data exfiltrationover the DNS protocol,” Computers &amp; Security, vol. 80, pp. 36–53, 2019.</p>
+<p>11 https://t.cj.sina.com.cn/articles/view/6080368657/16a6b1011019012h62?sudaref=www.google.com&amp;display=0&amp;retcode=0</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/03/25/Expert/" rel="next" title="Think Like an Amateur, Do As an Expert">
+                <i class="fa fa-chevron-left"></i> Think Like an Amateur, Do As an Expert
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kill-chain%E5%90%84%E9%98%B6%E6%AE%B5%E7%9A%84%E5%85%B8%E5%9E%8B%E6%A3%80%E6%B5%8B%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">kill-chain各阶段的典型检测方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#reconnaissance"><span class="nav-number">2.1.</span> <span class="nav-text">Reconnaissance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#weaponization"><span class="nav-number">2.2.</span> <span class="nav-text">Weaponization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#delivery"><span class="nav-number">2.3.</span> <span class="nav-text">Delivery</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exploitation"><span class="nav-number">2.4.</span> <span class="nav-text">Exploitation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#installation"><span class="nav-number">2.5.</span> <span class="nav-text">Installation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#command-and-control"><span class="nav-number">2.6.</span> <span class="nav-text">Command and Control</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#action-on-objectives"><span class="nav-number">2.7.</span> <span class="nav-text">Action on Objectives</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A3%80%E6%B5%8B%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">检测流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">3.1.</span> <span class="nav-text">准备数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="nav-number">3.2.</span> <span class="nav-text">特征提取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E9%80%89%E5%8F%96"><span class="nav-number">3.3.</span> <span class="nav-text">特征选取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%B1%BB%E5%99%A8"><span class="nav-number">3.4.</span> <span class="nav-text">分类器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0"><span class="nav-number">3.5.</span> <span class="nav-text">评估</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

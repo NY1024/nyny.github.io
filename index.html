@@ -262,6 +262,133 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Elwood's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/" itemprop="url">KillChain-Based-Common-Practice-to-Detect-APT</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2023-03-12T20:38:53+08:00">
+                2023-03-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="前言">前言</h1>
+<p>基于kill-chain检测APT活动的工作在我们一段时间的背景调研后，找到了很多成熟的方案，但是更多的还是专注于kill-chain中的具体的某一阶段展开实施，比如针对漏洞利用阶段，专门研究APT样本的手法从而进行针对性的检测。</p>
+<p>但是个人以为，APT的检测，在将它的具体攻击活动映射到kill-chain每一阶段后，分别进行检测，其实并不一定是最优解，可能只是达到了局部极大值而已，系统工程的思想告诉我们，为了最好地实现系统的目的，对系统的组成要素、组织结构、信息流、控制机构等进行分析研究的科学方法，需要运用各种组织管理技术，使系统的整体与局部之间的关系协调和相互配合，实现总体的最优运行。</p>
+<p>目前为止，还没有看到一套总体最优的APT检测方案，但是在各阶段分别展开检测做的攻击却有很多，在总体最优方案出来前，我们不妨先来分析总结现有的分阶段检测的研究思路，以把握现在的趋势。另外由于现在处在AI时代，各种所谓data-drive intelligence的技术都被应用在安全领域，工作数不胜数，本文的目的在于对已有的APT检测进行一定程度的总结，并给出基于数据驱动的检测方案的典型流程，同时会简单介绍基本的机器学习模型的原理，以促进对APT检测工作的进一步研究。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2023/03/12/KillChain-Based-Common-Practice-to-Detect-APT/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/25/Expert/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1415,133 +1542,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/13/NeuralCleanse/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Elwood's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/10/13/NeuralCleanse/" itemprop="url">Neural_Cleanse_S&P2019</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-10-13T15:36:21+08:00">
-                2021-10-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="前言">前言</h1>
-<p>在安全领域，提到防御，其实分为两类，一类是做检测detection，一类是做缓解mitigation，当然最好就是将两类集成在一起。在后门防御领域也是一样，就检测来说，我们要检测模型是否被植入后门，如果被植入了后门，那么攻击的目标标签是什么？发动攻击所需的触发器是什么？</p>
-<p>检测之后，就是缓解阶段，或者说修复阶段，对于输入的测试样本，我们可以检测其是否为毒化样本，如果是则直接丢弃；而对于后门模型，则通过修复模型来移除后门。</p>
-<p>本文分析并复现后门防御领域最经典的工作之一，发表于S&amp;P上的工作：Neural Cleanse.</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2021/10/13/NeuralCleanse/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1592,7 +1592,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-count">25</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
