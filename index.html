@@ -515,6 +515,194 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/06/Existing-Backdoor-Learning-Theis-Summary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Elwood's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/05/06/Existing-Backdoor-Learning-Theis-Summary/" itemprop="url">Existing_Backdoor_Learning_Theis_Summary</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-05-06T21:08:29+08:00">
+                2022-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>国内：</p>
+<p>1.桂电：针对无人驾驶交通标识识别的数据投毒攻击研究_杨韵豪</p>
+<p>研究两个问题：针对当前数据投毒攻击方法在数据扩增后会被弱化、攻击隐蔽性不足两个问题，提出了对应的解决方案：针对第一个问题，提出了针对数据扩增的“clean label”投毒攻击方法，针对第二个问题，提出使用GAN生成隐蔽触发器，其实就是对抗样本</p>
+<p>非常简单</p>
+<p>2.西北大学：神经网络后门攻击与修复方法研究_张钰婷</p>
+<p>针对基于现有的基于可见像素点的后门攻击方法，先提出一种后门修复方法 ，然后提出一种隐蔽的后门攻击方法</p>
+<p>非常简单</p>
+<p>3.南京大学：深度生成式模型的木马攻击研究</p>
+<p>对生成式模型进行后门攻击</p>
+<p>没看方案细节，但是张阳他们做过同样类型的工作</p>
+<p>4.西北大学：面向图像识别的后门攻击安全性测评研究</p>
+<p>做了一些基础的实验，验证投毒率、触发器像素点数量、排列、颜色等对攻击表现的影响等，美名其曰安全性测评</p>
+<p>这早有人做过了</p>
+<p>5.南京大学：多方参与深度学习场景的训练数据安全研究</p>
+<p>基于两篇小论文，一篇是做分布式场景下基于GAN的隐私攻击检测的工作，一篇是做隐蔽性后门攻击的工作。</p>
+<p>为了统一起来，讲的故事是多方学习下的训练数据的安全研究，那么自然这里的“安全”包括数据的隐私风险和后门攻击风险。感觉还是很牵强</p>
+<p>国外：</p>
+<p>1.TU Delft:</p>
+<p>backdoor attacks in nerural networks</p>
+<p>1.研究了触发器性质(如位置等)在不同应用（如针对图像识别、声音识别、文本情感分析）的后门攻击中的影响</p>
+<p>2.在不增加投毒率的情况下使用全局平均池化层global average pooling创建动态后门攻击</p>
+<p>2.维也纳技术大学</p>
+<p>backdoor defense</p>
+<p>做了几种防御方案的对比，研究了如下几个问题：</p>
+<p>1.触发器的模式对后门成功率的影响？发现颜色、大小对ASR有显著影响</p>
+<p>2.模型和数据集的不同是否会对防御方案起到影响作用？发现SS无效，AC在不同数据集、模型的组合下较敏感，只有fp是通用的</p>
+<p>这一篇没什么价值，</p>
+<p>3.防御方案的不同的参数设置会在多大程度上影响防御机制</p>
+<p>比如fp中要修剪的层和修剪步骤的阈值，ss中的创建集群的度量的参数有两个可能的设置:基于距离的度量和基于大小的度量；等等</p>
+<p>4.组合防御方案进行防御，多大程度上影响防御效能</p>
+<p>3.纽约大学</p>
+<p>博士论文，这个人是fine-pruning的作者</p>
+<p>Understanding and Mitigating the Impact of Backdooring Attacks on Deep Neural Networks</p>
+<p>4个创新点：</p>
+<p>1.提出防御方案fine-pruning</p>
+<p>2.提出针对基于dl的光刻热点检测的后门攻击方案</p>
+<p>3.提出针对基于dl的光刻热点检测的防御性数据增强技术来防止后门攻击</p>
+<p>4.后门隐私保护生成式对抗网络(backdoor privacy-preserving generative adversarial network, PP-GAN)，一种在满足隐私检查的情况下留下后门进行秘密提取的方案</p>
+<p>4.芝加哥大学</p>
+<p>BACKDOOR ATTACKS ON FACIAL RECONGITION IN THE PHYSICAL WORLD</p>
+<p>对物理世界中人脸识别的后门攻击的研究</p>
+<p>作者就是发了同名文章在CVPR 2021的人，把小论文重新组织了一遍</p>
+<p>5.德克萨斯大学圣安东尼奥分校</p>
+<p>博士论文</p>
+<p>COUNTERMEASURES AGAINST BACKDOOR, DATA POISONING, AND ADVERSARIAL ATTACKS</p>
+<p>作者是发了一篇小论文VCAE检测后门攻击隐分布的人</p>
+<p>大论文提出一套检测后门攻击、投毒攻击、对抗攻击的方案，分别从模型视角、数据、防御三方面触发，分别对应三个小工作，第一个就是VCAE检测后门模型，第二个工作提出从时间序列域降低噪声的方法来降低RNN预测偏差，第三个就是使用提出一种可以语音对抗样本的方案</p>
+<p>6.威斯康星大学麦迪逊分校</p>
+<p>博士论文</p>
+<p>Toward Robust and Communication Efficient Distributed Machine Learning</p>
+<p>由3篇论文点题efficient</p>
+<p>发在NeurIPS的Atomo Communication-efficient Learning via Atomic Sparsification</p>
+<p>发在MLSys的Pufferfish: Communication-efficient Models At No Extra Cost</p>
+<p>发在ICLR的Federated learning with matched averaging</p>
+<p>3篇论文点题robust</p>
+<p>ICML：DRACO: Byzantine-resilient Distributed Training via Redundant Gradients（二作）</p>
+<p>NeurIPS：DETOX: A Redundancy-based Framework for Fasterand More Robust Gradient Aggregation（二作）</p>
+<p>NeurIPS:Attack of the Tails: Yes, You Really Can Backdoor Federated Learning</p>
+<p>这一篇是针对联邦学习的后门攻击</p>
+<p>7.伯克利</p>
+<p>Detecting Backdoored Neural Networks with Structured Adversarial Attacks</p>
+<p>使用结构化优化约束来寻找对抗攻击，以确定模型是否存在后门。硕士论文，不到一篇小论文的工作量</p>
+<p>8.伯克利</p>
+<p>Geometric Properties of Backdoored Neural Networks</p>
+<p>作者发现对深度神经网络进行后门操作会使其决策边界变薄并倾斜，从而产生更敏感和鲁棒性更差的分类器。依次为依据检测后门模型</p>
+<p>9.美国东北大学</p>
+<p>博士论文</p>
+<p>Towards Robust Image Classification with Deep learning and Real-Time DNN Inference on Mobile</p>
+<p>三篇做对抗攻击的小论文+1篇剪枝实现轻量化推理的工作</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/25/Expert/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1415,131 +1603,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/06/bitflip/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Elwood's blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/11/06/bitflip/" itemprop="url">Targeted bit-flip adversarial  weight attack(TPAMI2021)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-11-06T21:22:25+08:00">
-                2021-11-06
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="前言">前言</h1>
-<p>在之前的文章中我们已经介绍过针对深度学习系统的攻击手段，比如对抗样本攻击、后门攻击、模型窃取等，对抗样本攻击、后门攻击的目的都是为了让模型将某一特定测试样本分类到攻击者指定的类别。但是，从攻击者的角度来看，如果不考虑“隐蔽性”问题，是否存在一种方法可以全面降低模型的性能呢，而不仅仅是降低模型在某一特定样本上的性能。答案是肯定的，本文就介绍一种方案，其通过修改模型的权重全面降低模型的性能，或者说彻底摧毁模型，而修改权重的方案则是对位于内存中的模型权重进行比特翻转。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2021/11/06/bitflip/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1590,7 +1653,7 @@
               
                 <a href="/archives/%7C%7C%20archive">
               
-                  <span class="site-state-item-count">26</span>
+                  <span class="site-state-item-count">27</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
